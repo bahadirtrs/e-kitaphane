@@ -48,7 +48,7 @@ React.useLayoutEffect(() => {
       setNumberCurrent(Number(item));
     }else{
       Alert.alert(
-        "Kaldığınız sayfayı unutmadık!",`Bu kitabın ${item} sayfasında kaldınız. Okumaya bu sayfadan devam etmek istermisiniz?`,
+        "Kaldığınız sayfayı unutmadk!",`Bu kitabın ${item} sayfasında kaldınız. Okumaya bu sayfadan devam etmek istermisiniz?`,
         [
           { text: "Devam Et",style: "cancel", onPress: () => NumberOfDelete('true',item)  },
           { text: "Baştan Başla", onPress: () => NumberOfDelete('false',item), }
