@@ -65,7 +65,7 @@ export default function ReaderScreen({ navigation, route }) {
 
   useEffect(() => {
     const pageNum =JSON.stringify(route.params.id)
-    AsyncStorage.getItem(pageNum+'autoSave').then(item =>{
+    AsyncStorage.getItem('autoSave').then(item =>{
       if(item!==null){
         if(item==='true'){
           setIsEnabled(false)
@@ -79,9 +79,9 @@ export default function ReaderScreen({ navigation, route }) {
   const itemTrue = ()=>{
     const pageNum =JSON.stringify(route.params.id)
     if(isEnabled)
-      AsyncStorage.setItem(pageNum+'autoSave', 'true'); 
+      AsyncStorage.setItem('autoSave', 'true'); 
     else
-      AsyncStorage.setItem(pageNum+'autoSave', 'false'); 
+      AsyncStorage.setItem('autoSave', 'false'); 
       Enable()
   }
   
