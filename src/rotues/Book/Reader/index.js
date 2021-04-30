@@ -8,18 +8,15 @@ import { TouchableOpacity } from "react-native-gesture-handler"
 import Icon from "react-native-vector-icons/Ionicons"
 import PageHeaderBackLayout from '../../../components/Layout/PageHeaderBackLayout'
 
-
 const getList = (pageCount) => {
   const pageList = [];
   for(i=0; i<pageCount; i++){
     pageList.push(i+1);
-  }
-  return pageList;
+  }return pageList;
 }
 export default function ReaderScreen({ navigation, route }) {
 
-
-React.useLayoutEffect(() => {
+  React.useLayoutEffect(() => {
   navigation.setOptions({
     headerShown: false,
   })
@@ -55,9 +52,7 @@ React.useLayoutEffect(() => {
         ]
       );
     }
-    
   }
-
   useEffect(() => {
     const pageNum =JSON.stringify(route.params.id)
     AsyncStorage.getItem(pageNum).then(item =>{
@@ -65,11 +60,8 @@ React.useLayoutEffect(() => {
         console.log(item[0])
         setContinuePage(item)
         Contiunie(item,route.params.id)
-      }  })
-
-       
+      }  })  
   }, [])
-
 
   useEffect(() => {
     const pageNum =JSON.stringify(route.params.id)
@@ -86,26 +78,23 @@ React.useLayoutEffect(() => {
   
   const itemTrue = ()=>{
     const pageNum =JSON.stringify(route.params.id)
-    
     if(isEnabled)
-    AsyncStorage.setItem(pageNum+'autoSave', 'true'); 
+      AsyncStorage.setItem(pageNum+'autoSave', 'true'); 
     else
-    AsyncStorage.setItem(pageNum+'autoSave', 'false'); 
-   
+      AsyncStorage.setItem(pageNum+'autoSave', 'false'); 
       Enable()
- 
   }
-const Enable =()=>{
-  setIsEnabled(!isEnabled)
-}
+  
+  const Enable =()=>{
+    setIsEnabled(!isEnabled)
+  }
+
   const PageSave =()=>{
     let pageNum =JSON.stringify(route.params.id)
     let number = JSON.stringify(numberCurrent)
     AsyncStorage.setItem(pageNum, number); 
-    Alert.alert('Sayfa Kaydedildi', `Bir sonraki ziyaretinizde ${numberCurrent}.sayfadan devam edebileceksiniz.`)
+      Alert.alert('Sayfa Kaydedildi', `Bir sonraki ziyaretinizde ${numberCurrent}.sayfadan devam edebileceksiniz.`)
   }
-
- 
   return (
     <>
     <SafeAreaView style={styles.container}> 
@@ -118,7 +107,7 @@ const Enable =()=>{
         backgrounColor={'#fff'}
         pageSave={()=>PageSave()}
         />
-        <Switch
+      <Switch
         trackColor={{ false: "#767577", true: "#81b0ff" }}
         thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
         ios_backgroundColor="#3e3e3e"
@@ -145,7 +134,7 @@ const Enable =()=>{
           if(isEnabled){
             let pageNum =JSON.stringify(route.params.id)
             let number = JSON.stringify(numberCurrent)
-            AsyncStorage.setItem(pageNum, number); 
+             AsyncStorage.setItem(pageNum, number); 
           }
         }}
         onError={error => {
