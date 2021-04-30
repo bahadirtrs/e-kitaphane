@@ -4,13 +4,13 @@ import Icon from "react-native-vector-icons/Ionicons"
 export default function PageHeaderBackLayout({butonPress,butonColor,title,backgrounColor,type, pageSave}) {
     return (
     <View style={[styles.container,{backgroundColor:backgrounColor}]} >
-        <TouchableOpacity style={styles.buttonStyle} onPress={butonPress} >
+        <TouchableOpacity activeOpacity={0.9} style={styles.buttonStyle} onPress={butonPress} >
             <Icon name="chevron-back-outline" size={30} color={butonColor?butonColor:"#fff" }/> 
             <Text style={styles.buttonText} >{title}</Text>
         </TouchableOpacity>
         { type=='pdf'? 
             <View style={{flexDirection:'row'}} >
-                <TouchableOpacity style={styles.saveButton} onPress={pageSave} >
+                <TouchableOpacity activeOpacity={0.9} style={styles.saveButton} onPress={pageSave} >
                     <Icon name="save-outline" size={25} color={butonColor?butonColor:"#fff" }/> 
                 </TouchableOpacity>
             </View>

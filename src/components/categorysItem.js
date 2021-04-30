@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View, Dimensions } from "react-native"
+import { TouchableOpacity, StyleSheet, Text, View, Dimensions } from "react-native"
 import FastImage from "react-native-fast-image"
 import React from "react"
 import { useNavigation } from "@react-navigation/native"
@@ -12,9 +12,9 @@ const height=(Dimensions.get('screen').width-20)/3.2 * bookCoverRatio;
 export default function CategorysItem({ item, sharedKey }) {
   const { push } = useNavigation()
   return (
-    <Pressable style={styles.container} onPress={() => push("BookDetail", { sharedKey: sharedKey, item: item , image:item?.cover_image })}>
+    <TouchableOpacity style={styles.container} onPress={() => push("BookDetail", { sharedKey: sharedKey, item: item , image:item?.cover_image })}>
       <View style={styles.bookImage}>
-        <SharedElement id={`${sharedKey}.${item?.id}.image`}>
+        <View>
           <FastImage
             style={styles.bookCoverImage}
             source={{
@@ -24,24 +24,24 @@ export default function CategorysItem({ item, sharedKey }) {
             }}
             resizeMode={FastImage.resizeMode.stretch}
           />
-        </SharedElement>
+        </View>
       </View>
       <View>
-        <SharedElement id={`${sharedKey}.${item?.id}.title`}>
+        <View>
           <Text style={styles.title} numberOfLines={2}>
             {item?.title}
           </Text>
-        </SharedElement>
-        <SharedElement id={`${sharedKey}.${item?.id}.author`}>
+        </View>
+        <View>
           <Text style={styles.author} numberOfLines={1}>
             {item?.author}
           </Text>
-        </SharedElement>
+        </View>
           <Text style={styles.price} numberOfLines={1}>
             {''} {numberFormat(item?.price)} ₺
           </Text>
       </View>
-    </Pressable>
+    </TouchableOpacity>
   )
 }
 export const CategorysItemPlaceholder = () => {

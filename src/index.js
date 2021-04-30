@@ -13,7 +13,6 @@ import SearchScreen from "./rotues/Search"
 import { createStackNavigator, TransitionPresets } from "@react-navigation/stack"
 import { SafeAreaProvider } from "react-native-safe-area-context/src/SafeAreaContext"
 import Tab from './navigation/tabs'
-
 import { StatusBar } from "react-native"
 
 export const iosTransitionSpec = {
@@ -27,9 +26,6 @@ export const iosTransitionSpec = {
     restSpeedThreshold: 10,
   },
 }
-
-
-
 const MainStack = createSharedElementStackNavigator()
 const RootStack = createStackNavigator()
 
@@ -60,112 +56,14 @@ function MainStackScreen() {
       <MainStack.Screen name="LogIn" component={LogIn} />
       <MainStack.Screen name="UserInfo" component={UserInfo} />
       <MainStack.Screen name="SingIn" component={SingIn} />
-
-      <MainStack.Screen name="MyLibrary" component={MyLibrary} />
-      
-      <MainStack.Screen
-        name="BookDetail"
-        options={{headerShown: false}}
-        component={BookDetailScreen}
-        sharedElementsConfig={(route, otherRoute, showing) => {
-          const { item, sharedKey } = route.params
-          if (route.name === "BookDetail" && showing) {
-            return [
-              {
-                id: `${sharedKey}.${item.id}.image`,
-              },
-              {
-                id: `${sharedKey}.${item.id}.title`,
-                animation: "fade",
-                resize: "none",
-                align: "center-center",
-              },
-              {
-                id: `${sharedKey}.${item.id}.author`,
-                animation: "fade",
-                resize: "none",
-                align: "center-center",
-              },
-            ]
-          } else if (otherRoute.name !== "Reader") {
-            if (sharedKey !== "slider") {
-              return [
-                {
-                  id: `${sharedKey}.${item.id}.image`,
-                },
-                {
-                  id: `${sharedKey}.${item.id}.title`,
-                  animation: "fade",
-                  resize: "none",
-                  align: "center-center",
-                },
-                {
-                  id: `${sharedKey}.${item.id}.author`,
-                  animation: "fade",
-                  resize: "none",
-                  align: "center-center",
-                },
-              ]
-            }
-          }
-        }}
-      />
-
-<MainStack.Screen
-        name="BookCategories"
-        options={{headerShown: false}}
-        component={BookCategories}
-        sharedElementsConfig={(route, otherRoute, showing) => {
-          const { item, sharedKey } = route.params
-          if (route.name === "BookCategories" && showing) {
-            // Open animation fades in image, title and description
-            return [
-              {
-                id: `${sharedKey}.${item.id}.image`,
-              },
-              {
-                id: `${sharedKey}.${item.id}.title`,
-                animation: "fade",
-                resize: "none",
-                align: "center-center",
-              },
-              {
-                id: `${sharedKey}.${item.id}.author`,
-                animation: "fade",
-                resize: "none",
-                align: "center-center",
-              },
-            ]
-          } else if (otherRoute.name !== "Reader") {
-            if (sharedKey !== "slider") {
-              // Close animation only fades out image
-              return [
-                {
-                  id: `${sharedKey}.${item.id}.image`,
-                },
-                {
-                  id: `${sharedKey}.${item.id}.title`,
-                  animation: "fade",
-                  resize: "none",
-                  align: "center-center",
-                },
-                {
-                  id: `${sharedKey}.${item.id}.author`,
-                  animation: "fade",
-                  resize: "none",
-                  align: "center-center",
-                },
-              ]
-            }
-          }
-        }}
-      />
+      <MainStack.Screen name="MyLibrary" component={MyLibrary} /> 
+      <MainStack.Screen name="BookDetail" options={{headerShown: false}} component={BookDetailScreen}/>
+      <MainStack.Screen name="BookCategories" options={{headerShown: false}} component={BookCategories}/>
       <MainStack.Screen name="Reader" component={ReaderScreen} />
       <MainStack.Screen name="Search" component={SearchScreen} />
     </MainStack.Navigator>
   )
 }
-
 const App = () => {
   return (
     <Provider>
@@ -180,5 +78,4 @@ const App = () => {
     </Provider>
   )
 }
-
 export default App

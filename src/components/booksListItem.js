@@ -6,12 +6,13 @@ import { numberFormat } from "../utils/utils"
 import SkeletonPlaceholder from "react-native-skeleton-placeholder"
 import { SharedElement } from "react-navigation-shared-element"
 import { bookCoverRatio, BASE_URL } from "../utils/constants"
+import { TouchableOpacity } from "react-native"
 
 export default function BooksListItem({ item, sharedKey }) {
   const { push } = useNavigation()
   return (
-    <Pressable style={styles.container} onPress={() => push("BookDetail", { sharedKey: sharedKey, item: item })}>
-      <SharedElement id={`${sharedKey}.${item?.id}.image`}>
+    <TouchableOpacity activeOpacity={0.9} style={styles.container} onPress={() => push("BookDetail", { sharedKey: sharedKey, item: item })}>
+      <View>
         <FastImage
           style={styles.bookCoverImage}
           source={{
@@ -21,23 +22,23 @@ export default function BooksListItem({ item, sharedKey }) {
           }}
           resizeMode={FastImage.resizeMode.cover}
         />
-      </SharedElement>
+      </View>
       <View style={styles.infoContainer}>
-        <SharedElement id={`${sharedKey}.${item?.id}.author`}>
+        <View >
           <Text style={styles.author} numberOfLines={1}>
             {item?.author}
           </Text>
-        </SharedElement>
-        <SharedElement id={`${sharedKey}.${item?.id}.title`}>
+        </View>
+        <View>
           <Text style={styles.title} numberOfLines={2}>
             {item?.title}
           </Text>
-        </SharedElement>
+        </View>
         <Text style={styles.price} numberOfLines={1}>
           {numberFormat(item?.price)} TL
         </Text>
       </View>
-    </Pressable>
+    </TouchableOpacity>
   )
 }
 

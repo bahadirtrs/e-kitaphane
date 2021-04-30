@@ -1,15 +1,16 @@
 import React from "react"
+import { TouchableOpacity } from "react-native"
 import { Pressable, Text, StyleSheet } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 const BottomButton = ({ onPress, title, containerStyle }) => {
   const insets = useSafeAreaInsets()
   return (
-    <Pressable
+    <TouchableOpacity
       style={[styles.container, containerStyle, { paddingBottom: Math.max(insets.bottom, 18) }]}
       onPress={onPress}>
       <Text style={styles.text}>{title}</Text>
-    </Pressable>
+    </TouchableOpacity>
   )
 }
 const styles = StyleSheet.create({

@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View, Dimensions } from "react-native"
+import { Pressable, Image, StyleSheet, Text, View, Dimensions } from "react-native"
 import FastImage from "react-native-fast-image"
 import React from "react"
 import { useNavigation } from "@react-navigation/native"
@@ -6,40 +6,41 @@ import { BASE_URL, bookCoverRatio } from "../utils/constants"
 import { numberFormat } from "../utils/utils"
 import SkeletonPlaceholder from "react-native-skeleton-placeholder"
 import { SharedElement } from "react-navigation-shared-element"
+import { TouchableOpacity } from "react-native"
 
 export default function BooksItem({ item, sharedKey }) {
   const { push } = useNavigation()
   return (
-    <Pressable style={styles.container} onPress={() => push("BookDetail", { sharedKey: sharedKey, item: item , image:item?.cover_image })}>
+    <TouchableOpacity activeOpacity={0.9} style={styles.container} onPress={() => push("BookDetail", { sharedKey: sharedKey, item: item , image:item?.cover_image })}>
       <View style={styles.bookImage}>
-        <SharedElement id={`${sharedKey}.${item?.id}.image`}>
-          <FastImage
-            style={styles.bookCoverImage}
-            source={{
-              uri: BASE_URL + "products/cover/" + item?.cover_image,
-              priority: FastImage.priority.normal,
-              cache: FastImage.cacheControl.immutable,
-            }}
-            resizeMode={FastImage.resizeMode.stretch}
-          />
-        </SharedElement>
+        <View>
+        <FastImage
+          style={styles.bookCoverImage}
+          source={{
+            uri: BASE_URL + "products/cover/" + item?.cover_image,
+            priority: FastImage.priority.normal,
+            cache: FastImage.cacheControl.immutable,
+          }}
+          resizeMode={FastImage.resizeMode.cover}
+        />
+        </View>
       </View>
       <View>
-        <SharedElement id={`${sharedKey}.${item?.id}.title`}>
+        <View >
           <Text style={styles.title} numberOfLines={2}>
             {item?.title}
           </Text>
-        </SharedElement>
-        <SharedElement id={`${sharedKey}.${item?.id}.author`}>
+        </View>
+        <View >
           <Text style={styles.author} numberOfLines={1}>
             {item?.author}
           </Text>
-        </SharedElement>
+        </View>
           <Text style={styles.price} numberOfLines={1}>
             {numberFormat(item?.price)} ₺
           </Text>
       </View>
-    </Pressable>
+    </TouchableOpacity>
   )
 }
 export const BooksItemPlaceholder = () => {

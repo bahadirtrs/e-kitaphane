@@ -1,10 +1,11 @@
 import React from "react"
+import { TouchableOpacity } from "react-native"
 import { Pressable, StyleSheet, Text, View } from "react-native"
 import Icon from "react-native-vector-icons/Ionicons"
 
 const BuyButton = ({ text, onPress, price }) => {
   return (
-    <Pressable style={({ pressed }) => (pressed ? { opacity: 0.9 } : { opacity: 1 })} onPress={onPress}>
+    <TouchableOpacity style={({ pressed }) => (pressed ? { opacity: 0.9 } : { opacity: 1 })} onPress={onPress}>
       <View style={[styles.buttonContainer, { backgroundColor: "#3B82F6" }]}>
         <View style={styles.buttonContent}>
           <View style={styles.buttonTextAndIcon}>
@@ -14,13 +15,13 @@ const BuyButton = ({ text, onPress, price }) => {
           <Text style={styles.buyButtonPrice}>{price}</Text>
         </View>
       </View>
-    </Pressable>
+    </TouchableOpacity>
   )
 }
 
 const ReadButton = ({ text, onPress, completePercent = 0 }) => {
   return (
-    <Pressable style={({ pressed }) => (pressed ? { opacity: 0.9 } : { opacity: 1 })} onPress={onPress}>
+    <TouchableOpacity style={({ pressed }) => (pressed ? { opacity: 0.9 } : { opacity: 1 })} onPress={onPress}>
       <View style={[styles.buttonContainer, { backgroundColor: "#10B981" }]}>
         <View style={styles.buttonContent}>
           <View style={styles.buttonTextAndIcon}>
@@ -34,7 +35,7 @@ const ReadButton = ({ text, onPress, completePercent = 0 }) => {
         </View>
         <View style={[styles.completePercentView, { width: completePercent + "%" }]} />
       </View>
-    </Pressable>
+    </TouchableOpacity>
   )
 }
 

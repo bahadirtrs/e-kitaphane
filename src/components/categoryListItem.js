@@ -2,12 +2,13 @@ import { Pressable, StyleSheet, Text, View } from "react-native"
 import React from "react"
 import { useNavigation } from "@react-navigation/native"
 import SkeletonPlaceholder from "react-native-skeleton-placeholder"
+import { TouchableOpacity } from "react-native"
 
 export default function CategoryListItem({ item }) {
   const { push } = useNavigation()
   const childrenCategories = item?.children_categories
   return (
-    <Pressable style={styles.container} onPress={() => push("BookCategories", { item: item })}>
+    <TouchableOpacity style={styles.container} onPress={() => push("BookCategories", { item: item })}>
       <View style={styles.categoryTitleView}>
         <Text style={styles.categoryTitle} numberOfLines={1}>
           {item?.title}
@@ -18,7 +19,7 @@ export default function CategoryListItem({ item }) {
             })
           : undefined}
       </View>
-    </Pressable>
+    </TouchableOpacity>
   )
 }
 
