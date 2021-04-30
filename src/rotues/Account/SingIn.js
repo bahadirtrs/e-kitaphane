@@ -14,6 +14,7 @@ import UsersWelcome from '../../components/UsersWelcome'
 import ActiveButton from '../../components/Button/ActiveButton'
 import TextInputCom from '../../components/textInputCom'
 import TwoInputText from '../../components/TwoInputText'
+import HelpModal from '../../components/HelpModal'
 
 
 
@@ -36,6 +37,7 @@ export default function SingIn({navigation}) {
   const [privacyPolicyVisible, setPrivacyPolicyVisible] = useState(false)
   const [passwordHide, setPasswordHide] = useState(true)
   const [activity, setActivity] = useState(false)
+  const [helpVisible, setHelpVisible] = useState(false)
 
 
 useEffect(() => {
@@ -115,7 +117,12 @@ useEffect(() => {
     <View style={{position:'absolute'}} >
     <SafeAreaView/>
     <StatusBar backgroundColor={'#f1f1f1'}/>
-     <HeaderBackLayout butonColor={'#118ab2'} butonPress={()=>navigation.goBack()} pageName={''}/>
+      <HeaderBackLayout 
+          butonColor={'#118ab2'} 
+          butonPress={()=>navigation.goBack()}
+          butonPressRight={()=>setHelpVisible(true)}
+          pageName={''}
+      />
       <ScrollView>
         <View style={styles.container} >
           <UsersWelcome warning={warning} 
@@ -182,6 +189,10 @@ useEffect(() => {
     <PrivacyPolicy 
       visible={privacyPolicyVisible}  
       setVisible={()=>setPrivacyPolicyVisible(false)}/>
+    <HelpModal 
+      visible={helpVisible}  
+      setVisible={()=>setHelpVisible(false)}
+    />
   </View>
   </View>  
   )

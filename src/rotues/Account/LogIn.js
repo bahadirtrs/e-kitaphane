@@ -2,7 +2,7 @@ import React,{useState,useMemo, useEffect} from "react"
 import { BASE_URL,endpoints, CLIENT_ID, CLIENT_SECRET} from "../../utils/constants"
 import { SafeAreaView } from "react-native"
 import { StyleSheet,StatusBar } from "react-native"
-import { View, Dimensions,ScrollView } from "react-native";
+import { View, Dimensions,ScrollView,Text } from "react-native";
 import { storeTokens } from "../../utils/utils";
 import AsyncStorage from '@react-native-community/async-storage';
 import TextButton from '../../components/Button/TextButton'
@@ -11,6 +11,7 @@ import HeaderBackLayout from '../../components/Layout/HeaderBackLayout'
 import UsersWelcome from '../../components/UsersWelcome'
 import TextInputCom from '../../components/textInputCom'
 import ActiveButton from '../../components/Button/ActiveButton'
+import HelpModal from '../../components/HelpModal'
 import axios from "axios"
 
 export default function LogIn({navigation}) {
@@ -21,6 +22,7 @@ export default function LogIn({navigation}) {
   const [infoColor, setInfoColor] = useState('#e63946')
   const [passwordHide, setPasswordHide] = useState(true)
   const [activity, setActivity] = useState(false)
+  const [helpVisible, setHelpVisible] = useState(false)
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -97,11 +99,12 @@ return (
     <StatusBar backgroundColor={'#f1f1f1'}/>
     <SafeAreaView/>
       <HeaderBackLayout 
-        butonColor={'#118ab2'} 
+        butonColor={'#fff'} 
         butonPress={()=>navigation.goBack()}
+        butonPressRight={()=>setHelpVisible(true)}
         pageName={''}
         />
-        
+      <View style={[styles.box, {transform: [{ rotate: "15deg" }]}]}/>
       <ScrollView>
         <View style={styles.container} >
           <UsersWelcome warning={warning} 
@@ -125,6 +128,10 @@ return (
           />
         </View> 
       </ScrollView> 
+      <HelpModal 
+      visible={helpVisible}  
+      setVisible={()=>setHelpVisible(false)}
+      />
     </View>
   </View>
   )
@@ -136,5 +143,27 @@ const styles = StyleSheet.create({
     justifyContent:'center',
     alignItems:'center'
   },
+
+  box: {
+    zIndex:0,
+    position:'absolute',
+    height: 600,
+    width: 600,
+    top:-400,
+    left:0,
+    borderRadius: 5,
+    marginVertical: 40,
+    backgroundColor: "#118ab2",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  text: {
+    fontSize: 14,
+    fontWeight: "bold",
+    margin: 8,
+    color: "#000",
+    textAlign: "center"
+  }
+
 
 })

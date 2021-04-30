@@ -39,7 +39,8 @@ export default function HomeScreen({ navigation }){
   const Token = async() =>{
     try {
       await RNSecureStorage.get("access_token").then((value) => {
-        setToken(value);
+        if(value!=null)
+          setToken(value);
       })
     } catch (error) {
       console.log(error)
