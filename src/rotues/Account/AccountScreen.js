@@ -25,7 +25,7 @@ export default function AccountScreen({navigation}) {
                 <View style={{flex:2,paddingBottom:20, justifyContent:'center', alignItems:'center'}} >
                     <SubmitButton butonPress={()=>navigation.push('LogIn')} />
                     <TextButton
-                        questions={'Henüz hesap oluştugfrmadınız mı?'}
+                        questions={'Henüz hesap oluşturmadınız mı?'}
                         redirectText={'Hesap Oluşturun'}
                         buttonPress={()=> navigation.push('SingIn')}
                     />
