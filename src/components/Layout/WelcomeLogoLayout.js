@@ -1,12 +1,11 @@
 import React from 'react'
 import { View, Text,StyleSheet,Image } from 'react-native'
-
 export default function WelcomeLogoLayout() {
     return (
         <View style={styles.welcome} >
-            <Image  style={{  width:80,height:80}} source={require('../../../assets/books-logo.png')}/>
-            <Text style={styles.welcomeTitle} >E-Kitaphane</Text>
-            <Text style={styles.welcomeDescription} >Sevdiğiniz kitaplar cebinizde</Text>
+            <Image style={{width:80,height:80}} source={require('../../../assets/books-logo.png')}/>
+            <Text style={styles.welcomeTitle}>E-Kitaphane</Text>
+            <Text style={styles.welcomeDescription}>Sevdiğiniz kitaplar cebinizde</Text>
         </View>
     )
 }

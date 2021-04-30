@@ -15,7 +15,6 @@ export default function TwoInputText({value,onChangeText,placeholder,valueTwo,on
             keyboardType={'email-address'}
             autoCapitalize={'words'}
           />
-         
           <TextInput
             style={[styles.textInput, {fontSize:14,width:'47%', borderTopRightRadius:8}]}
             placeholder={placeholderTwo}
@@ -29,7 +28,6 @@ export default function TwoInputText({value,onChangeText,placeholder,valueTwo,on
         </View>
     )
 }
-
 const styles = StyleSheet.create({
     textInput:{
         margin:2,

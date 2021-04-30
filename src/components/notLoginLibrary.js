@@ -5,7 +5,6 @@ import Icon from "react-native-vector-icons/Ionicons";
 import SubmitButton from '../components/Button/SubmitButton'
 import TextButton from '../components/Button/TextButton'
 import {useNavigation} from '@react-navigation/native'
-
 const width=Dimensions.get('screen').width;
 const height=Dimensions.get('screen').height;
 
@@ -19,7 +18,6 @@ export default function notLoginLibrary() {
       </SafeAreaView>
     )
 }
-
 const styles = StyleSheet.create({
     container:{
         width:width,

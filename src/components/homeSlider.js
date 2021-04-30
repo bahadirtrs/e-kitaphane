@@ -12,7 +12,6 @@ const HomeSlider = ({ request }) => {
   const [sliders, setSliders] = useState([])
   const sliderRef = useRef()
   const { push } = useNavigation()
-
   const getSliders = useMemo(() => RequestManager(request), [request])
 
   useEffect(() => {

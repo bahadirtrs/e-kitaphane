@@ -6,10 +6,9 @@ export default function logo() {
     return (
         <View>
             {
-           // <Image source={logom} style={{ width: 100 }} resizeMode="contain" />
+         // <Image source={logom} style={{ width: 100 }} resizeMode="contain" />
             <Text style={styles.logoText}>e-Kitaphane</Text>
             }
-           
         </View>
     )
 }
