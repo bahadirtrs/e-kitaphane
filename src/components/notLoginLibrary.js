@@ -13,14 +13,9 @@ export default function notLoginLibrary() {
     const navigation=useNavigation();
     return (
         <SafeAreaView style={styles.container} >
-          <Icon name="information-circle-outline" size={100} color="#333" />
+          <Icon name="information-circle-outline" size={100} color="#555" />
           <Text style={styles.text}>Kütüphane özelliğini kullanabilmeniz için kayıt olmanız gerekmektedir.</Text>
           <SubmitButton butonPress={()=>navigation.push('LogIn')} />
-          <TextButton
-            questions={'Henüz hesap oluşturmadınız mı?'}
-            redirectText={'Hesap Oluşturun'} buttonPress={()=> navigation.push('SingIn')}
-          />
-
       </SafeAreaView>
     )
 }

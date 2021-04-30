@@ -1,5 +1,5 @@
 import React,{useState, useEffect} from "react"
-import { StyleSheet,View,Text,FlatList,StatusBar } from "react-native"
+import { StyleSheet,View,Text,FlatList,StatusBar,Alert,Switch } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import Pdf from "react-native-pdf"
 import { endpoints, BASE_URL } from "../../../utils/constants"
@@ -8,6 +8,7 @@ import { TouchableOpacity } from "react-native-gesture-handler"
 import Icon from "react-native-vector-icons/Ionicons"
 import PageHeaderBackLayout from '../../../components/Layout/PageHeaderBackLayout'
 
+
 const getList = (pageCount) => {
   const pageList = [];
   for(i=0; i<pageCount; i++){
@@ -15,75 +16,116 @@ const getList = (pageCount) => {
   }
   return pageList;
 }
-
 export default function ReaderScreen({ navigation, route }) {
+
+
+React.useLayoutEffect(() => {
+  navigation.setOptions({
+    headerShown: false,
+  })
+}, [navigation])
   const [numberCurrent, setNumberCurrent] = useState(1)
   const [numberofPages, setNumberofPages] = useState()
-  const [count, setcount] = useState(false)
-  const [continuePage, setContinuePage] = useState(false)
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      title: route.params.title,
-      headerBackTitleVisible: false,
-      headerShown: false,
-      headerStyle: {
-        backgroundColor: "#FFF",
-      },
-      headerTintColor: "#4B5563",
-      headerTitleStyle: {
-        fontWeight: "bold",
-      },
-    })
-  }, [navigation, route.params.title])
+  const [continuePage, setContinuePage] = useState(0)
+  const [isEnabled, setIsEnabled] = useState(false);
   const source = { uri: BASE_URL +"api/show-preview/" + route.params.id, cache: true }
   console.log(source)
 
-  const NumberOf = async()=>{
+  const NumberOfDelete = async(params,item)=>{
+    if(params=='true'){
+      setNumberCurrent(Number(item))
+    }
     let pageNum =JSON.stringify(route.params.id)
-    let number = JSON.stringify(numberCurrent)
     await AsyncStorage.getItem(pageNum).then(item => {
       if(item!==null){
         AsyncStorage.removeItem(pageNum);
       }
-        AsyncStorage.setItem(pageNum, number); 
-        setcount(number)  
   });
   }
 
-  const Contiunie =()=>{
-    const pageNum =JSON.stringify(route.params.id)
-    AsyncStorage.getItem(pageNum).then(item =>{
-      if(item!==null){
-        setcount(Number(item))
-        setContinuePage(true)
-      }  
-    })
+  const Contiunie =(item,params)=>{
+    if(isEnabled){
+      setNumberCurrent(Number(item));
+    }else{
+      Alert.alert(
+        "Kaldığınız sayfayı unutmadık!",`Bu kitabın ${item} sayfasında kaldınız. Okumaya bu sayfadan devam etmek istermisiniz?`,
+        [
+          { text: "Devam Et",style: "cancel", onPress: () => NumberOfDelete('true',item)  },
+          { text: "Baştan Başla", onPress: () => NumberOfDelete('false',item), }
+        ]
+      );
+    }
+    
   }
 
   useEffect(() => {
     const pageNum =JSON.stringify(route.params.id)
     AsyncStorage.getItem(pageNum).then(item =>{
       if(item!==null){
-        setNumberCurrent(Number(item))
-        setcount(Number(item))
+        console.log(item[0])
+        setContinuePage(item)
+        Contiunie(item,route.params.id)
       }  })
+
+       
   }, [])
 
-  getItemLayout = (data, index) => (
-    { length: 50, offset: 50 * index, index }
-  )
 
+  useEffect(() => {
+    const pageNum =JSON.stringify(route.params.id)
+    AsyncStorage.getItem(pageNum+'autoSave').then(item =>{
+      if(item!==null){
+        if(item==='true'){
+          setIsEnabled(false)
+        }else if(item==='false'){
+          setIsEnabled(true)
+        }
+      }
+       })  
+  }, [])
+  
+  const itemTrue = ()=>{
+    const pageNum =JSON.stringify(route.params.id)
+    
+    if(isEnabled)
+    AsyncStorage.setItem(pageNum+'autoSave', 'true'); 
+    else
+    AsyncStorage.setItem(pageNum+'autoSave', 'false'); 
+   
+      Enable()
+ 
+  }
+const Enable =()=>{
+  setIsEnabled(!isEnabled)
+}
+  const PageSave =()=>{
+    let pageNum =JSON.stringify(route.params.id)
+    let number = JSON.stringify(numberCurrent)
+    AsyncStorage.setItem(pageNum, number); 
+    Alert.alert('Sayfa Kaydedildi', `Bir sonraki ziyaretinizde ${numberCurrent}.sayfadan devam edebileceksiniz.`)
+  }
 
+ 
   return (
     <>
     <SafeAreaView style={styles.container}> 
     <StatusBar backgroundColor={'#fff'}/>
     <PageHeaderBackLayout 
+        type={'pdf'}
         butonColor={'#118ab2'} 
         butonPress={()=>navigation.goBack()}
         title={route.params.title}
         backgrounColor={'#fff'}
+        pageSave={()=>PageSave()}
         />
+        <Switch
+        trackColor={{ false: "#767577", true: "#81b0ff" }}
+        thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+        ios_backgroundColor="#3e3e3e"
+        onValueChange={()=>itemTrue()}
+        value={isEnabled}
+      />
+      <Text> Otomatik Kayıt </Text>
       <Pdf
         source={source}
         page={numberCurrent}
@@ -99,6 +141,8 @@ export default function ReaderScreen({ navigation, route }) {
           console.log(`current page: ${page}`)
           if(page !== 1 && numberCurrent){
             setNumberCurrent(page)
+          }
+          if(isEnabled){
             let pageNum =JSON.stringify(route.params.id)
             let number = JSON.stringify(numberCurrent)
             AsyncStorage.setItem(pageNum, number); 
@@ -113,6 +157,7 @@ export default function ReaderScreen({ navigation, route }) {
         style={styles.pdf}
       />
       <View style={styles.numberCurrent}>
+        <Text> {isEnabled? 'true': 'false'} </Text>
         <FlatList
           keyboardDismissMode="on-drag"
           keyExtractor={(item, index) => "search-result-item-" + index}

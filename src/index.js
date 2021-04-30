@@ -28,11 +28,7 @@ export const iosTransitionSpec = {
   },
 }
 
-const forFade = ({ current }) => ({
-  cardStyle: {
-    opacity: current.progress,
-  },
-});
+
 
 const MainStack = createSharedElementStackNavigator()
 const RootStack = createStackNavigator()
@@ -53,9 +49,9 @@ function MainStackScreen() {
           open: iosTransitionSpec,
           close: iosTransitionSpec,
         },
-        cardStyleInterpolator: ({ current }) => ({
+        cardStyleInterpolator: ({ current: { progress } }) => ({
           cardStyle: {
-            opacity: current.progress,
+            opacity: progress,
           },
         }),
       }}>
