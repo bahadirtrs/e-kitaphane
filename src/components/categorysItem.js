@@ -1,0 +1,107 @@
+import { Pressable, StyleSheet, Text, View, Dimensions } from "react-native"
+import FastImage from "react-native-fast-image"
+import React from "react"
+import { useNavigation } from "@react-navigation/native"
+import { BASE_URL, bookCoverRatio } from "../utils/constants"
+import { numberFormat } from "../utils/utils"
+import SkeletonPlaceholder from "react-native-skeleton-placeholder"
+import { SharedElement } from "react-navigation-shared-element"
+const width=(Dimensions.get('screen').width-20)/3.2;
+const height=(Dimensions.get('screen').width-20)/3.2 * bookCoverRatio;
+
+export default function CategorysItem({ item, sharedKey }) {
+  const { push } = useNavigation()
+  return (
+    <Pressable style={styles.container} onPress={() => push("BookDetail", { sharedKey: sharedKey, item: item , image:item?.cover_image })}>
+      <View style={styles.bookImage}>
+        <SharedElement id={`${sharedKey}.${item?.id}.image`}>
+          <FastImage
+            style={styles.bookCoverImage}
+            source={{
+              uri: BASE_URL + "products/cover/" + item?.cover_image,
+              priority: FastImage.priority.normal,
+              cache: FastImage.cacheControl.immutable,
+            }}
+            resizeMode={FastImage.resizeMode.stretch}
+          />
+        </SharedElement>
+      </View>
+      <View>
+        <SharedElement id={`${sharedKey}.${item?.id}.title`}>
+          <Text style={styles.title} numberOfLines={2}>
+            {item?.title}
+          </Text>
+        </SharedElement>
+        <SharedElement id={`${sharedKey}.${item?.id}.author`}>
+          <Text style={styles.author} numberOfLines={1}>
+            {item?.author}
+          </Text>
+        </SharedElement>
+          <Text style={styles.price} numberOfLines={1}>
+            {''} {numberFormat(item?.price)} ₺
+          </Text>
+      </View>
+    </Pressable>
+  )
+}
+export const CategorysItemPlaceholder = () => {
+  return (
+    <View style={{ height: "auto", margin:5 }}>
+      <SkeletonPlaceholder>
+        <View style={{ width:width, height:height, borderRadius:10 }} />
+        <View style={{ marginTop: 6, width: width, height: height/10, borderRadius: 4 }} />
+        <View style={{ marginTop: 6, width: width/2, height: height/10, borderRadius: 4 }} />
+        <View style={{ marginTop: 6, width: width/4, height: height/10, borderRadius: 4 }} />
+      </SkeletonPlaceholder>
+    </View>
+  )
+}
+
+const styles = StyleSheet.create({
+  container: {
+    width:(Dimensions.get('screen').width-20)/3,
+    justifyContent:'center',
+    alignItems:'flex-start',
+    marginVertical:10
+  
+  },
+  title: {
+    fontFamily:'GoogleSans-Medium',
+    fontSize: 14,
+    lineHeight: 20,
+    height:25,
+    color: "#1F2937",
+    paddingTop: 5,
+  },
+  author: {
+    fontFamily:'GoogleSans-Regular',
+    fontSize: 13,
+    color: "#4B5563",
+    paddingTop:2
+  },
+  price: {
+    paddingTop: 2,
+    textAlign: "left",
+    fontFamily:'GoogleSans-Bold',
+    fontSize: 18,
+    color: "#4B5563",
+  },
+  bookImage: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 4,
+      height: 4,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  bookCoverImage: {
+      borderWidth: 0.5,
+      borderColor: "#8d8d96",
+      width:width,
+      height:height,
+      borderRadius: 4,
+    
+  },
+})
