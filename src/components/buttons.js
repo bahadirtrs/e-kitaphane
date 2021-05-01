@@ -5,7 +5,7 @@ import Icon from "react-native-vector-icons/Ionicons"
 
 const BuyButton = ({ text, onPress, price }) => {
   return (
-    <TouchableOpacity style={({ pressed }) => (pressed ? { opacity: 0.9 } : { opacity: 1 })} onPress={onPress}>
+    <TouchableOpacity activeOpacity={0.9} style={({ pressed }) => (pressed ? { opacity: 0.9 } : { opacity: 1 })} onPress={onPress}>
       <View style={[styles.buttonContainer, { backgroundColor: "#3B82F6" }]}>
         <View style={styles.buttonContent}>
           <View style={styles.buttonTextAndIcon}>
@@ -21,7 +21,7 @@ const BuyButton = ({ text, onPress, price }) => {
 
 const ReadButton = ({ text, onPress, completePercent = 0 }) => {
   return (
-    <TouchableOpacity style={({ pressed }) => (pressed ? { opacity: 0.9 } : { opacity: 1 })} onPress={onPress}>
+    <TouchableOpacity activeOpacity={0.9} style={({ pressed }) => (pressed ? { opacity: 0.9 } : { opacity: 1 })} onPress={onPress}>
       <View style={[styles.buttonContainer, { backgroundColor: "#10B981" }]}>
         <View style={styles.buttonContent}>
           <View style={styles.buttonTextAndIcon}>

@@ -10,7 +10,7 @@ import { useNavigation } from "@react-navigation/native"
 const BookCover = ({ sharedKey, id, imageURI }) => {
   return (
     <View style={styles.bookCover}>
-      <SharedElement id={`${sharedKey}.${id}.image`}>
+      <View>
         <FastImage
           style={styles.bookCoverImage}
           source={{
@@ -20,7 +20,7 @@ const BookCover = ({ sharedKey, id, imageURI }) => {
           }}
           resizeMode={FastImage.resizeMode.cover}
         />
-      </SharedElement>
+      </View>
     </View>
   )
 }
@@ -31,12 +31,12 @@ const BookInfo = ({ sharedKey, id, title, author, summary, totalPages, releaseDa
     <View style={styles.bookInfo}>
       <View style={styles.titleView}>
         <View>
-          <SharedElement id={`${sharedKey}.${id}.title`}>
+          <View>
             <Text style={styles.bookTitle}>{title}</Text>
-          </SharedElement>
-          <SharedElement id={`${sharedKey}.${id}.author`}>
+          </View>
+          <View>
             <Text style={styles.bookAuthor}>{author}</Text>
-          </SharedElement>
+          </View>
         </View>
         <View>
         <Icon name="bookmark-outline" color={"#333"} size={35} />
@@ -78,13 +78,15 @@ const styles = StyleSheet.create({
     height: 200 * bookCoverRatio,
     shadowColor: "#000",
     shadowOffset: {
-      width: 0,
+      width: 2,
       height: 2,
     },
-    shadowOpacity: 0.1,
+    shadowOpacity: 3,
     shadowRadius: 3,
-    elevation: 0,
+    elevation: 4,
     borderRadius: 8,
+    borderWidth:1,
+    borderColor:'#ddd'
   },
   bookInfo: {
     padding: 12,

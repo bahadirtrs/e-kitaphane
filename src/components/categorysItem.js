@@ -12,7 +12,7 @@ const height=(Dimensions.get('screen').width-20)/3.2 * bookCoverRatio;
 export default function CategorysItem({ item, sharedKey }) {
   const { push } = useNavigation()
   return (
-    <TouchableOpacity style={styles.container} onPress={() => push("BookDetail", { sharedKey: sharedKey, item: item , image:item?.cover_image })}>
+    <TouchableOpacity activeOpacity={0.9} style={styles.container} onPress={() => push("BookDetail", { sharedKey: sharedKey, item: item , image:item?.cover_image })}>
       <View style={styles.bookImage}>
         <View>
           <FastImage

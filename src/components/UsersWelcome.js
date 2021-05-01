@@ -11,8 +11,8 @@ export default function UsersWelcome({warning, infoColor, setWarning}) {
           </Text>  
           { warning!='null' ?
           <View style={[styles.infoStyle,{backgroundColor:infoColor}]}> 
-            <Text style={style.warningTextStyle}>{warning}</Text>
-            <TouchableOpacity onPress={setWarning} >
+            <Text style={styles.warningTextStyle}>{warning}</Text>
+            <TouchableOpacity activeOpacity={0.9} onPress={setWarning} >
                 <Icon name="close-outline" size={25} color="#fff" />
             </TouchableOpacity>
           </View> 

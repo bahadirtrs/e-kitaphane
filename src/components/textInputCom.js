@@ -18,11 +18,11 @@ export default function textInputCom({value,onChangeText,placeholder,passwordHid
        />
         { setPasswordHide ?
         passwordHide ?
-        <TouchableOpacity onPress={setPasswordHide} style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
+        <TouchableOpacity activeOpacity={0.9} onPress={setPasswordHide} style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
           <Icon style={{ position:'absolute', right:10}} name="eye-off-outline" size={20} color="#118ab2" /> 
         </TouchableOpacity>
         :
-        <TouchableOpacity onPress={setPasswordHide} style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
+        <TouchableOpacity activeOpacity={0.9} onPress={setPasswordHide} style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
           <Icon style={{ position:'absolute', right:10}} name="eye-outline" size={20} color="#118ab2" /> 
        </TouchableOpacity>
        :null

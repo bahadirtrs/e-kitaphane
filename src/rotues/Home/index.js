@@ -82,17 +82,17 @@ export default function HomeScreen({ navigation }){
       <><SafeAreaView/>
         <StatusBar backgroundColor={'#f1f1f1'} barStyle="dark-content" />
           <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingTop:0}} >
-            <TouchableOpacity activeOpacity={0.8} style={{ paddingHorizontal: 12 }} onPress={null}>
+            <TouchableOpacity activeOpacity={0.9} style={{ paddingHorizontal: 12 }} onPress={null}>
               <Icon name="menu-outline" size={32} color="#333" />
             </TouchableOpacity>
             <Logom/>
             {token!==' '
             ?
-            <TouchableOpacity activeOpacity={0.8}  style={{ paddingHorizontal: 12 }} onPress={() => navigation.push("UserInfo")}>
+            <TouchableOpacity activeOpacity={0.9}  style={{ paddingHorizontal: 12 }} onPress={() => navigation.push("UserInfo")}>
               <Icon name="person-circle-outline" size={36} color="#555" />
             </TouchableOpacity>
             :
-            <TouchableOpacity activeOpacity={0.8}  style={{ paddingHorizontal: 12 }} onPress={() => navigation.push("Account")}>
+            <TouchableOpacity activeOpacity={0.9}  style={{ paddingHorizontal: 12 }} onPress={() => navigation.push("Account")}>
               <Icon name="person-circle-outline" size={36} color="#555" />
             </TouchableOpacity>
             }

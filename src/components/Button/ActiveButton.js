@@ -5,7 +5,7 @@ export default function ActiveButton({isLogInFormControl,buttonClick}) {
     return (
         <View style={styles.container} >
        { buttonClick
-         ?   <TouchableOpacity onPress={()=>{isLogInFormControl()}} style={styles.submitButtonEnable} >
+         ?   <TouchableOpacity activeOpacity={0.9} onPress={()=>{isLogInFormControl()}} style={styles.submitButtonEnable} >
                <Text style={styles.buttonText}>Giriş Yapın</Text>
              </TouchableOpacity>
          :

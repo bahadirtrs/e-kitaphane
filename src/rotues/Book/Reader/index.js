@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { TouchableOpacity } from "react-native-gesture-handler"
 import Icon from "react-native-vector-icons/Ionicons"
 import PageHeaderBackLayout from '../../../components/Layout/PageHeaderBackLayout'
+import { Dimensions } from "react-native"
 
 const getList = (pageCount) => {
   const pageList = [];
@@ -25,6 +26,7 @@ export default function ReaderScreen({ navigation, route }) {
   const [numberofPages, setNumberofPages] = useState()
   const [continuePage, setContinuePage] = useState(0)
   const [isEnabled, setIsEnabled] = useState(false);
+  const [isPageControllerHide, setPageControllerHide] = useState(true)
   const source = { uri: BASE_URL +"api/show-preview/" + route.params.id, cache: true }
   console.log(source)
 
@@ -99,22 +101,29 @@ export default function ReaderScreen({ navigation, route }) {
     <>
     <SafeAreaView style={styles.container}> 
     <StatusBar backgroundColor={'#fff'}/>
+    {isPageControllerHide ?
+    <View style={{zIndex:1 ,position:'absolute', paddingTop:50, backgroundColor:'#f1f1f1'}} >
     <PageHeaderBackLayout 
         type={'pdf'}
         butonColor={'#118ab2'} 
         butonPress={()=>navigation.goBack()}
         title={route.params.title}
-        backgrounColor={'#fff'}
+        backgrounColor={'#f1f1f1'}
         pageSave={()=>PageSave()}
         />
-      <Switch
-        trackColor={{ false: "#767577", true: "#81b0ff" }}
-        thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
-        ios_backgroundColor="#3e3e3e"
-        onValueChange={()=>itemTrue()}
-        value={isEnabled}
-      />
-      <Text> Otomatik Kayıt </Text>
+        <View style={{ flexDirection:'row', justifyContent:'flex-end',alignItems:'center'}} >
+          <Text style={{fontFamily:'GoogleSans-Regular'}} > Otomatik Kayıt </Text>
+          <Switch
+          trackColor={{ false: "#767577", true: "#81b0ff" }}
+          thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+          ios_backgroundColor="#3e3e3e"
+          onValueChange={()=>itemTrue()}
+          value={isEnabled}
+        />
+        </View>
+     
+      </View>
+      :null}
       <Pdf
         source={source}
         page={numberCurrent}
@@ -122,6 +131,7 @@ export default function ReaderScreen({ navigation, route }) {
         enablePaging={true}
         fitWidth={true}
         cache={true}
+        onPageSingleTap={()=>setPageControllerHide(!isPageControllerHide)}
         onLoadComplete={(numberOfPages, filePath) => {
           console.log(`number of pages: ${numberOfPages}`)
           setNumberofPages(numberOfPages)
@@ -145,8 +155,10 @@ export default function ReaderScreen({ navigation, route }) {
         }}
         style={styles.pdf}
       />
+      
+
+      {isPageControllerHide ?
       <View style={styles.numberCurrent}>
-        <Text> {isEnabled? 'true': 'false'} </Text>
         <FlatList
           keyboardDismissMode="on-drag"
           keyExtractor={(item, index) => "search-result-item-" + index}
@@ -159,7 +171,7 @@ export default function ReaderScreen({ navigation, route }) {
             renderItem={({ item,index }) => {
               if(item-1<numberofPages){
                 return (  
-                <TouchableOpacity onPress={()=>setNumberCurrent(index+1)} style={{  width:40, height:55, borderColor: item==numberCurrent?'#118ab2':'#ccc', borderWidth:item==numberCurrent? 2:1, margin:2,borderRadius:5}} >
+                <TouchableOpacity activeOpacity={0.9} onPress={()=>setNumberCurrent(index+1)} style={{  width:40, height:55, borderColor: item==numberCurrent?'#118ab2':'#ccc', borderWidth:item==numberCurrent? 2:1, margin:2,borderRadius:5}} >
                   <View style={{zIndex:1, width:35, height:50, backgroundColor:'#118ab201', position:'absolute', justifyContent:'center', alignItems:'center'}}>
                     <Text style={{fontFamily:'GoogleSans-Regular', color:'#333', fontSize:10}}>{item}</Text>
                   </View>
@@ -169,17 +181,23 @@ export default function ReaderScreen({ navigation, route }) {
             }}
         />
         <View style={{flexDirection:'row', justifyContent:'space-around', width:'100%', paddingVertical:10, }} >
-          <TouchableOpacity onPress={()=>{setNumberCurrent(numberCurrent>1?numberCurrent-1:numberCurrent)}} >
+          <TouchableOpacity activeOpacity={0.9} onPress={()=>{setNumberCurrent(numberCurrent>1?numberCurrent-1:numberCurrent)}} >
             <Icon name="chevron-back-outline" size={32} color="#333" />
           </TouchableOpacity>
-          <View style={{justifyContent:'center', alignItems:'center', backgroundColor:'#118ab2', borderRadius:5}} >
+          <View style={{width:100, justifyContent:'center', alignItems:'center', backgroundColor:'#118ab2', borderRadius:5}} >
              <Text style={styles.numberCurrentText} > {numberCurrent}/{numberofPages} </Text>
           </View>
-          <TouchableOpacity onPress={()=>{setNumberCurrent(numberCurrent<numberofPages?numberCurrent+1:numberCurrent)}} >
+          <TouchableOpacity activeOpacity={0.9} onPress={()=>{setNumberCurrent(numberCurrent<numberofPages?numberCurrent+1:numberCurrent)}} >
             <Icon name="chevron-forward-outline" size={32} color="#333" />
           </TouchableOpacity>
         </View>
       </View>
+        :<View style={{ position:'absolute', bottom:50, justifyContent:'center', alignItems:'center', width:Dimensions.get('screen').width }} >
+          <View style={{ width:100, justifyContent:'center', alignItems:'center', backgroundColor:'#118ab2', borderRadius:5}} >
+            <Text style={styles.numberCurrentText} > {numberCurrent}/{numberofPages} </Text>
+          </View>
+        </View>
+        }
     </SafeAreaView>
     </>
   )
@@ -203,14 +221,21 @@ const styles = StyleSheet.create({
     margin: 0,
   },
   numberCurrent:{
-    minHeight:56,
+    width:Dimensions.get('screen').width , 
+    backgroundColor:'#eee',
+    bottom:0,
+    position:'absolute',
+    minHeight:60,
+    paddingTop:5,
     flexDirection:'column',
     justifyContent:'space-around',
     alignItems:'center',
+    marginBottom:10
   
     
   },
   numberCurrentText:{
+    
     color:'#fff',
     fontSize:16,
     fontWeight:'500',

@@ -149,21 +149,21 @@ useEffect(() => {
         <View style={{width:'82%',justifyContent:'flex-start', alignItems:'flex-start', paddingTop:10}} >
             <View style={{flexDirection:'row', justifyContent:'flex-start', alignItems:'center', paddingTop:5}} >
               { checkbox 
-              ?<TouchableOpacity onPress={()=>setCheckbox(!checkbox)} >
+              ?<TouchableOpacity activeOpacity={0.9} onPress={()=>setCheckbox(!checkbox)} >
                 <Icon name="checkmark-circle-outline" size={30} color="#118ab2" />
               </TouchableOpacity>
               :
-              <TouchableOpacity onPress={()=>setCheckbox(!checkbox)} >
+              <TouchableOpacity activeOpacity={0.9} onPress={()=>setCheckbox(!checkbox)} >
                 <Icon name="ellipse-outline" size={30} color="#333" />
               </TouchableOpacity>
 
               }
               <View>
                 <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
-                  <TouchableOpacity onPress={()=>setTermsOfUseVisible(true)}>
+                  <TouchableOpacity activeOpacity={0.9} onPress={()=>setTermsOfUseVisible(true)}>
                     <Text  style={{fontFamily:'GoogleSans-Medium', color:'#333'}}> Kullanıcı Sözleşmesi  <Text style={{fontFamily:'GoogleSans-Regular'}} >ve</Text> </Text>  
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={()=>setPrivacyPolicyVisible(true)}>
+                  <TouchableOpacity activeOpacity={0.9} onPress={()=>setPrivacyPolicyVisible(true)}>
                     <Text style={{fontFamily:'GoogleSans-Medium', color:'#333'}}>Gizlilik Politikasını </Text>  
                   </TouchableOpacity>
                 </View>

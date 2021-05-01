@@ -48,7 +48,7 @@ export default function UserInfo({navigation}) {
         <Text>{userInfo.last_name}</Text>
         <Text>{userInfo.email}</Text>
         <Text>{userInfo.password}</Text>
-        <TouchableOpacity onPress={()=>isLogoutUser()} >
+        <TouchableOpacity activeOpacity={0.9} onPress={()=>isLogoutUser()} >
           <Text>Çıkış Yap</Text>
         </TouchableOpacity>
       </View>
