@@ -3,7 +3,7 @@ import { View, Text,TouchableOpacity,StyleSheet, Dimensions } from 'react-native
 
 export default function SubmitButton({butonPress}) {
     return (
-    <TouchableOpacity style={styles.pageButton} onPress={butonPress} >
+    <TouchableOpacity activeOpacity={0.9} style={styles.pageButton} onPress={butonPress} >
         <Text style={styles.buttonText}>Oturum Açın</Text>
     </TouchableOpacity>
     )

@@ -5,12 +5,12 @@ import Icon from "react-native-vector-icons/Ionicons"
 export default function HeaderBackLayout({butonPress,butonPressRight,butonColor,pageName}) {
     return (
     <View style={styles.container} >
-        <TouchableOpacity style={styles.buttonStyle} onPress={butonPress} >
+        <TouchableOpacity activeOpacity={0.9} style={styles.buttonStyle} onPress={butonPress} >
             <Icon name="chevron-back-outline" size={30} color={butonColor?butonColor:"#fff" }/> 
         </TouchableOpacity>
         <Text style={
             [styles.pageNameStyle,{color:butonColor?butonColor:"#fff", }]}>{pageName}</Text>
-        <TouchableOpacity style={styles.buttonStyle} onPress={butonPressRight} >
+        <TouchableOpacity activeOpacity={0.9}style={styles.buttonStyle} onPress={butonPressRight} >
             <Icon name="help-circle-outline" size={30} color={butonColor?butonColor:"#fff" }/> 
         </TouchableOpacity>
     </View>
