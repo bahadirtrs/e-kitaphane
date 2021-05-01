@@ -9,7 +9,6 @@ let isRefreshing = false
 let failedQueue = []
 
 const RequestManager = options => {
- 
   const axiosInstance = axios.create({
     baseURL: BASE_URL,
     timeout: 60000,
@@ -106,6 +105,15 @@ const getRefreshedToken = async refreshToken => {
     }
   } catch (e) {
     throw new Error(e)
+  }
+}
+
+export const getToken = async() =>{
+  try {
+    const getToken=await RNSecureStorage.get("access_token")
+      return getToken
+  } catch (error) {
+      throw new Error(error)
   }
 }
 

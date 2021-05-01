@@ -1,22 +1,23 @@
 import React from 'react'
-import { View, Dimensions,StyleSheet,ActivityIndicator } from 'react-native'
+import { View, Dimensions,StyleSheet,ActivityIndicator,Text } from 'react-native'
 
-export default function BeingIndicator() {
+export default function BeingIndicator({title=''}) {
     return (
     <View style={{ zIndex:1, backgroundColor: 'transparent', height:Dimensions.get('screen').height,  width:Dimensions.get('screen').width, justifyContent:'center',alignItems:'center'}} >
         <View style={styles.activityStyle} >
             <ActivityIndicator color='#fff' size="large" />
+            <Text style={styles.title}>{title}</Text>
         </View>
      </View>
     )
 }
 const styles = StyleSheet.create({
     activityStyle:{ 
+        padding:10,
         backgroundColor:'#00000090', 
         justifyContent:'center',
         alignItems:'center', 
-        width:100, 
-        height:80,
+        width:150, 
         borderRadius:8,
         shadowColor: "#000",
       shadowOffset: {
@@ -26,6 +27,12 @@ const styles = StyleSheet.create({
       shadowOpacity: 0.1,
       shadowRadius: 2,
       elevation: 0,
-  
-      },
+    },
+    title:{
+        textAlign:'center',
+        paddingVertical:5,
+        fontSize:12,
+        fontFamily:'GoogleSans-Regular',
+        color:'#fff'
+    }
 })

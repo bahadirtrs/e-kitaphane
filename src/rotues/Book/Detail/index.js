@@ -1,16 +1,45 @@
-import React from "react"
-import { Dimensions, ScrollView, StyleSheet, View,Alert } from "react-native"
+import React,{useEffect, useState,useMemo} from "react"
+import { Dimensions, ScrollView, StyleSheet, View,Alert,Text } from "react-native"
 import { BookCover, BookInfo } from "../../../components/book"
 import { BuyButton } from "../../../components/buttons"
 import { numberFormat } from "../../../utils/utils"
 import PageHeaderBackLayout from '../../../components/Layout/PageHeaderBackLayout'
 import { SafeAreaView } from "react-native"
+import RNSecureStorage from "rn-secure-storage"
+import {getToken} from '../../../utils/requestManager'
+import BuyProduct from '../../../utils/buyProduct'
+import BottomLogInModal from '../../../components/Modals/BottomLogInModal'
 
 export default function BookDetailScreen({ navigation, route }) {
   const product = route.params.item
   const sharedKey = route.params.sharedKey
+  const [token, setToken] = useState(null)
+  const [islogInModalVisible, setlogInVisible] = useState(false)
+
+  useEffect(() => {
+    getToken()
+    .then(res => {
+      setToken(res)
+      console.log(res)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }, [])
+
+  const tokenControlRedirect = ()=>{
+    if(token!==null){
+      BuyProduct()
+    }else{
+      setlogInVisible(true)
+    }
+  }
+  const closeLogInModal = ()=>{
+    setlogInVisible(false)
+    navigation.push('LogIn')
+  }
   return (
-    <View style={{ flex: 1, backgroundColor: "#F3F4F6" }}>
+    <View style={{flex: 1, backgroundColor: "#F3F4F6"}}>
       <SafeAreaView backgroundColor={'#f1f1f1'} />
       <PageHeaderBackLayout 
         butonColor={'#118ab2'} 
@@ -21,6 +50,7 @@ export default function BookDetailScreen({ navigation, route }) {
       <ScrollView contentContainerStyle={styles.scrollView}>
         <View style={styles.bookCoverArea}>
           <BookCover sharedKey={sharedKey} id={product.id} imageURI={product?.cover_image} />
+          <View style={{width:Dimensions.get('screen').width, height:1, backgroundColor:token?'#118ab260':'#e6394660'}} />
         </View>
         <View style={styles.bookDetails}>
           <BookInfo
@@ -34,9 +64,18 @@ export default function BookDetailScreen({ navigation, route }) {
             preview={product?.preview_pdf}
           />
         </View>
+        <BottomLogInModal 
+          visible={islogInModalVisible}  
+          setVisible={()=> setlogInVisible(false)}
+          redirectButton={()=>closeLogInModal()}
+          />
       </ScrollView>
       <View style={styles.readBuyButtonArea}>
-        <BuyButton onPress={() => {Alert.alert("Kitap Satın Alınamadı", "Market hesabı ile bağlantı kurulamıyor." )}} text="Hemen satın al" price={numberFormat(product?.price) + " TL"} />
+        <BuyButton 
+          onPress={() => tokenControlRedirect()} 
+          text="Hemen satın al" 
+          price={numberFormat(product?.price) + " TL"} 
+        />
       </View>
     </View>
   )

@@ -26,7 +26,8 @@ const styles = StyleSheet.create({
         justifyContent:'space-between',
         alignItems:'center', 
         paddingHorizontal:10, 
-        paddingVertical:0
+        paddingVertical:0,
+        margin:0
     },
     buttonStyle:{ 
         flexDirection:'row', 
@@ -35,8 +36,11 @@ const styles = StyleSheet.create({
     },
     buttonText:{
         fontFamily:'GoogleSans-Medium', 
-        fontSize:16, 
-        paddingLeft:15
+        fontSize:14, 
+        paddingLeft:15,
+        minWidth:'80%',
+        maxWidth:'80%',
+        textAlign:'left'
     },
     saveButton:{ 
         flexDirection:'row', 
