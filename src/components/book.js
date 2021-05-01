@@ -25,7 +25,7 @@ const BookCover = ({ sharedKey, id, imageURI }) => {
   )
 }
 
-const BookInfo = ({ sharedKey, id, title, author, summary, totalPages, releaseDate, preview }) => {
+const BookInfo = ({ sharedKey, id, title, author, summary, totalPages, releaseDate, preview,pageNumber }) => {
   const { push } = useNavigation()
   return (
     <View style={styles.bookInfo}>
@@ -38,9 +38,6 @@ const BookInfo = ({ sharedKey, id, title, author, summary, totalPages, releaseDa
             <Text style={styles.bookAuthor}>{author}</Text>
           </View>
         </View>
-        <View>
-        <Icon name="bookmark-outline" color={"#333"} size={35} />
-        </View>
       </View>
       <View style={styles.bookSmallDetails}>
         {totalPages ? (
@@ -51,12 +48,19 @@ const BookInfo = ({ sharedKey, id, title, author, summary, totalPages, releaseDa
         ) : undefined}
         {releaseDate ? (
           <View style={styles.bookSmallDetailsItem}>
-            <Text style={styles.bookSmallDetailsItemTitle}>Yayın Tarihi {id} </Text>
+            <Text style={styles.bookSmallDetailsItemTitle}>Yayın Tarihi</Text>
             <Text style={styles.bookSmallDetailsItemContent}>{releaseDate}</Text>
           </View>
         ) : undefined}
       </View>
       <Text style={styles.bookDescription}>{summary}</Text>
+      {pageNumber>0
+      ? <View style={{flexDirection:'row', alignItems:'center'}} >
+          <Icon name="bookmark-outline" size={18} color="#118ab2" />
+          <Text style={{fontFamily:'GoogleSans-Regular', color:'#666', paddingVertical:5}}> En son {pageNumber}. sayfayı kaydettiniz.</Text>
+        </View>
+      :null
+      } 
       {preview ? (
         <Pressable
           onPress={() => push("Reader", { id: id, type: "preview", preview: preview, title: title })}
@@ -83,7 +87,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 3,
     shadowRadius: 3,
-    elevation: 4,
+    elevation: 0,
     borderRadius: 8,
     borderWidth:1,
     borderColor:'#ddd'

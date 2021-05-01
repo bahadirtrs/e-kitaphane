@@ -50,8 +50,6 @@ useEffect(() => {
     setButtonClick(false)
   }
 }, [email,name,lastName,password,passwordRepeat,checkbox])
-
-
   const WarningStatus= ()=>{
     setInfoColor('#e63946')
     setWarning('Lütfen gerekli tüm alanları doldurunuz.')
@@ -90,7 +88,7 @@ useEffect(() => {
         password_confirmation:passwordRepeat
       };
       await axios.post(`${BASE_URL+endpoints.register.path}`, data)
-        .then(response => alert(response.data.message));
+        .then(response => console.log(response.data.message));
         setActivity(false),setInfoColor('#43aa8b')
         setWarning('Kaydınız Başarıyla oluşturuldu. Oturum açılıyor')
         setTimeout(() => {

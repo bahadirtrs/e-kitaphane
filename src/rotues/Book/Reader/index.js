@@ -4,7 +4,7 @@ import Pdf from "react-native-pdf"
 import Icon from "react-native-vector-icons/Ionicons"
 import PageHeaderBackLayout from '../../../components/Layout/PageHeaderBackLayout'
 import BeingIndicator from '../../../components/Indicator/BeingIndicator'
-import { StyleSheet,View,Text,FlatList,StatusBar,Alert,Switch } from "react-native"
+import { StyleSheet,View,Text,FlatList,StatusBar,Alert } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { BASE_URL } from "../../../utils/constants"
 import { TouchableOpacity } from "react-native-gesture-handler"
@@ -34,7 +34,7 @@ export default function ReaderScreen({ navigation, route }) {
     const source = { uri: BASE_URL +"api/show-preview/" + route.params.id, cache: true }
 
   const getItemLayout = (data, index) => (
-    {length: 65, offset: (65 * index)-Dimensions.get('screen').width/2, index }
+    {length: 68, offset: (68 * index)-Dimensions.get('screen').width/2, index }
   )
   const scrollToItem = (res) => {
     let randomIndex = res;
@@ -155,7 +155,7 @@ export default function ReaderScreen({ navigation, route }) {
     />
     {isPageControllerHide ?
       <View style={[styles.numberCurrent]}>
-        <View style={{  position:'absolute', bottom:130,width:100, justifyContent:'center', alignItems:'center', backgroundColor:'#00000050', borderRadius:5}} >
+        <View style={{  position:'absolute', bottom:150,width:100, justifyContent:'center', alignItems:'center', backgroundColor:'#00000050', borderRadius:5}} >
           <Text style={styles.numberCurrentText} > {numberCurrent}/{numberofPages} </Text>
         </View>
         <View style={{ flexDirection:'row', justifyContent:'flex-start',alignItems:'center', padding:5}} >
@@ -169,19 +169,18 @@ export default function ReaderScreen({ navigation, route }) {
           }
           <Text style={{fontFamily:'GoogleSans-Regular',color:'#555', fontSize:12}}> Kaldığım sayfayı otomatik olarak kaydet </Text>
         </View>
-        <View style={{flexDirection:'row', alignItems:'center'}} >
+        <View style={{ width:Dimensions.get('screen').width, flexDirection:'column',justifyContent:'center', alignItems:'center'}} >
           <FlatList
-            style={{ width:'100%'}}
+            style={{ width:'100%',}}
             horizontal={true}
             showsHorizontalScrollIndicator={false}
-
             ref={(ref) => {flatListRef=ref}}
             keyExtractor={item => item}
             getItemLayout={getItemLayout}
             data={getData(numberofPages)}
             renderItem={({ item, index}) => (
-              <TouchableOpacity activeOpacity={0.9} onPress={()=>setNumberCurrent(Number(item))} style={{  backgroundColor:'#fff', width:65, height:90, borderColor: item==numberCurrent?'#118ab2':'#ccc', borderWidth:1, margin:2, borderRadius:5}} >
-                <View style={{zIndex:1, width:65, height:90, backgroundColor:'#118ab201', position:'absolute', justifyContent:'center', alignItems:'center'}}>
+              <TouchableOpacity activeOpacity={0.9} onPress={()=>setNumberCurrent(Number(item))} style={{width:Dimensions.get('screen').width,  backgroundColor:'#fff', width:65, height:90, borderColor: item==numberCurrent?'#118ab2':'#ccc', borderWidth:1, margin:2, borderRadius:5, justifyContent:'center', alignItems:'center'}} >
+                <View style={{width:Dimensions.get('screen').width,  zIndex:1, width:65, height:90, backgroundColor:'#118ab201', position:'absolute', justifyContent:'center', alignItems:'center'}}>
                   <Text style={{fontFamily:'GoogleSans-Regular', color:'#333', fontSize:12}}>{item}</Text>
                 </View>
               </TouchableOpacity>
@@ -190,7 +189,7 @@ export default function ReaderScreen({ navigation, route }) {
         </View>
         <View style={{flexDirection:'row', justifyContent:'space-around', width:'100%', paddingVertical:10, }} ></View>
       </View>
-      :<View style={{ position:'absolute', bottom:50, justifyContent:'center', alignItems:'center', width:Dimensions.get('screen').width }} >
+      :<View style={{ position:'absolute', bottom:60, justifyContent:'center', alignItems:'center', width:Dimensions.get('screen').width }} >
         <View style={{ width:100, justifyContent:'center', alignItems:'center', backgroundColor:'#00000050', borderRadius:5}} >
           <Text style={styles.numberCurrentText} > {numberCurrent}/{numberofPages} </Text>
         </View>
@@ -243,3 +242,4 @@ const styles = StyleSheet.create({
      
   }
 })
+

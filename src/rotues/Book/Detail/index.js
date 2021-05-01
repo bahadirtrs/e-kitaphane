@@ -6,6 +6,7 @@ import { numberFormat } from "../../../utils/utils"
 import PageHeaderBackLayout from '../../../components/Layout/PageHeaderBackLayout'
 import { SafeAreaView } from "react-native"
 import RNSecureStorage from "rn-secure-storage"
+import AsyncStorage from '@react-native-community/async-storage';
 import {getToken} from '../../../utils/requestManager'
 import BuyProduct from '../../../utils/buyProduct'
 import BottomLogInModal from '../../../components/Modals/BottomLogInModal'
@@ -15,6 +16,7 @@ export default function BookDetailScreen({ navigation, route }) {
   const sharedKey = route.params.sharedKey
   const [token, setToken] = useState(null)
   const [islogInModalVisible, setlogInVisible] = useState(false)
+  const [isPageNumber, setPageNumber] = useState(0)
 
   useEffect(() => {
     getToken()
@@ -27,6 +29,13 @@ export default function BookDetailScreen({ navigation, route }) {
     })
   }, [])
 
+  const PageNumber = async() =>{
+    await AsyncStorage.getItem(JSON.stringify(product.id)).then(num =>{
+      if(num!==null){
+        setPageNumber(num)
+      }
+    })
+  }
   const tokenControlRedirect = ()=>{
     if(token!==null){
       BuyProduct()
@@ -54,6 +63,7 @@ export default function BookDetailScreen({ navigation, route }) {
         </View>
         <View style={styles.bookDetails}>
           <BookInfo
+            pageNumber={isPageNumber}
             sharedKey={sharedKey}
             id={product?.id}
             title={product?.title}

@@ -13,7 +13,8 @@ import Icon from "react-native-vector-icons/Ionicons"
 import Logom from '../../components/logo'
 import RequestManager from "../../utils/requestManager"
 import PleaseWait from "../../components/pleaseWait";
-import RNSecureStorage from "rn-secure-storage"
+import RNSecureStorage from "rn-secure-storage";
+import Activator from '../../components/Indicator/Activator'
 
 const categoriesIcon = {
   0:'earth-outline',
@@ -76,7 +77,7 @@ export default function HomeScreen({ navigation }){
   }, [getCategories])
 
   if (fetching) {
-    return <PleaseWait title={'Uygulama başlatılıyor...'} />
+    return <Activator title={'Uygulama başlatılıyor...'} />
   }else{
     return (
       <><SafeAreaView/>
