@@ -1,6 +1,7 @@
 import React from 'react'
 import {View, Dimensions, TouchableOpacity,Text,StyleSheet } from 'react-native'
 import Icon from "react-native-vector-icons/Ionicons"
+
 export default function PageHeaderBackLayout({butonPress,butonColor,title,backgrounColor,type, pageSave}) {
     return (
     <View style={[styles.container,{backgroundColor:backgrounColor}]} >

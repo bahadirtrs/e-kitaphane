@@ -1,6 +1,8 @@
 import React,{useState,useMemo, useEffect} from "react"
 import Icon from "react-native-vector-icons/Ionicons"
-import { BASE_URL,endpoints } from "../../utils/constants"
+import { BASE_URL,endpoints, CLIENT_ID, CLIENT_SECRET} from "../../utils/constants"
+import { storeTokens } from "../../utils/utils";
+import AsyncStorage from '@react-native-community/async-storage';
 import { SafeAreaView } from "react-native"
 import { TouchableOpacity } from "react-native"
 import { Text, View,StyleSheet,StatusBar,Dimensions,ScrollView  } from "react-native"
@@ -24,12 +26,12 @@ export default function SingIn({navigation}) {
       headerShown: false,
     })
   }, [navigation])
-  const [name, setName] = useState("")
-  const [lastName, setLastName] = useState("")
-  const [email, setemail] = useState("")
-  const [password, setpassword] = useState("")
-  const [passwordRepeat, setpasswordRepeat] = useState("")
-  const [checkbox, setCheckbox] = useState(false)
+  const [name, setName] = useState("Test")
+  const [lastName, setLastName] = useState("Test")
+  const [email, setemail] = useState("sbt0013w@gmail.com")
+  const [password, setpassword] = useState("12345678")
+  const [passwordRepeat, setpasswordRepeat] = useState("12345678")
+  const [checkbox, setCheckbox] = useState(true)
   const [buttonClick, setButtonClick] = useState(false)
   const [warning, setWarning] = useState("null")
   const [infoColor, setInfoColor] = useState('#e63946')
@@ -38,7 +40,6 @@ export default function SingIn({navigation}) {
   const [passwordHide, setPasswordHide] = useState(true)
   const [activity, setActivity] = useState(false)
   const [helpVisible, setHelpVisible] = useState(false)
-
 
 useEffect(() => {
   setWarning('null')
@@ -72,18 +73,10 @@ useEffect(() => {
         if(password==passwordRepeat && passwordRepeat.length>5){
           if(checkbox){
             CreateAccount()
-          }else{
-            setWarning('Lütfen sözleşmeleri kabul edin')
-          }
-        }else{
-          setWarning('Şifre alanını kontrol ediniz.')
-        }
-      }else{
-        setWarning('Lüften geçerli bir email adresi giriniz')
-      }
-    }else{
-      setWarning('Adı Soyad alanlarını kontrol ediniz.')
-    }
+          }else{setWarning('Lütfen sözleşmeleri kabul edin')}
+        }else{setWarning('Şifre alanını kontrol ediniz.')}
+      }else{setWarning('Lüften geçerli bir email adresi giriniz')}
+    }else{setWarning('Adı Soyad alanlarını kontrol ediniz.')}
   }
   
   const CreateAccount = async()=>{
@@ -98,19 +91,56 @@ useEffect(() => {
       };
       await axios.post(`${BASE_URL+endpoints.register.path}`, data)
         .then(response => alert(response.data.message));
-        setActivity(false)
-        setInfoColor('#43aa8b')
-        setWarning('Kaydınız Başarıyla oluşturuldu. Anasayfaya yönlendiriliyorsunuz')
+        setActivity(false),setInfoColor('#43aa8b')
+        setWarning('Kaydınız Başarıyla oluşturuldu. Oturum açılıyor')
         setTimeout(() => {
-          navigation.push('Anasayfa')
+          isLoginAccount()
         }, 3000);
     } catch (error) {
-        setActivity(false)
-        setInfoColor('#e63946')
-        setWarning("İşleminiz sırasında bir hata oluştu.")
-        
+        setActivity(false),setInfoColor('#e63946')
+        setWarning(error.message )
     }
   }
+
+  const isLoginAccount = async()=>{
+    setActivity(true)
+    try {
+      let data = { 
+        grant_type: "password",
+        username:email,
+        password:password,
+        client_id:CLIENT_ID,
+        client_secret:CLIENT_SECRET,
+        scope: "*",
+      };
+      await axios.post(`${BASE_URL+endpoints.login.path}`, data)
+        .then(response => {
+          setActivity(false)
+          saveToken(response.data);
+        });
+    } catch (error) {
+      if(error){
+      setActivity(false)
+      setWarning("Giriş yapılamadı. Lütfen bilgilerinizi kontrol ediniz.")}
+    }
+  }
+
+  const saveToken = async(data) => {
+    const { access_token, refresh_token } = data
+    await storeTokens(access_token, refresh_token);
+    await AsyncStorage.getItem('token').then(token =>{
+      if(token!==null){
+        AsyncStorage.removeItem("token");
+      }
+        AsyncStorage.setItem('token', access_token);
+    });
+        setInfoColor('#43aa8b')
+        setWarning('Başarıyla oturum açıldı. Yönlendiriliyorsunuz.')
+        setTimeout(() => {
+          navigation.replace('Anasayfa');
+        }, 4000);
+  }
+  
   return (
     <View>
     {activity?<BeingIndicator/>:null}
