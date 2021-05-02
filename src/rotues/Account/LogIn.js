@@ -96,7 +96,7 @@ return (
   <View>
     {activity?<BeingIndicator/>:null}
     <View style={{position:'absolute'}} >
-    <StatusBar backgroundColor={'#f1f1f1'}/>
+    <StatusBar backgroundColor={'#1d3557'}/>
     <SafeAreaView/>
       <HeaderBackLayout 
         butonColor={'#fff'} 
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     left:0,
     borderRadius: 5,
     marginVertical: 40,
-    backgroundColor: "#118ab2",
+    backgroundColor: "#1d3557",
     alignItems: "center",
     justifyContent: "center"
   },

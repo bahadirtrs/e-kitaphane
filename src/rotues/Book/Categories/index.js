@@ -25,7 +25,7 @@ export default function BookCategories({ navigation, route }) {
       <SafeAreaView backgroundColor={'#fff'} />
       <StatusBar backgroundColor={'#fff'}/>
       <PageHeaderBackLayout 
-        butonColor={'#118ab2'} 
+        butonColor={'#1d3557'} 
         butonPress={()=>navigation.goBack()}
         title={product?.title}
         backgrounColor={'#fff'}

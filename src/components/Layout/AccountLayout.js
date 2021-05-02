@@ -6,7 +6,7 @@ export default function AccountLayout() {
         <View 
              style={{
                  position:'absolute',
-                 backgroundColor:'#118ab2',
+                 backgroundColor:'#1d3557',
                  top:-200,
                  left:-50,
                  width:Dimensions.get('screen').width*2,

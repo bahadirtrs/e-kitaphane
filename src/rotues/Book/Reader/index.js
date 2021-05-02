@@ -9,7 +9,6 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import { BASE_URL } from "../../../utils/constants"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { Dimensions } from "react-native"
-let pageNumber=0;
 
 function getData(number) {
   //sayfa sayısı kadar görünüm oluşturma fonksiyonu
@@ -19,7 +18,7 @@ function getData(number) {
   }
   return data;
 }
-
+let pageNumber=0;
 export default function ReaderScreen({ navigation, route }) {
   React.useLayoutEffect(() => {
     navigation.setOptions({headerShown: false})
@@ -72,7 +71,7 @@ export default function ReaderScreen({ navigation, route }) {
       if(numberofPages!==0){
         setActivity(false)
       }
-    },[numberofPages])
+    })
   
     const fadeIn = () => {
       // Alt barın görünme animasyonu
@@ -202,23 +201,25 @@ export default function ReaderScreen({ navigation, route }) {
 
   return (
   <>
-  {activity ?<BeingIndicator title={'Lüften bekleyiniz.Kitap yükleniyor'} />:null}
     <View style={styles.container}> 
       {isPageControllerHide ?
-        <SafeAreaView style={{ zIndex:1, position:'absolute', backgroundColor:'#457b9d', paddingBottom:0, paddingTop:5}}>
-          <StatusBar barStyle="light-content" backgroundColor={'#457b9d'}/>
+        <SafeAreaView style={{ zIndex:1, position:'absolute', backgroundColor:'#1d3557', paddingBottom:0, paddingTop:5}}>
+          <StatusBar barStyle="light-content" backgroundColor={'#1d3557'}/>
           <PageHeaderBackLayout 
             type={'pdf'}
             butonColor={'#fff'} 
             textColor={'#fff'}
             butonPress={()=>navigation.goBack()}
             title={route.params.title}
-            backgrounColor={'#457b9d'}
+            backgrounColor={'#1d3557'}
             pageSave={()=>PageSave()}
             deleteNumber={()=>StrongeNumberDelete()}
             />  
         </SafeAreaView>
     :null}
+        { 
+        //activity ?<BeingIndicator title={'Lüften bekleyiniz.Kitap yükleniyor'} />:null
+        }
     <Pdf
       source={source}
       page={numberCurrent}
@@ -262,7 +263,7 @@ export default function ReaderScreen({ navigation, route }) {
         <View style={{width:Dimensions.get('screen').width, marginBottom:10, backgroundColor:'#eee', flexDirection:'row', justifyContent:'center',alignItems:'center', padding:5}} >
           {isEnabled
           ? <TouchableOpacity onPress={()=>itemTrue()} >
-              <Icon name="checkbox-outline" size={20} color="#118ab2" />
+              <Icon name="checkbox-outline" size={20} color="#1d3557" />
             </TouchableOpacity>
           : <TouchableOpacity onPress={()=>itemTrue()} >
               <Icon name="square-outline" size={20} color="#555" />
@@ -280,8 +281,8 @@ export default function ReaderScreen({ navigation, route }) {
             getItemLayout={getItemLayout}
             data={getData(numberofPages)}
             renderItem={({ item, index}) => (
-              <TouchableOpacity activeOpacity={0.9} onPress={()=>setNumberCurrent(Number(item))} style={{width:Dimensions.get('screen').width,  backgroundColor:'#fff', width:65, height:90, borderColor: item==numberCurrent?'#118ab2':'#ccc', borderWidth:item==numberCurrent?3:1, marginHorizontal:10, marginVertical:5, borderRadius:5, justifyContent:'center', alignItems:'center'}} >
-                <View style={{width:Dimensions.get('screen').width,  zIndex:1, width:65, height:90, backgroundColor:'#118ab201', position:'absolute', justifyContent:'center', alignItems:'center'}}>
+              <TouchableOpacity activeOpacity={0.9} onPress={()=>setNumberCurrent(Number(item))} style={{width:Dimensions.get('screen').width,  backgroundColor:'#fff', width:65, height:90, borderColor: item==numberCurrent?'#1d3557':'#ccc', borderWidth:item==numberCurrent?3:1, marginHorizontal:10, marginVertical:5, borderRadius:5, justifyContent:'center', alignItems:'center'}} >
+                <View style={{width:Dimensions.get('screen').width,  zIndex:1, width:65, height:90, backgroundColor:'#1d355701', position:'absolute', justifyContent:'center', alignItems:'center'}}>
                   <Text style={{fontFamily:'GoogleSans-Regular', color:'#333', fontSize:14}}>{item}</Text>
                 </View>
               </TouchableOpacity>

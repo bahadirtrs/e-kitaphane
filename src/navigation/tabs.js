@@ -26,7 +26,7 @@ const Tabs = () => {
         <Tab.Navigator
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ focused }) => {
-                    const tintColor = focused ? '#118ab2' : '#333';
+                    const tintColor = focused ? '#1d3557' : '#333';
 
                     switch (route.name) {
                         case "Anasayfa":

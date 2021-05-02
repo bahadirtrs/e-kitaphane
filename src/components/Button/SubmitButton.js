@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
         width:Dimensions.get('screen').width*0.8,
         alignItems:'center',
         padding:10,
-        backgroundColor:'#118ab2',
+        backgroundColor:'#1d3557',
         margin:5,
         borderRadius:20
     },

@@ -146,7 +146,7 @@ useEffect(() => {
     <SafeAreaView/>
     <StatusBar backgroundColor={'#f1f1f1'}/>
       <HeaderBackLayout 
-          butonColor={'#118ab2'} 
+          butonColor={'#1d3557'} 
           butonPress={()=>navigation.goBack()}
           butonPressRight={()=>setHelpVisible(true)}
           pageName={''}
@@ -178,7 +178,7 @@ useEffect(() => {
             <View style={{flexDirection:'row', justifyContent:'flex-start', alignItems:'center', paddingTop:5}} >
               { checkbox 
               ?<TouchableOpacity activeOpacity={0.9} onPress={()=>setCheckbox(!checkbox)} >
-                <Icon name="checkmark-circle-outline" size={30} color="#118ab2" />
+                <Icon name="checkmark-circle-outline" size={30} color="#1d3557" />
               </TouchableOpacity>
               :
               <TouchableOpacity activeOpacity={0.9} onPress={()=>setCheckbox(!checkbox)} >
@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
     marginVertical:20,
     paddingHorizontal:20,
     paddingVertical:10,
-    backgroundColor:'#118ab2',
+    backgroundColor:'#1d3557',
     borderRadius:10
    },
 

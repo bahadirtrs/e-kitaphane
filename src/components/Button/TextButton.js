@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
         textAlign:'center',
     },
     redirectText:{
-        color:'#118ab2',
+        color:'#1d3557',
         fontFamily:'GoogleSans-Medium',
         fontSize:15,
         textAlign:'center',

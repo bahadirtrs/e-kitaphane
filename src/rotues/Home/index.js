@@ -34,7 +34,9 @@ export default function HomeScreen({ navigation }){
   const [token, setToken] = useState(" ")
   
   const hideSplashScreen = useCallback(() => {
-    SplashScreen.hide()
+    setTimeout(() => {
+      SplashScreen.hide()   
+    }, 3000);
   },[])
 
   const Token = async() =>{
@@ -222,4 +224,5 @@ const styles = StyleSheet.create({
     elevation: 2,
   }
 })
+
 

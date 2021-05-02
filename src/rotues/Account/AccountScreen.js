@@ -19,7 +19,7 @@ export default function AccountScreen({navigation}) {
     return (
         <View style={styles.container} >
             <SafeAreaView/>
-            <StatusBar backgroundColor={'#118ab2'} />
+            <StatusBar backgroundColor={'#1d3557'} />
             <AccountLayout/>
             <View style={{justifyContent:'space-between', alignItems:'center'}} > 
             <HeaderBackLayout 

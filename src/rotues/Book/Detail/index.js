@@ -52,10 +52,10 @@ export default function BookDetailScreen({ navigation, route }) {
     navigation.push('LogIn')
   }
   return (
-    <View style={{flex: 1, backgroundColor: "#F3F4F6"}}>
+    <View style={{flex: 1, backgroundColor: "#1d3557"}}>
       <SafeAreaView backgroundColor={'#f1f1f1'} />
       <PageHeaderBackLayout 
-        butonColor={'#118ab2'} 
+        butonColor={'#1d3557'} 
         butonPress={()=>navigation.goBack()}
         title={route.params.item.title}
         backgrounColor={'#f1f1f1'}
@@ -63,7 +63,7 @@ export default function BookDetailScreen({ navigation, route }) {
       <ScrollView contentContainerStyle={styles.scrollView}>
         <View style={styles.bookCoverArea}>
           <BookCover sharedKey={sharedKey} id={product.id} imageURI={product?.cover_image} />
-          <View style={{width:Dimensions.get('screen').width, height:1, backgroundColor:token?'#118ab260':'#e6394660'}} />
+          <View style={{width:Dimensions.get('screen').width, height:1, backgroundColor:token?'#1d355760':'#e6394660'}} />
         </View>
         <View style={styles.bookDetails}>
           <BookInfo

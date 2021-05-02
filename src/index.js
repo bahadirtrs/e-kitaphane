@@ -8,6 +8,7 @@ import MyLibrary from './rotues/Library/MyLibrary'
 import BookDetailScreen from "./rotues/Book/Detail"
 import BookCategories from "./rotues/Book/Categories"
 import ReaderScreen from "./rotues/Book/Reader"
+import Splashscreen from './rotues/Splashscreen'
 import { createSharedElementStackNavigator } from "react-navigation-shared-element"
 import SearchScreen from "./rotues/Search"
 import { createStackNavigator, TransitionPresets } from "@react-navigation/stack"
@@ -32,11 +33,11 @@ const RootStack = createStackNavigator()
 function MainStackScreen() {
   return (
     <MainStack.Navigator
-      initialRouteName="Home"
+      initialRouteName="Anasayfa"
       mode="modal"
       screenOptions={{
         headerStyle: {
-          backgroundColor: "#FFF",
+          backgroundColor: "red",
         },
         useNativeDriver: true,
         gestureEnabled: false,
@@ -52,6 +53,7 @@ function MainStackScreen() {
         }),
       }}>
       <MainStack.Screen name="Anasayfa" component={Tab} options={{headerShown: false}}/>
+      <MainStack.Screen name="Splashscreen" component={Splashscreen} options={{headerShown: false}}/>
       <MainStack.Screen name="Account" component={AccountScreen} />
       <MainStack.Screen name="LogIn" component={LogIn} />
       <MainStack.Screen name="UserInfo" component={UserInfo} />

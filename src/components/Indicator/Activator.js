@@ -46,7 +46,7 @@ export default class ActivatorActivator extends Component {
             margin: 5,
             borderWidth: 5,
             borderColor: "#ccc",
-            borderBottomColor: "#118ab2",
+            borderBottomColor: "#1d3557",
             borderRadius: 50,
             justifyContent: "flex-start"
           }}
