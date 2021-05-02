@@ -4,15 +4,15 @@ import Pdf from "react-native-pdf"
 import Icon from "react-native-vector-icons/Ionicons"
 import PageHeaderBackLayout from '../../../components/Layout/PageHeaderBackLayout'
 import BeingIndicator from '../../../components/Indicator/BeingIndicator'
-import { StyleSheet,View,Text,FlatList,StatusBar,Alert,Animated,Button } from "react-native"
+import { StyleSheet,View,Text,FlatList,StatusBar,Alert,Animated } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { BASE_URL } from "../../../utils/constants"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { Dimensions } from "react-native"
-import Activator from '../../../components/Indicator/Activator'
 let pageNumber=0;
 
 function getData(number) {
+  //sayfa sayısı kadar görünüm oluşturma fonksiyonu
   let data = [];
   for(var i=1; i<number+2; ++i){
     data.push("" + i);
@@ -24,25 +24,87 @@ export default function ReaderScreen({ navigation, route }) {
   React.useLayoutEffect(() => {
     navigation.setOptions({headerShown: false})
   }, [navigation])
-
     const [numberCurrent, setNumberCurrent] = useState(1)
     const [numberofPages, setNumberofPages] = useState(0)
-    const [continuePage, setContinuePage] = useState(0)
     const [savePage, setSavePage] = useState(0)
     const [isEnabled, setIsEnabled] = useState(false);
     const [activity, setActivity] = useState(true)
     const [isPageControllerHide, setPageControllerHide] = useState(false)
     const [isZoomActive, setZoomActive] = useState(true)
+    const SlideInLeft = useRef(new Animated.Value(0)).current;
     const source = { uri: BASE_URL +"api/show-preview/" + route.params.id, cache: true }
+  
+    useEffect(() => {
+      // Sayfaya girilince kalınan sayfa kontrolü
+      const pageNum =JSON.stringify(route.params.id)
+      const number = JSON.stringify(numberCurrent)
+      AsyncStorage.getItem(pageNum).then(item =>{
+        if(item!==null){
+          pageNumber=item;
+          AsyncStorage.getItem('autoSave').then(item =>{
+            if(item!==null){
+              if(item==='true'){
+                Contiunie(pageNumber,route.params.id)
+                setIsEnabled(false)
+              }else if(item==='false'){
+                setIsEnabled(true)
+                setNumberCurrent(Number(pageNumber));
+              }
+            }
+          })
+        }else{
+          AsyncStorage.setItem(pageNum,number ); 
+          setSavePage(number)
+        }
+      })  
+    },[])
+
+    useEffect(() => {
+      // Otomatik kaydetme checkbox değeri değiştiğinde bulunulan sayfayı asyncstronge ye atama
+      const pageNum =JSON.stringify(route.params.id)
+      const number = JSON.stringify(numberCurrent)
+      AsyncStorage.setItem(pageNum, number);
+        setSavePage(number)
+    },[isEnabled])
+
+    useEffect(() => {
+      // PDF yükleyinceye kadar Activator gösterme
+      if(numberofPages!==0){
+        setActivity(false)
+      }
+    },[numberofPages])
+  
+    const fadeIn = () => {
+      // Alt barın görünme animasyonu
+      Animated.timing(SlideInLeft, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver:false,
+      }).start();
+    };
+  
+    const fadeOut = () => {
+      // Alt barın kaybolma animasyonu
+      Animated.timing(SlideInLeft, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver:false,
+      }).start();
+    };
 
   const getItemLayout = (data, index) => (
+    // Alt bar sayfa gösteriminin kaydırma boyutu
     {length: 85, offset: (85 * index)-Dimensions.get('screen').width/1.7, index }
   )
+
   const scrollToItem = (res) => {
+    //Alt bar kaydırma animasyonu
     let randomIndex = res;
     flatListRef.scrollToIndex({animated: true, index: randomIndex});
   }
+
   const NumberOfDelete = async(params,item)=>{
+    // Giriş kaldığı sayfadan devam etme
     const pageNum =JSON.stringify(route.params.id)
     if(params=='true'){
       setSavePage(item)
@@ -55,6 +117,7 @@ export default function ReaderScreen({ navigation, route }) {
   }
 
   const StrongeNumberDelete = async()=>{
+    // Kaldığı sayfayı AsyncStronge dan temizleme
     let pageNum =JSON.stringify(route.params.id)
     Alert.alert(
       "Kaydedilen sayfa siliniyor...",'Kaydettiğiniz sayfa silinecek ve bu kitap 1.sayfadan başlatılacaktır. Bu işlemi geri alamazsınız. Onaylıyor musunuz?',
@@ -68,7 +131,9 @@ export default function ReaderScreen({ navigation, route }) {
       ]
     );
   }
+
   const Contiunie =(item,params)=>{
+    //Kalınan sayfayı uygulamaya active etme
     if(isEnabled){
       setNumberCurrent(Number(item));
     }else if(item!=='1'){
@@ -82,53 +147,18 @@ export default function ReaderScreen({ navigation, route }) {
     }
   }
  
-const ZoomActive = (scale)=>{
-  console.log(scale)
-  if(scale>1.1){
-    setZoomActive(false)
-  }else{
-    setZoomActive(true)
+  const ZoomActive = (scale)=>{
+    //PDF de zoom yapıldığında ekranı temizleme
+    console.log(scale)
+    if(scale>1.1){
+      setZoomActive(false)
+    }else{
+      setZoomActive(true)
+    }
   }
-}
 
-  useEffect(() => {
-    const pageNum =JSON.stringify(route.params.id)
-    const number = JSON.stringify(numberCurrent)
-    AsyncStorage.getItem(pageNum).then(item =>{
-      if(item!==null){
-        pageNumber=item;
-        AsyncStorage.getItem('autoSave').then(item =>{
-          if(item!==null){
-            if(item==='true'){
-              Contiunie(pageNumber,route.params.id)
-              setIsEnabled(false)
-            }else if(item==='false'){
-              setIsEnabled(true)
-              setNumberCurrent(Number(pageNumber));
-            }
-          }
-        })
-      }else{
-        AsyncStorage.setItem(pageNum,number ); 
-        setSavePage(number)
-      }
-    })  
-  }, [])
-
-  useEffect(() => {
-    const pageNum =JSON.stringify(route.params.id)
-    const number = JSON.stringify(numberCurrent)
-    AsyncStorage.setItem(pageNum, number);
-    setSavePage(number)
-  }, [isEnabled])
-
-    useEffect(() => {
-      if(numberofPages!==0){
-        setActivity(false)
-      }
-    },[numberofPages])
-  
   const itemTrue = ()=>{
+    // Otomatik kayıt etme statusu
     const pageNum =JSON.stringify(route.params.id)
     if(isEnabled)
       AsyncStorage.setItem('autoSave', 'true'); 
@@ -138,66 +168,41 @@ const ZoomActive = (scale)=>{
   }
 
   const Enable =()=>{
+    // otomatik kayıt checkbox statusu
     setIsEnabled(!isEnabled)
   }
 
   const PageSave =()=>{
+    // Kalınan sayfayı manuel kaydetme
     let pageNum =JSON.stringify(route.params.id)
     let number = JSON.stringify(numberCurrent)
     if(isEnabled){
+      //Otomatik kaydetme açıksa kullanıcıyı uyarma
       Alert.alert('Otomatik kaydeme açık', `Kaldığınız sayfa otomatik olarak kaydediliyor.`,
-        [
-          { text: "Tamam",style: "cancel", onPress: () => null  },
-        ]
-        )
+        [{ text: "Tamam",style: "cancel", onPress: () => null  },])
     }else{
+      //Otomatik kayıt kapalı ise kalınan sayfayı kaydetme
       AsyncStorage.setItem(pageNum, number); 
       setSavePage(number)
-        Alert.alert('Sayfa kaydedildi. ', `Bir sonraki ziyaretinizde ${numberCurrent}.sayfadan devam edebileceksiniz.`,
-        [
-          { text: "Tamam",style: "cancel", onPress: () => null  },
-        ]
-        )
+      Alert.alert('Sayfa kaydedildi. ', `Bir sonraki ziyaretinizde ${numberCurrent}.sayfadan devam edebileceksiniz.`,
+        [{ text: "Tamam",style: "cancel", onPress: () => null  },]
+      )
     }
-     
   }
 
   const ScreenClick = async ()=>{
+    //PDF ekranına tıklayınca alt ve üst barı kaybetme
     await setPageControllerHide(!isPageControllerHide); 
     if(isPageControllerHide){
       fadeOut()
     }else{
       fadeIn()
     }
-    
   }
 
-
-  const SlideInLeft = useRef(new Animated.Value(0)).current;
-  
-
-  const fadeIn = () => {
-    // Will change fadeAnim value to 1 in 5 seconds
-    Animated.timing(SlideInLeft, {
-      toValue: 1,
-      duration: 500,
-      useNativeDriver:false,
-    }).start();
-  };
-
-  const fadeOut = () => {
-    // Will change fadeAnim value to 0 in 3 seconds
-    Animated.timing(SlideInLeft, {
-      toValue: 0,
-      duration: 500,
-      useNativeDriver:false,
-    }).start();
-  };
-
   return (
-    <>
+  <>
   {activity ?<BeingIndicator title={'Lüften bekleyiniz.Kitap yükleniyor'} />:null}
-
     <View style={styles.container}> 
       {isPageControllerHide ?
         <SafeAreaView style={{ zIndex:1, position:'absolute', backgroundColor:'#457b9d', paddingBottom:0, paddingTop:5}}>
@@ -285,7 +290,6 @@ const ZoomActive = (scale)=>{
         </View>
         <View style={{flexDirection:'row', justifyContent:'space-around', width:'100%', paddingVertical:10, }} ></View>
       </Animated.View>
-
       {!isPageControllerHide && isZoomActive
       ? 
       <>
@@ -302,15 +306,12 @@ const ZoomActive = (scale)=>{
       </>
       : null
       }
-      
-    
     </View>
   </>
   )
 }
 
 const styles = StyleSheet.create({
-
   fadingContainer: {
     height:100,
     width:100,
@@ -365,7 +366,6 @@ const styles = StyleSheet.create({
     fontWeight:'500',
     padding:0,
     margin:2
-     
   },
   numberCurrentTextPage:{
     zIndex:2,
@@ -373,9 +373,8 @@ const styles = StyleSheet.create({
     fontSize:12,
     fontWeight:'500',
     padding:0,
-    margin:2
-     
-  }
+    margin:2,
+  },
 })
 
 

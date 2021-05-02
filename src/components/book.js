@@ -57,7 +57,12 @@ const BookInfo = ({ sharedKey, id, title, author, summary, totalPages, releaseDa
       {pageNumber>0
       ? <View style={{flexDirection:'row', alignItems:'center'}} >
           <Icon name="bookmark-outline" size={18} color="#118ab2" />
-          <Text style={{fontFamily:'GoogleSans-Regular', color:'#666', paddingVertical:5}}> En son {pageNumber}. sayfayı kaydettiniz.</Text>
+          {pageNumber==1
+          ?<Text style={{fontFamily:'GoogleSans-Regular', color:'#666', paddingVertical:5}}> Bu sayfayı en az bir defa ziyaret ettiniz.</Text>
+
+          :<Text style={{fontFamily:'GoogleSans-Regular', color:'#666', paddingVertical:5}}> En son {pageNumber}. sayfayı kaydettiniz.</Text>
+
+          }
         </View>
       :null
       } 
