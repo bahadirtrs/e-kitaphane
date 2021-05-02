@@ -29,6 +29,10 @@ export default function BookDetailScreen({ navigation, route }) {
     })
   }, [])
 
+  useEffect(() => {
+    PageNumber()
+  }, [])
+
   const PageNumber = async() =>{
     await AsyncStorage.getItem(JSON.stringify(product.id)).then(num =>{
       if(num!==null){

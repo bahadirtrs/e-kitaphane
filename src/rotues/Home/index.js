@@ -104,7 +104,7 @@ export default function HomeScreen({ navigation }){
               method: endpoints.sliders.method,
               url: endpoints.sliders.path,
               auth: endpoints.sliders.auth,
-              params: {limit:20},
+              params: {limit:5},
               headers: {
                 Accept: "application/json",
               },

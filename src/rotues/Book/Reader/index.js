@@ -9,6 +9,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import { BASE_URL } from "../../../utils/constants"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { Dimensions } from "react-native"
+import Activator from '../../../components/Indicator/Activator'
 let pageNumber=0;
 
 function getData(number) {
@@ -21,20 +22,19 @@ function getData(number) {
 
 export default function ReaderScreen({ navigation, route }) {
   React.useLayoutEffect(() => {
-    navigation.setOptions({
-      headerShown: false,
-    })
+    navigation.setOptions({headerShown: false})
   }, [navigation])
+
     const [numberCurrent, setNumberCurrent] = useState(1)
     const [numberofPages, setNumberofPages] = useState(0)
     const [continuePage, setContinuePage] = useState(0)
     const [isEnabled, setIsEnabled] = useState(false);
     const [activity, setActivity] = useState(true)
-    const [isPageControllerHide, setPageControllerHide] = useState(true)
+    const [isPageControllerHide, setPageControllerHide] = useState(false)
     const source = { uri: BASE_URL +"api/show-preview/" + route.params.id, cache: true }
 
   const getItemLayout = (data, index) => (
-    {length: 68, offset: (68 * index)-Dimensions.get('screen').width/2, index }
+    {length: 85, offset: (85 * index)-Dimensions.get('screen').width/1.7, index }
   )
   const scrollToItem = (res) => {
     let randomIndex = res;
@@ -61,6 +61,7 @@ export default function ReaderScreen({ navigation, route }) {
       );
     }
   }
+  
   useEffect(() => {
     const pageNum =JSON.stringify(route.params.id)
     AsyncStorage.getItem(pageNum).then(item =>{
@@ -103,26 +104,30 @@ export default function ReaderScreen({ navigation, route }) {
     let pageNum =JSON.stringify(route.params.id)
     let number = JSON.stringify(numberCurrent)
       AsyncStorage.setItem(pageNum, number); 
-        Alert.alert('Sayfa Kaydedildi', `Bir sonraki ziyaretinizde ${numberCurrent}.sayfadan devam edebileceksiniz.`)
+        Alert.alert('Sayfa kaydedildi. ', `Bir sonraki ziyaretinizde ${numberCurrent}.sayfadan devam edebileceksiniz.`,
+        [
+          { text: "Tamam",style: "cancel", onPress: () => null  },
+        ]
+        )
   }
 
   const ScreenClick = async ()=>{
     await setPageControllerHide(!isPageControllerHide); 
   }
-
   return (
     <>
     <View style={styles.container}> 
       {isPageControllerHide ?
-        <SafeAreaView  style={{zIndex:1, position:'absolute', backgroundColor:'#fff'}}>
-          {activity?<BeingIndicator title={'Lüften bekleyiniz.Kitap yükleniyor'} />:null}
-          <StatusBar backgroundColor={'#fff'}/>
+        <SafeAreaView style={{ zIndex:1, position:'absolute', backgroundColor:'#457b9d', paddingBottom:20, paddingTop:5}}>
+          {activity ?<BeingIndicator title={'Lüften bekleyiniz.Kitap yükleniyor'} />:null}
+          <StatusBar barStyle="light-content" backgroundColor={'#457b9d'}/>
           <PageHeaderBackLayout 
             type={'pdf'}
-            butonColor={'#118ab2'} 
+            butonColor={'#fff'} 
+            textColor={'#fff'}
             butonPress={()=>navigation.goBack()}
             title={route.params.title}
-            backgrounColor={'#fff'}
+            backgrounColor={'#457b9d'}
             pageSave={()=>PageSave()}
             />
           </SafeAreaView>
@@ -140,9 +145,8 @@ export default function ReaderScreen({ navigation, route }) {
         setNumberofPages(numberOfPages)
       }}
       onPageChanged={(page) => {
-        if(isPageControllerHide){
           scrollToItem(page)
-        }
+        
         if(isEnabled){
           let pageNum =JSON.stringify(route.params.id)
           let number = JSON.stringify(numberCurrent)
@@ -153,12 +157,12 @@ export default function ReaderScreen({ navigation, route }) {
         }
       }}
     />
-    {isPageControllerHide ?
-      <View style={[styles.numberCurrent]}>
-        <View style={{  position:'absolute', bottom:150,width:100, justifyContent:'center', alignItems:'center', backgroundColor:'#00000050', borderRadius:5}} >
+  
+      <View style={[styles.numberCurrent, {bottom:!isPageControllerHide?-250:0,}]}>
+        <View style={{  position:'absolute', bottom:170,width:100, justifyContent:'center', alignItems:'center', backgroundColor:'#00000050', borderRadius:5}} >
           <Text style={styles.numberCurrentText} > {numberCurrent}/{numberofPages} </Text>
         </View>
-        <View style={{ flexDirection:'row', justifyContent:'flex-start',alignItems:'center', padding:5}} >
+        <View style={{width:Dimensions.get('screen').width, marginBottom:10, backgroundColor:'#eee', flexDirection:'row', justifyContent:'center',alignItems:'center', padding:5}} >
           {isEnabled
           ? <TouchableOpacity onPress={()=>itemTrue()} >
               <Icon name="checkbox-outline" size={20} color="#118ab2" />
@@ -179,9 +183,9 @@ export default function ReaderScreen({ navigation, route }) {
             getItemLayout={getItemLayout}
             data={getData(numberofPages)}
             renderItem={({ item, index}) => (
-              <TouchableOpacity activeOpacity={0.9} onPress={()=>setNumberCurrent(Number(item))} style={{width:Dimensions.get('screen').width,  backgroundColor:'#fff', width:65, height:90, borderColor: item==numberCurrent?'#118ab2':'#ccc', borderWidth:1, margin:2, borderRadius:5, justifyContent:'center', alignItems:'center'}} >
+              <TouchableOpacity activeOpacity={0.9} onPress={()=>setNumberCurrent(Number(item))} style={{width:Dimensions.get('screen').width,  backgroundColor:'#fff', width:65, height:90, borderColor: item==numberCurrent?'#118ab2':'#ccc', borderWidth:item==numberCurrent?3:1, marginHorizontal:10, marginVertical:5, borderRadius:5, justifyContent:'center', alignItems:'center'}} >
                 <View style={{width:Dimensions.get('screen').width,  zIndex:1, width:65, height:90, backgroundColor:'#118ab201', position:'absolute', justifyContent:'center', alignItems:'center'}}>
-                  <Text style={{fontFamily:'GoogleSans-Regular', color:'#333', fontSize:12}}>{item}</Text>
+                  <Text style={{fontFamily:'GoogleSans-Regular', color:'#333', fontSize:14}}>{item}</Text>
                 </View>
               </TouchableOpacity>
             )}
@@ -189,12 +193,16 @@ export default function ReaderScreen({ navigation, route }) {
         </View>
         <View style={{flexDirection:'row', justifyContent:'space-around', width:'100%', paddingVertical:10, }} ></View>
       </View>
-      :<View style={{ position:'absolute', bottom:60, justifyContent:'center', alignItems:'center', width:Dimensions.get('screen').width }} >
-        <View style={{ width:100, justifyContent:'center', alignItems:'center', backgroundColor:'#00000050', borderRadius:5}} >
-          <Text style={styles.numberCurrentText} > {numberCurrent}/{numberofPages} </Text>
+      {!isPageControllerHide
+      ? <View style={{ position:'absolute', bottom:60, justifyContent:'center', alignItems:'center', width:Dimensions.get('screen').width }} >
+         <View style={{ width:100, justifyContent:'center', alignItems:'center', backgroundColor:'#00000050', borderRadius:5}} >
+           <Text style={styles.numberCurrentText} > {numberCurrent}/{numberofPages} </Text>
+          </View>
         </View>
-      </View>
+      : null
       }
+      
+    
     </View>
   </>
   )
@@ -202,7 +210,7 @@ export default function ReaderScreen({ navigation, route }) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "red",
+    backgroundColor: "#eee",
     flex: 1,
     zIndex:4,
   },
@@ -220,17 +228,24 @@ const styles = StyleSheet.create({
   },
   numberCurrent:{
     width:Dimensions.get('screen').width , 
-    backgroundColor:'#ffffff00',
+    backgroundColor:'#eee',
     bottom:0,
     position:'absolute',
-    minHeight:60,
+    minHeight:10,
     paddingTop:5,
     flexDirection:'column',
     justifyContent:'space-around',
     alignItems:'center',
-    marginBottom:10
-  
-    
+    marginBottom:0,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 4,
+      height: 2,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 3,
+    elevation: 2,
+    borderRadius:4,
   },
   numberCurrentText:{
     zIndex:2,
@@ -242,4 +257,5 @@ const styles = StyleSheet.create({
      
   }
 })
+
 
