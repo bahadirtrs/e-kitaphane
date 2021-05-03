@@ -9,11 +9,6 @@ const ENDPOINTS = {
     method: "POST",
     auth: false,
   },
-  registerfake: {
-    path: "user/singin.php",
-    method: "POST",
-    auth: false,
-  },
   refreshToken: {
     path: "oauth/token",
     method: "POST",
@@ -34,6 +29,7 @@ const ENDPOINTS = {
     method: "GET",
     auth: true,
   },
+  //
   ownedProducts: {
     path: "api/private/owned-products",
     method: "GET",

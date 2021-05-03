@@ -13,8 +13,8 @@ export default function UserInfo({navigation}) {
     const getCategories = useMemo(
         async() =>
           RequestManager({
-            method: endpoints.user.method,
-            url: endpoints.user.path,
+            method: endpoints.orders.method,
+            url: endpoints.orders.path,
             auth: false,
             headers: {
               Accept: "application/jsonsss",

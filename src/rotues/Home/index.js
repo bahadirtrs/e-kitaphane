@@ -89,13 +89,13 @@ export default function HomeScreen({ navigation }){
               <Icon name="menu-outline" size={32} color="#333" />
             </TouchableOpacity>
             <Logom/>
-            {token!==' '
+            {1===1
             ?
-            <TouchableOpacity activeOpacity={0.9}  style={{ paddingHorizontal: 12 }} onPress={() => navigation.push("UserInfo")}>
+            <TouchableOpacity activeOpacity={0.9}  style={{ paddingHorizontal: 12 }} onPress={() => navigation.push("SingIn")}>
               <Icon name="person-circle-outline" size={36} color="#555" />
             </TouchableOpacity>
-            :
-            <TouchableOpacity activeOpacity={0.9}  style={{ paddingHorizontal: 12 }} onPress={() => navigation.push("Account")}>
+            :null}{
+            <TouchableOpacity activeOpacity={0.9}  style={{ paddingHorizontal: 12 }} onPress={() => navigation.push("UserInfo")}>
               <Icon name="person-circle-outline" size={36} color="#555" />
             </TouchableOpacity>
             }

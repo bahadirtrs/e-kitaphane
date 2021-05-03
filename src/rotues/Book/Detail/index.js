@@ -17,6 +17,7 @@ export default function BookDetailScreen({ navigation, route }) {
   const [token, setToken] = useState(null)
   const [islogInModalVisible, setlogInVisible] = useState(false)
   const [isPageNumber, setPageNumber] = useState(0)
+  const [isBuyButtonText, setBuyButtonText] = useState("Hemmen satın al")
 
   useEffect(() => {
     getToken()
@@ -40,9 +41,12 @@ export default function BookDetailScreen({ navigation, route }) {
       }
     })
   }
-  const tokenControlRedirect = ()=>{
+  const tokenControlRedirect = async ()=>{
     if(token!==null){
-      BuyProduct()
+      BuyProduct(1,product.id,'PURCHASED', 'GOOGLE_PAY')
+      .then(response => {
+        console.log(response.deneme)
+       });
     }else{
       setlogInVisible(true)
     }
@@ -87,7 +91,7 @@ export default function BookDetailScreen({ navigation, route }) {
       <View style={styles.readBuyButtonArea}>
         <BuyButton 
           onPress={() => tokenControlRedirect()} 
-          text="Hemen satın al" 
+          text={isBuyButtonText}
           price={numberFormat(product?.price) + " TL"} 
         />
       </View>
