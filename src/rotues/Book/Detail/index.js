@@ -1,7 +1,7 @@
-import React,{useEffect, useState,useMemo} from "react"
-import { Dimensions, ScrollView, StyleSheet, View,Alert,Text } from "react-native"
-import { BookCover, BookInfo } from "../../../components/book"
-import { BuyButton } from "../../../components/buttons"
+import React,{useEffect, useState,useMemo, useCallback} from "react"
+import { Dimensions, ScrollView, StyleSheet, View,StatusBar,Text,Image} from "react-native"
+import { BookCover, BookInfo, BookDetails } from "../../../components/book"
+import { ReadButton } from "../../../components/buttons"
 import { numberFormat } from "../../../utils/utils"
 import PageHeaderBackLayout from '../../../components/Layout/PageHeaderBackLayout'
 import { SafeAreaView } from "react-native"
@@ -10,6 +10,12 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {getToken} from '../../../utils/requestManager'
 import BuyProduct from '../../../utils/buyProduct'
 import BottomLogInModal from '../../../components/Modals/BottomLogInModal'
+import RequestManager from "../../../utils/requestManager"
+import { endpoints,BASE_URL } from "../../../utils/constants"
+import { useFocusEffect } from '@react-navigation/native';
+import Icon from "react-native-vector-icons/Ionicons"
+import { TouchableOpacity } from "react-native"
+
 
 export default function BookDetailScreen({ navigation, route }) {
   const product = route.params.item
@@ -17,17 +23,50 @@ export default function BookDetailScreen({ navigation, route }) {
   const [token, setToken] = useState(null)
   const [islogInModalVisible, setlogInVisible] = useState(false)
   const [isPageNumber, setPageNumber] = useState(0)
-  const [isBuyButtonText, setBuyButtonText] = useState("Hemmen satın al")
+  const [allPageNumber, setAllPageNumber] = useState(0)
+  const [isBuyButtonText, setBuyButtonText] = useState("Hemen satın al")
+  const [loading, setLoading] = useState(false)
+  const [pdfUrl, setPdfUrl] = useState([])
+  const [buyStatus, setBuyStatus] = useState(false)
+  const [fetching, setFetching] = useState(false)
+
+  useFocusEffect(
+    React.useCallback(() => {
+      PageNumber()
+    }, [])
+  );
+ 
+  const getCategories = useMemo(async() =>
+  RequestManager({
+    method: endpoints.showPDF.method,
+    url: endpoints.showPDF.path +'/' +product?.id,
+    auth: false,
+    headers: {
+      Accept: "application/jsonsss",
+      Authorization:'Bearer ' +  await RNSecureStorage.get("access_token"),
+    },
+  }),
+[],)
+
+  useEffect(() => {
+    setFetching(true)
+    getCategories
+      .then(res => {
+        setPdfUrl(res)
+        setTimeout(() => {setFetching(false)}, 1000)
+      })
+      .catch(err => {
+        console.log(err)
+        setPdfUrl(false)
+      })
+  }, [getCategories])
 
   useEffect(() => {
     getToken()
     .then(res => {
-      setToken(res)
-      console.log(res)
+      setToken(res),console.log(res)
     })
-    .catch(err => {
-      console.log(err)
-    })
+    .catch(err => {console.log(err)})
   }, [])
 
   useEffect(() => {
@@ -40,13 +79,29 @@ export default function BookDetailScreen({ navigation, route }) {
         setPageNumber(num)
       }
     })
+  
+    await AsyncStorage.getItem(`${product.id}+page`).then(num =>{
+      if(num!==null){
+        setAllPageNumber(num)
+      }
+    })
   }
   const tokenControlRedirect = async ()=>{
     if(token!==null){
-      BuyProduct(1,product.id,'PURCHASED', 'GOOGLE_PAY')
-      .then(response => {
-        console.log(response.deneme)
-       });
+      const resultMessage= await BuyProduct(1,product.id,'PURCHASED', 'GOOGLE_PAY')
+      setLoading(true)
+      setBuyButtonText("Kitap satın alınıyor...")
+      setTimeout(() => {
+        setBuyButtonText(resultMessage.message)
+        setLoading(false)
+      }, 3000);
+      setTimeout(() => {
+        if(resultMessage.statusMsg){
+        setBuyButtonText("Kitabı Oku")
+        setBuyStatus(true)
+        navigation.navigate("Reader", {id: product?.id, type: "preview", preview: pdfUrl, title: product?.title });
+      }
+      }, 5000);
     }else{
       setlogInVisible(true)
     }
@@ -56,21 +111,36 @@ export default function BookDetailScreen({ navigation, route }) {
     navigation.push('LogIn')
   }
   return (
-    <View style={{flex: 1, backgroundColor: "#1d3557"}}>
-      <SafeAreaView backgroundColor={'#f1f1f1'} />
-      <PageHeaderBackLayout 
-        butonColor={'#1d3557'} 
-        butonPress={()=>navigation.goBack()}
-        title={route.params.item.title}
-        backgrounColor={'#f1f1f1'}
-        />
-      <ScrollView contentContainerStyle={styles.scrollView}>
+    <View style={{flex: 1,  backgroundColor: "#1d3557" }}>
+      <StatusBar barStyle="light-content" backgroundColor={'#1d3557'}/>
+      <SafeAreaView/>
+      <ScrollView >
+      <Image  style={styles.imageStyle} source={{uri: BASE_URL + "products/cover/" + product?.cover_image}} />
         <View style={styles.bookCoverArea}>
-          <BookCover sharedKey={sharedKey} id={product.id} imageURI={product?.cover_image} />
-          <View style={{width:Dimensions.get('screen').width, height:1, backgroundColor:token?'#1d355760':'#e6394660'}} />
+          <View style={{flexDirection:'row',justifyContent:'space-between', alignItems:'center', paddingHorizontal:10 }} >
+            <TouchableOpacity style={{padding:10}} onPress={()=>navigation.goBack()} >
+              <Icon name="chevron-back-outline" size={25} color={"#fff"}/> 
+            </TouchableOpacity>
+            <Text style={{fontSize:14, fontFamily:'GoogleSans-Medium', color:'#fff'}} >Kitap Detayları</Text>
+            <TouchableOpacity style={{padding:10}} onPress={null} >
+              <Icon name="ellipsis-horizontal-outline" size={25} color={"#fff"}/> 
+            </TouchableOpacity>
+          </View>
+          <BookCover 
+            sharedKey={sharedKey} 
+            id={product.id} 
+            imageURI={product?.cover_image} 
+          />
+          <BookDetails
+            author={product?.author}
+            release_date={product?.release_date}
+            title={product?.title}
+            page_count={product?.page_count}
+          />
         </View>
         <View style={styles.bookDetails}>
           <BookInfo
+            pdfUrl={null}
             pageNumber={isPageNumber}
             sharedKey={sharedKey}
             id={product?.id}
@@ -79,20 +149,35 @@ export default function BookDetailScreen({ navigation, route }) {
             summary={product?.summary}
             totalPages={product?.page_count}
             releaseDate={product?.release_date}
-            preview={product?.preview_pdf}
+            preview={"api/show-preview/" + product?.id}
+            pdfData={product?.preview_pdf}
           />
         </View>
         <BottomLogInModal 
           visible={islogInModalVisible}  
           setVisible={()=> setlogInVisible(false)}
           redirectButton={()=>closeLogInModal()}
-          />
+        />
       </ScrollView>
       <View style={styles.readBuyButtonArea}>
-        <BuyButton 
+        <ReadButton 
+          allPageNumber={allPageNumber}
+          buyStatus={buyStatus}
+          page={isPageNumber}
+          pageAll={allPageNumber}
+          id={product?.id}
+          loading={loading}
           onPress={() => tokenControlRedirect()} 
           text={isBuyButtonText}
           price={numberFormat(product?.price) + " TL"} 
+          bookViewPress={
+            () => navigation.navigate("Reader", {
+              id: product?.id, 
+              type: "preview", 
+              preview: pdfUrl, 
+              title: product?.title 
+            })
+          }
         />
       </View>
     </View>
@@ -101,9 +186,12 @@ export default function BookDetailScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   scrollView: {
     backgroundColor: "#FFF",
+   
   },
   bookCoverArea: {
-    backgroundColor: "#F3F4F6",
+    paddingTop:0,
+    backgroundColor: "#1d3557",
+    opacity:0.85
   },
   bookDetails: {
     backgroundColor: "#FFF",
@@ -116,5 +204,13 @@ const styles = StyleSheet.create({
     padding: 24,
     position: "absolute",
     bottom: 0,
+  },
+  imageStyle:{ 
+    opacity:0.3, 
+    position:'absolute', 
+    top:0, 
+    width:Dimensions.get('screen').width, 
+    height:'55%', 
+    backgroundColor:'#000' 
   },
 })

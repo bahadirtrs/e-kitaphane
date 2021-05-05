@@ -8,6 +8,10 @@ import BooksListItem, { BooksListItemPlaceholder } from "../../components/booksL
 import CategoryListItem from "../../components/categoryListItem"
 import PleaseWait from "../../components/pleaseWait"
 import Icon from "react-native-vector-icons/Ionicons"
+import { StatusBar } from "react-native"
+import { SafeAreaView } from "react-native"
+import HeaderBackLayout from '../../components/Layout/HeaderBackLayout'
+
 
 export default function SearchScreen({ navigation }) {
   React.useLayoutEffect(() => {
@@ -97,13 +101,19 @@ export default function SearchScreen({ navigation }) {
   }, [getCategories])
 
   return (
-    <View style={[{ paddingTop: insets.top }, styles.container]}>
-        <SearchBar
-          value={term}
-          setTermClick={()=>setTerm("")}
-          onChangeText={term => {setTerm(term)}}
-          title={'Yazarlar veya kitaplar arasında ara'}
-        />
+    <View style={styles.container}>
+      <SafeAreaView backgroundColor={'#1d3557'} />
+      <StatusBar backgroundColor='#1d3557' barStyle='light-content' />
+       <View style={{ justifyContent:'center', alignItems:'center', paddingVertical:30,backgroundColor:'#1d3557'}}>
+          <Text style={{color:'#fff', fontFamily:'GoogleSans-Medium', fontSize:24, paddingBottom:10}}> Kitap Ara</Text>
+          <SearchBar
+            value={term}
+            setTermClick={()=>setTerm("")}
+            onChangeText={term => {setTerm(term)}}
+            title={'Yazarlar veya kitaplar arasında ara'}
+          />
+       </View>
+        
       {term?.length > 2 ? <SearchResults fetching={productsFetching} products={filterData} /> : undefined}
       {!(term?.length > 2) ? <Categories fetching={categoriesFetching} categories={categories} /> : undefined}
    { /*   <BottomButton onPress={() => navigation.goBack()} title="Kapat" /> */ }
@@ -164,7 +174,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FFF",
-    paddingHorizontal:10
+    paddingHorizontal:0
   },
   flatListHeaderTitle: {
     padding: 12,

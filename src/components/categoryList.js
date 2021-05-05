@@ -7,7 +7,7 @@ import SearchBar from '../components/searchBar'
 import Icon from "react-native-vector-icons/Ionicons"
 import { ActivityIndicator } from "react-native"
 
-function CategoryList({ sharedKey, title = "", onPress, request, categoryID, columnType }) {
+function CategoryList({ sharedKey, title, onPress, request, categoryID, columnType }) {
   const [fetching, setFetching] = useState(false)
   const [products, setProducts] = useState([])
   const [term, setTerm] = useState("")
@@ -39,12 +39,15 @@ function CategoryList({ sharedKey, title = "", onPress, request, categoryID, col
   }
   return (
     <View style={styles.container}>
-      <SearchBar
-         value={term}
-         setTermClick={()=>setTerm("")}
-         onChangeText={term => SearchFilter(term)}
-         title={'Kitaplarda Ara'}
-      />
+      <View style={{ width:Dimensions.get('screen').width, justifyContent:'center', alignItems:'center', backgroundColor:'#1d3557', paddingBottom:30}} >
+        <SearchBar
+          value={term}
+          setTermClick={()=>setTerm("")}
+          onChangeText={term => SearchFilter(term)}
+          title={title+" kategorisinde ara"}
+        />
+      </View>
+     
       {products.length>0
       ?<CategoryItems 
       categoryID={categoryID} 
@@ -70,19 +73,21 @@ return(
 const CategoryItems = ({ products, fetching,categoryID,sharedKey})=>{
   if(products.length>0){
     return(
-      <FlatList
-        horizontal={false}
-        numColumns={3}
-        pagingEnabled={false}
-        showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator={false}
-        data={fetching ? products : products}
-        keyExtractor={(item, index) => "featured-item-" + index}
-        renderItem={({item})=> {
-          if(fetching){return<CategorysItemPlaceholder />}
-          return <CategorysItem categoryID={categoryID} sharedKey={sharedKey} item={item} />
-        }}
-      />
+    <View style={{ width:Dimensions.get('screen').width, justifyContent:'center', alignItems:'center', paddingTop:20}} >
+        <FlatList
+          horizontal={false}
+          numColumns={3}
+          pagingEnabled={false}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          data={fetching ? products : products}
+          keyExtractor={(item, index) => "featured-item-" + index}
+          renderItem={({item})=> {
+            if(fetching){return<CategorysItemPlaceholder />}
+            return <CategorysItem categoryID={categoryID} sharedKey={sharedKey} item={item} />
+          }}
+        />
+      </View>
     )
   }else if(products.length==0){
     return(
@@ -99,10 +104,10 @@ const CategoryItems = ({ products, fetching,categoryID,sharedKey})=>{
 const styles = StyleSheet.create({
   container: {
     flex:1,
-    width:Dimensions.get('screen').width-20,
+    width:Dimensions.get('screen').width,
     justifyContent:'flex-start',
     alignItems:'flex-start',
-    marginHorizontal: 10,
+    marginHorizontal: 0,
     borderBottomColor:'#88888810',
     borderBottomWidth:1,
   },

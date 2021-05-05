@@ -85,8 +85,8 @@ const styles = StyleSheet.create({
   modalText: {
     width:Dimensions.get('screen').width-130,
     color:'#555',
-    fontFamily:'GoogleSans-regular',
-    fontSize:14,
+    fontFamily:'GoogleSans-Regular',
+    fontSize:13,
     textAlign: "left",
     paddingLeft:5,
   }

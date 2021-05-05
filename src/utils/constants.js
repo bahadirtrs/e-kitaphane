@@ -108,5 +108,5 @@ module.exports = {
   CLIENT_SECRET:"fbXlq6mZkTLxK0hNFcXMlTswAKdPAG7IIilCbyo1",
   endpoints: ENDPOINTS,
   primaryColor: "#3B82F6",
-  bookCoverRatio: 1.42,
+  bookCoverRatio: 1.50,
 }

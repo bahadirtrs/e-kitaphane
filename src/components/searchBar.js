@@ -12,6 +12,7 @@ function SearchBar({ onChangeText,setTermClick, value, title }) {
             placeholderTextColor={'#aaa'}
             style={styles.textInput}
             value={value}
+            textAlignVertical={'center'}
             onChangeText={term => {onChangeText(term), setTerm(term)}}
           />
           {term?.length > 2 ? (
@@ -34,13 +35,11 @@ function SearchBar({ onChangeText,setTermClick, value, title }) {
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
+    width: "90%",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 0,
-    borderBottomWidth: 1,
-    borderBottomColor: "#E5E7EB",
     paddingVertical: 6,
   },
   textInputContainer: {
@@ -51,14 +50,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   textInput: {
+    fontFamily:'GoogleSans-Regular',
     height:40,
-    alignSelf: "flex-start",
+    alignSelf: "center",
     backgroundColor: "#FFF",
-    borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 12,
+    borderWidth:0.5,
+    borderColor: "#fff",
+    padding: 0,
     flex: 1,
-    borderRadius: 8,
+    borderRadius: 18,
     paddingLeft: 40,
     fontSize: 14,
     shadowColor: "#333",

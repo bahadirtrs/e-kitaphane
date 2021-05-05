@@ -20,13 +20,13 @@ const styles = StyleSheet.create({
     questionText:{
         color:'#555',
         fontFamily:'GoogleSans-Regular',
-        fontSize:16,
+        fontSize:14,
         textAlign:'center',
     },
     redirectText:{
         color:'#1d3557',
         fontFamily:'GoogleSans-Medium',
-        fontSize:15,
+        fontSize:13,
         textAlign:'center',
     }
 })

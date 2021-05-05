@@ -22,13 +22,14 @@ export default function BookCategories({ navigation, route }) {
   const sharedKey = route.params.sharedKey
   return (
     <View style={{flex: 1, backgroundColor: "#F3F4F6" }}>
-      <SafeAreaView backgroundColor={'#fff'} />
-      <StatusBar backgroundColor={'#fff'}/>
+      <SafeAreaView backgroundColor={'#1d3557'} />
+      <StatusBar backgroundColor={'#1d3557'} barStyle='light-content' />
       <PageHeaderBackLayout 
-        butonColor={'#1d3557'} 
+        butonColor={'#fff'} 
         butonPress={()=>navigation.goBack()}
-        title={product?.title}
-        backgrounColor={'#fff'}
+        butonPressRight={null}
+        title={route.params?.pageName}
+        backgrounColor={'#1d3557'}
         />
         <View style={styles.bookDetails}>
             <CategoryList

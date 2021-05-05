@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22, 
+    marginTop:0, 
   },
   modalView: {
     margin: 20,
@@ -72,7 +72,8 @@ const styles = StyleSheet.create({
   },
   modalText: {
     marginBottom: 15,
-    textAlign: "center"
+    textAlign: "center",
+    fontFamily:'GoogleSans-Regular'
   }
 });
 

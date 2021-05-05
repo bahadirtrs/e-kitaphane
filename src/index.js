@@ -37,7 +37,7 @@ function MainStackScreen() {
       mode="modal"
       screenOptions={{
         headerStyle: {
-          backgroundColor: "red",
+          backgroundColor: "#f1f1f1",
         },
         useNativeDriver: true,
         gestureEnabled: false,
@@ -54,9 +54,9 @@ function MainStackScreen() {
       }}>
       <MainStack.Screen name="Anasayfa" component={Tab} options={{headerShown: false}}/>
       <MainStack.Screen name="Splashscreen" component={Splashscreen} options={{headerShown: false}}/>
-      <MainStack.Screen name="Account" component={AccountScreen} />
+      <MainStack.Screen name="Account" component={AccountScreen} options={{headerShown: false}} />
       <MainStack.Screen name="LogIn" component={LogIn} />
-      <MainStack.Screen name="UserInfo" component={UserInfo} />
+      <MainStack.Screen name="UserInfo" component={UserInfo} options={{headerShown: false}} />
       <MainStack.Screen name="SingIn" component={SingIn} />
       <MainStack.Screen name="MyLibrary" component={MyLibrary} /> 
       <MainStack.Screen name="BookDetail" options={{headerShown: false}} component={BookDetailScreen}/>

@@ -1,29 +1,37 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import { View, TextInput,StyleSheet,Dimensions,TouchableOpacity } from 'react-native'
 import Icon from "react-native-vector-icons/Ionicons"
 
-export default function textInputCom({value,onChangeText,placeholder,passwordHide,setPasswordHide}) {
+export default function textInputCom({type,value,onChangeText,placeholder,passwordHide,setPasswordHide}) {
+  const [passHide, setPassHide] = useState(true)
+useEffect(() => {
+  type=='password'
+    ?setPassHide(true)
+    :setPassHide(false)
+
+  
+}, [])
     return (
-      <View style={{width:'90%', flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
+      <View style={styles.container} >
       <TextInput
-         style={[styles.textInput, {fontSize:14, width:'94%'}]}
+         style={[styles.textInput, {fontSize:14, width:'90%'}]}
          placeholder={placeholder}
          placeholderTextColor={'#555'}
          value={value}
          onChangeText={onChangeText}
          textAlignVertical='auto'
-         keyboardType={'email-address'}
-         secureTextEntry={passwordHide?true:false}
+         keyboardType={passwordHide? 'default':'email-address'}
+         secureTextEntry={passHide? true:false}
          autoCapitalize={'none'}
        />
         { setPasswordHide ?
-        passwordHide ?
-        <TouchableOpacity activeOpacity={0.9} onPress={setPasswordHide} style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
-          <Icon style={{ position:'absolute', right:10}} name="eye-off-outline" size={20} color="#1d3557" /> 
+        passHide ?
+        <TouchableOpacity activeOpacity={0.9} onPress={()=>setPassHide(false)} style={{ flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
+          <Icon  name="eye-off-outline" size={20} color="#1d3557" /> 
         </TouchableOpacity>
         :
-        <TouchableOpacity activeOpacity={0.9} onPress={setPasswordHide} style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
-          <Icon style={{ position:'absolute', right:10}} name="eye-outline" size={20} color="#1d3557" /> 
+        <TouchableOpacity activeOpacity={0.9} onPress={()=>setPassHide(true)} style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
+          <Icon name="eye-outline" size={20} color="#1d3557" /> 
        </TouchableOpacity>
        :null
        }
@@ -32,18 +40,24 @@ export default function textInputCom({value,onChangeText,placeholder,passwordHid
 }
 
 const styles = StyleSheet.create({
-  textInput:{
-    margin:2,
-    paddingHorizontal:15, 
+  container:{
+    width:'85%', 
+    flexDirection:'row', 
+    justifyContent:'space-between', 
+    alignItems:'center', 
     backgroundColor:'#fff',
-    fontSize:16,
-    color:'#000',
-    marginRight:2,
-    fontFamily:'GoogleSans-Regular',
+    paddingHorizontal:10,
+    borderRadius:8,
+    margin:5,
     borderColor:'#ddd',
     borderWidth:1,
     height:40,
-    borderRadius:8
+
+  },
+  textInput:{
+    paddingHorizontal:0, 
+    color:'#000',
+    fontFamily:'GoogleSans-Regular',
 },
 })
 

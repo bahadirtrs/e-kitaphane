@@ -1,10 +1,11 @@
 import React, { Component } from "react";
+import { Dimensions } from "react-native";
     import {
       Text,
       View,
       StyleSheet,
       Animated,
-      TouchableOpacity
+      Image
     } from "react-native";
 
 export default class ActivatorActivator extends Component {
@@ -20,7 +21,7 @@ export default class ActivatorActivator extends Component {
     Animated.loop(
       Animated.timing(this.state.rotateValue, {
         toValue: 1,
-        duration: 800,
+        duration: 600,
         Infinite: true,
         useNativeDriver:false
       })
@@ -30,8 +31,9 @@ export default class ActivatorActivator extends Component {
 
   render() {
     return (
+      <>
       <View style={styles.container}>
-        <Animated.View
+       <Animated.View
           style={{
             transform: [
               {
@@ -41,19 +43,23 @@ export default class ActivatorActivator extends Component {
                 })
               }
             ],
-            height: 40,
-            width: 40,
+            height: 80,
+            width: 80,
             margin: 5,
-            borderWidth: 5,
-            borderColor: "#ccc",
+            borderWidth: 1,
+            borderColor: "#bbb",
             borderBottomColor: "#1d3557",
             borderRadius: 50,
-            justifyContent: "flex-start"
+            justifyContent: "center",
+            position:'absolute',
           }}
         />
-        <Text style={styles.text}>Uygulama başlatılıyor</Text>
+          <Image style={{width:40, height:40}}  source={require('../../../assets/books-logo-cover.png')} />
+
+        <Animated.View/>
         <Animated.View />
       </View>
+      </>
     );
   }
 }
@@ -61,7 +67,7 @@ export default class ActivatorActivator extends Component {
 
 const styles = StyleSheet.create({
   container: {
-      flex:1,
+    flex:1,
     alignItems: "center",
     justifyContent: "center"
   },
@@ -75,7 +81,8 @@ const styles = StyleSheet.create({
     borderRadius: 6
   },
   text: {
-    fontSize: 16,
+    paddingTop:0,
+    fontSize: 14,
     color: "#333",
     fontFamily:'GoogleSans-Regular',
     textAlign: "center"

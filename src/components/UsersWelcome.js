@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     justifyContent:'center', 
     alignItems:'center', 
     paddingBottom:20, 
-    width:Dimensions.get('screen').width*0.6
+    width:Dimensions.get('screen').width*0.8
   },
   imageStyle:{
     width:110, 

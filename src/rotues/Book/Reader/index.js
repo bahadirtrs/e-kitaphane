@@ -1,14 +1,15 @@
-import React,{useState, useEffect, useRef} from "react"
+import React,{useState, useEffect, useMemo, useRef} from "react"
 import AsyncStorage from '@react-native-community/async-storage';
 import Pdf from "react-native-pdf"
 import Icon from "react-native-vector-icons/Ionicons"
 import PageHeaderBackLayout from '../../../components/Layout/PageHeaderBackLayout'
-import BeingIndicator from '../../../components/Indicator/BeingIndicator'
 import { StyleSheet,View,Text,FlatList,StatusBar,Alert,Animated } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
-import { BASE_URL } from "../../../utils/constants"
+import { BASE_URL,endpoints } from "../../../utils/constants"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { Dimensions } from "react-native"
+import RequestManager from "../../../utils/requestManager"
+import RNSecureStorage from "rn-secure-storage"
 
 function getData(number) {
   //sayfa sayısı kadar görünüm oluşturma fonksiyonu
@@ -30,13 +31,48 @@ export default function ReaderScreen({ navigation, route }) {
     const [activity, setActivity] = useState(true)
     const [isPageControllerHide, setPageControllerHide] = useState(false)
     const [isZoomActive, setZoomActive] = useState(true)
+    const [pdfUrl, setPdfUrl] = useState("")
+    const [fetching, setFetching] = useState(false)
+    const [previewBook, setPreviewBook] = useState(false)
     const SlideInLeft = useRef(new Animated.Value(0)).current;
-    const source = { uri: BASE_URL +"api/show-preview/" + route.params.id, cache: true }
+   //const source = { uri: BASE_URL +"api/show-preview/" + route.params.id, cache: true }
+    const source = { uri: BASE_URL +pdfUrl, cache: true }
+   
+    const getCategories = useMemo(async() =>
+    RequestManager({
+      method: endpoints.showPDF.method,
+      url: endpoints.showPDF.path +'/' +route.params.id,
+      auth: false,
+      headers: {
+        Accept: "application/jsonsss",
+        Authorization:'Bearer ' +  await RNSecureStorage.get("access_token"),
+      },
+    }),
+  [],)
   
+    useEffect(() => {
+      setFetching(true)
+      getCategories
+        .then(res => {
+          setPdfUrl(res)
+          setPreviewBook(true)
+          setTimeout(() => {
+            setFetching(false)
+          }, 1000)
+        })
+        .catch(err => {
+          console.log(err)
+          setPdfUrl('api/show-preview/'+route.params.id)
+          setPreviewBook(false)
+        })
+    }, [getCategories])
+
+
     useEffect(() => {
       // Sayfaya girilince kalınan sayfa kontrolü
       const pageNum =JSON.stringify(route.params.id)
       const number = JSON.stringify(numberCurrent)
+      
       AsyncStorage.getItem(pageNum).then(item =>{
         if(item!==null){
           pageNumber=item;
@@ -52,11 +88,24 @@ export default function ReaderScreen({ navigation, route }) {
             }
           })
         }else{
-          AsyncStorage.setItem(pageNum,number ); 
+          AsyncStorage.setItem(pageNum,number); 
           setSavePage(number)
         }
       })  
     },[])
+
+    useEffect(() => {
+      const pageNum =JSON.stringify(route.params.id)
+      const allPageNumber = JSON.stringify(numberofPages)
+      AsyncStorage.getItem(`${pageNum}+page`).then(item =>{
+        if(item!==null){
+        }else{
+          if(numberofPages!==0 && previewBook){
+            AsyncStorage.setItem(`${pageNum}+page`,allPageNumber);
+          }
+        }
+      })
+    }, [numberofPages]) 
 
     useEffect(() => {
       // Otomatik kaydetme checkbox değeri değiştiğinde bulunulan sayfayı asyncstronge ye atama
@@ -71,7 +120,7 @@ export default function ReaderScreen({ navigation, route }) {
       if(numberofPages!==0){
         setActivity(false)
       }
-    })
+    },[]) //neden
   
     const fadeIn = () => {
       // Alt barın görünme animasyonu
@@ -202,6 +251,7 @@ export default function ReaderScreen({ navigation, route }) {
   return (
   <>
     <View style={styles.container}> 
+   
       {isPageControllerHide ?
         <SafeAreaView style={{ zIndex:1, position:'absolute', backgroundColor:'#1d3557', paddingBottom:0, paddingTop:5}}>
           <StatusBar barStyle="light-content" backgroundColor={'#1d3557'}/>
@@ -217,9 +267,7 @@ export default function ReaderScreen({ navigation, route }) {
             />  
         </SafeAreaView>
     :null}
-        { 
-        //activity ?<BeingIndicator title={'Lüften bekleyiniz.Kitap yükleniyor'} />:null
-        }
+        <StatusBar barStyle="dark-content" backgroundColor={'#eee'}/>
     <Pdf
       source={source}
       page={numberCurrent}
@@ -230,6 +278,7 @@ export default function ReaderScreen({ navigation, route }) {
       onScaleChanged={(scale)=>ZoomActive(scale)}
       style={styles.pdf}
       onPageSingleTap={()=>ScreenClick()}
+      
       onLoadComplete={(numberOfPages, filePath) => {
         setNumberofPages(numberOfPages)
       }}
@@ -281,11 +330,12 @@ export default function ReaderScreen({ navigation, route }) {
             getItemLayout={getItemLayout}
             data={getData(numberofPages)}
             renderItem={({ item, index}) => (
-              <TouchableOpacity activeOpacity={0.9} onPress={()=>setNumberCurrent(Number(item))} style={{width:Dimensions.get('screen').width,  backgroundColor:'#fff', width:65, height:90, borderColor: item==numberCurrent?'#1d3557':'#ccc', borderWidth:item==numberCurrent?3:1, marginHorizontal:10, marginVertical:5, borderRadius:5, justifyContent:'center', alignItems:'center'}} >
+              item-1==numberofPages ?null:
+                <TouchableOpacity activeOpacity={0.9} onPress={()=>setNumberCurrent(Number(item))} style={{width:Dimensions.get('screen').width,  backgroundColor:'#fff', width:65, height:90, borderColor: item==numberCurrent?'#1d3557':'#ccc', borderWidth:item==numberCurrent?3:1, marginHorizontal:10, marginVertical:5, borderRadius:5, justifyContent:'center', alignItems:'center'}} >
                 <View style={{width:Dimensions.get('screen').width,  zIndex:1, width:65, height:90, backgroundColor:'#1d355701', position:'absolute', justifyContent:'center', alignItems:'center'}}>
                   <Text style={{fontFamily:'GoogleSans-Regular', color:'#333', fontSize:14}}>{item}</Text>
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity> 
             )}
           />
         </View>

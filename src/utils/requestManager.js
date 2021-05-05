@@ -4,7 +4,6 @@ import RNSecureStorage from "rn-secure-storage"
 import NavigationService from "./navigationService"
 import { removeTokens, storeTokens } from "./utils"
 import { BASE_URL, CLIENT_ID, CLIENT_SECRET, endpoints } from "./constants"
-import {useNavigation} from '@react-navigation/native';
 let isRefreshing = false
 let failedQueue = []
 

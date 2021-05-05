@@ -1,8 +1,7 @@
+import { View, StyleSheet, KeyboardAvoidingView, TextInput, StatusBar, Platform, TouchableWithoutFeedback, Button, Keyboard  } from 'react-native';
 import React,{useState,useMemo, useEffect} from "react"
 import { BASE_URL,endpoints, CLIENT_ID, CLIENT_SECRET} from "../../utils/constants"
 import { SafeAreaView } from "react-native"
-import { StyleSheet,StatusBar } from "react-native"
-import { View, Dimensions,ScrollView,Text } from "react-native";
 import { storeTokens } from "../../utils/utils";
 import AsyncStorage from '@react-native-community/async-storage';
 import TextButton from '../../components/Button/TextButton'
@@ -13,22 +12,27 @@ import TextInputCom from '../../components/textInputCom'
 import ActiveButton from '../../components/Button/ActiveButton'
 import HelpModal from '../../components/HelpModal'
 import axios from "axios"
+import RequestManager from "../../utils/requestManager"
+import RNSecureStorage, { ACCESSIBLE } from "rn-secure-storage"
 
 export default function LogIn({navigation}) {
-  const [email, setemail] = useState("talut@tasgiran.com")
-  const [password, setpassword] = useState("123")
-  const [buttonClick, setButtonClick] = useState(false)
-  const [warning, setWarning] = useState("null")
-  const [infoColor, setInfoColor] = useState('#e63946')
-  const [passwordHide, setPasswordHide] = useState(true)
-  const [activity, setActivity] = useState(false)
-  const [helpVisible, setHelpVisible] = useState(false)
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
     })
   }, [navigation])
+
+  const [email, setemail] = useState("")
+  const [password, setpassword] = useState("")
+  const [buttonClick, setButtonClick] = useState(false)
+  const [warning, setWarning] = useState("")
+  const [infoColor, setInfoColor] = useState('#e63946')
+  const [passwordHide, setPasswordHide] = useState(true)
+  const [activity, setActivity] = useState(false)
+  const [helpVisible, setHelpVisible] = useState(false)
+  const [userInfo, setUserInfo] = useState([])
+  const [fetching, setFetching] = useState(false)
 
   useEffect(() => {
     setWarning('null')
@@ -39,6 +43,33 @@ export default function LogIn({navigation}) {
     }
   }, [email,password])
  
+  const isLoginAccount = async()=>{
+    setActivity(true)
+    try {
+      let data = { 
+        grant_type: "password",
+        username:email,
+        password:password,
+        client_id:CLIENT_ID,
+        client_secret:CLIENT_SECRET,
+        scope: "*",
+      };
+      await axios.post(`${BASE_URL+endpoints.login.path}`, data)
+        .then(response => {
+          setActivity(false)
+          setInfoColor('#43aa8b')
+          setWarning('Başarıyla oturum açıldı. Ayarlanıyor')
+          setTimeout(() => {
+            saveToken(response.data);
+          }, 1000);
+        });
+    } catch (error) {
+      if(error){
+      setActivity(false)
+      setWarning("Giriş yapılamadı. Lütfen bilgilerinizi kontrol ediniz.")}
+    }
+  }
+
   const saveToken = async(data) => {
     const { access_token, refresh_token } = data
     await storeTokens(access_token, refresh_token);
@@ -47,13 +78,63 @@ export default function LogIn({navigation}) {
         AsyncStorage.removeItem("token");
       }
         AsyncStorage.setItem('token', access_token);
+        console.log("token:",access_token)
     });
+       
         setInfoColor('#43aa8b')
-        setWarning('Başarıyla oturum açıldı. Yönlendiriliyorsunuz.')
+        setWarning('Giriş bilgileri alınıyor...')
         setTimeout(() => {
-          navigation.replace('Anasayfa');
-        }, 4000);
+          getUserInfo()
+          //navigation.replace('Anasayfa');
+        }, 500);
   }
+
+    const getUserInfo = async () =>{
+      const user=RequestManager({
+        method: endpoints.user.method,
+        url: endpoints.user.path,
+        auth: false,
+        headers: {
+          Accept: "application/jsonsss",
+          Authorization:'Bearer ' +  await RNSecureStorage.get("access_token"),
+        },
+      })
+      console.log("user:",JSON.stringify(user))
+      userListNow(user);
+    }
+    
+    const userListNow = (user)=>{
+      setFetching(true)
+      user
+        .then(res => {
+          setUserInfo(res)
+          setWarning('Giriş bilgileri sisteme kaydediliyor...')
+          setTimeout(() => {
+            storeUserInfo(res.id,res.first_name,res.email)
+            setFetching(false)
+            //navigation.replace('Anasayfa');
+        }, 500);
+
+        })
+        .catch(err => {
+          console.log(err)
+          setUserInfo(false)
+        })
+    }
+     
+      const storeUserInfo = async (id, name, mail) => {
+        try {
+          await RNSecureStorage.set("user_id", JSON.stringify(id), { accessible: ACCESSIBLE.WHEN_UNLOCKED })
+          await RNSecureStorage.set("user_name", name, { accessible: ACCESSIBLE.WHEN_UNLOCKED })
+          await RNSecureStorage.set("user_mail", mail, { accessible: ACCESSIBLE.WHEN_UNLOCKED })
+          setWarning('Bilgiler sisteme kaydedildi')
+          setTimeout(() => {
+            navigation.push('Anasayfa')
+        }, 500);
+        } catch (e) {
+          throw new Error(e)
+        }
+      }
 
   const isEmailControl = ()=>{
     var n = email?.indexOf("@");
@@ -70,43 +151,21 @@ export default function LogIn({navigation}) {
       }else{setWarning('Şifreniz en az 6 karakterli olmalıdır.')}
     }else{setWarning('Lüften geçerli yapıda bir email adresi giriniz') }
   }
-  const isLoginAccount = async()=>{
-    setActivity(true)
-    try {
-      let data = { 
-        grant_type: "password",
-        username:email,
-        password:password,
-        client_id:CLIENT_ID,
-        client_secret:CLIENT_SECRET,
-        scope: "*",
-      };
-      await axios.post(`${BASE_URL+endpoints.login.path}`, data)
-        .then(response => {
-          setActivity(false)
-          saveToken(response.data);
-        });
-    } catch (error) {
-      if(error){
-      setActivity(false)
-      setWarning("Giriş yapılamadı. Lütfen bilgilerinizi kontrol ediniz.")}
-    }
-  }
-return (
-  <View>
-    {activity?<BeingIndicator/>:null}
-    <View style={{position:'absolute'}} >
-    <StatusBar backgroundColor={'#1d3557'}/>
-    <SafeAreaView/>
+
+  return (
+    <>
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
+     <SafeAreaView/>
+     <StatusBar backgroundColor='#f1f1f1' />
       <HeaderBackLayout 
-        butonColor={'#fff'} 
+        butonColor={'#118ab2'} 
         butonPress={()=>navigation.goBack()}
         butonPressRight={()=>setHelpVisible(true)}
         pageName={''}
         />
-      <View style={[styles.box, {transform: [{ rotate: "15deg" }]}]}/>
-      <ScrollView>
-        <View style={styles.container} >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.inner}>
+          <View style={{justifyContent:'center', alignItems:'center'}} >
           <UsersWelcome warning={warning} 
             infoColor={infoColor} setWarning={()=>setWarning('null')}/>
           <TextInputCom
@@ -122,48 +181,28 @@ return (
             isLogInFormControl={()=>isLogInFormControl()}
             buttonClick={buttonClick}
           />
-          <TextButton
+           <TextButton
             questions={'Henüz hesap oluşturmadınız mı?'}
             redirectText={'Hesap Oluşturun'} buttonPress={()=> navigation.replace('SingIn')}
           />
-        </View> 
-      </ScrollView> 
-      <HelpModal 
-      visible={helpVisible}  
-      setVisible={()=>setHelpVisible(false)}
-      />
-    </View>
-  </View>
-  )
-}
+          <HelpModal visible={helpVisible} setVisible={()=>setHelpVisible(false)}/>
+           </View>
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
+    </>
+  );
+};
+
 const styles = StyleSheet.create({
-  container:{
-    height:Dimensions.get('screen').height-130,
-    width:Dimensions.get('screen').width, 
-    justifyContent:'center',
-    alignItems:'center'
+  container: {
+    flex: 1
   },
-
-  box: {
-    zIndex:0,
-    position:'absolute',
-    height: 600,
-    width: 600,
-    top:-400,
-    left:0,
-    borderRadius: 5,
-    marginVertical: 40,
-    backgroundColor: "#1d3557",
-    alignItems: "center",
-    justifyContent: "center"
+  inner: {
+    padding: 4,
+    flex: 1,
+    justifyContent: "space-around"
   },
-  text: {
-    fontSize: 14,
-    fontWeight: "bold",
-    margin: 8,
-    color: "#000",
-    textAlign: "center"
-  }
+  
 
-
-})
+});

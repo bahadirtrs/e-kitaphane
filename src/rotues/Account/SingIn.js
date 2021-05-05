@@ -5,8 +5,10 @@ import { storeTokens } from "../../utils/utils";
 import AsyncStorage from '@react-native-community/async-storage';
 import { SafeAreaView } from "react-native"
 import { TouchableOpacity } from "react-native"
-import { Text, View,StyleSheet,StatusBar,Dimensions,ScrollView  } from "react-native"
+import { Text, View,StyleSheet,TouchableWithoutFeedback,  Keyboard,Dimensions,ScrollView,KeyboardAvoidingView  } from "react-native"
 import axios from "axios"
+import RequestManager from "../../utils/requestManager"
+import RNSecureStorage, { ACCESSIBLE } from "rn-secure-storage"
 import TermOfUse from '../../components/TermOfUse'
 import PrivacyPolicy from '../../components/PrivacyPolicy'
 import TextButton from '../../components/Button/TextButton'
@@ -17,6 +19,7 @@ import ActiveButton from '../../components/Button/ActiveButton'
 import TextInputCom from '../../components/textInputCom'
 import TwoInputText from '../../components/TwoInputText'
 import HelpModal from '../../components/HelpModal'
+import { StatusBar } from "react-native";
 
 
 
@@ -26,11 +29,11 @@ export default function SingIn({navigation}) {
       headerShown: false,
     })
   }, [navigation])
-  const [name, setName] = useState("Test")
-  const [lastName, setLastName] = useState("Test")
-  const [email, setemail] = useState("sbt0013w@gmail.com")
-  const [password, setpassword] = useState("12345678")
-  const [passwordRepeat, setpasswordRepeat] = useState("12345678")
+  const [name, setName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [email, setemail] = useState("")
+  const [password, setpassword] = useState("")
+  const [passwordRepeat, setpasswordRepeat] = useState("")
   const [checkbox, setCheckbox] = useState(true)
   const [buttonClick, setButtonClick] = useState(false)
   const [warning, setWarning] = useState("null")
@@ -40,6 +43,8 @@ export default function SingIn({navigation}) {
   const [passwordHide, setPasswordHide] = useState(true)
   const [activity, setActivity] = useState(false)
   const [helpVisible, setHelpVisible] = useState(false)
+  const [fetching, setFetching] = useState(false)
+  const [userInfo, setUserInfo] = useState([])
 
 useEffect(() => {
   setWarning('null')
@@ -90,10 +95,10 @@ useEffect(() => {
       await axios.post(`${BASE_URL+endpoints.register.path}`, data)
         .then(response => console.log(response.data.message));
         setActivity(false),setInfoColor('#43aa8b')
-        setWarning('Kaydınız Başarıyla oluşturuldu. Oturum açılıyor')
+        setWarning('Kaydınız Başarıyla oluşturuldu.')
         setTimeout(() => {
           isLoginAccount()
-        }, 3000);
+        }, 400);
     } catch (error) {
         setActivity(false),setInfoColor('#e63946')
         setWarning(error.message )
@@ -113,8 +118,12 @@ useEffect(() => {
       };
       await axios.post(`${BASE_URL+endpoints.login.path}`, data)
         .then(response => {
-          setActivity(false)
-          saveToken(response.data);
+          setWarning('Oturum açılıyor...')
+          setTimeout(() => {
+            setActivity(false)
+            saveToken(response.data);
+          }, 500); 
+         
         });
     } catch (error) {
       if(error){
@@ -132,33 +141,81 @@ useEffect(() => {
       }
         AsyncStorage.setItem('token', access_token);
     });
-        setInfoColor('#43aa8b')
-        setWarning('Başarıyla oturum açıldı. Yönlendiriliyorsunuz.')
+        setWarning('Başarıyla oturum açıldı.')
         setTimeout(() => {
-          navigation.replace('Anasayfa');
-        }, 4000);
+          getUserInfo()
+          setInfoColor('#43aa8b')
+        }, 500);
+  }
+
+  const getUserInfo = async () =>{
+    const user=RequestManager({
+      method: endpoints.user.method,
+      url: endpoints.user.path,
+      auth: false,
+      headers: {
+        Accept: "application/jsonsss",
+        Authorization:'Bearer ' +  await RNSecureStorage.get("access_token"),
+      },
+    })
+    setWarning('Kullanıcı Bilgileri getiriliyor')
+    setTimeout(() => {
+    userListNow(user);
+    }, 500);
+  
   }
   
+  const userListNow = (user)=>{
+    setFetching(true)
+    user
+      .then(res => {
+        setUserInfo(res)
+        setTimeout(() => {setFetching(false)}, 200)
+        setWarning('Bilgiler sisteme ekleniyor')
+        setTimeout(() => {  
+          storeUserInfo(res.id,res.first_name,res.email)
+        }, 300);
+      })
+      .catch(err => {
+        console.log(err)
+        setUserInfo(false)
+      })
+  }
+
+  const storeUserInfo = async (id, name, mail) => {
+    try {
+      await RNSecureStorage.set("user_id", JSON.stringify(id), { accessible: ACCESSIBLE.WHEN_UNLOCKED })
+      await RNSecureStorage.set("user_name", name, { accessible: ACCESSIBLE.WHEN_UNLOCKED })
+      await RNSecureStorage.set("user_mail", mail, { accessible: ACCESSIBLE.WHEN_UNLOCKED })
+        setWarning('Bilgiler sisteme kaydedildi')
+        setTimeout(() => {
+          navigation.push('Anasayfa')
+        }, 400);
+    } catch (e) {
+      throw new Error(e)
+    }
+  }
+
   return (
-    <View>
-    {activity?<BeingIndicator/>:null}
-    <View style={{position:'absolute'}} >
-    <SafeAreaView/>
-    <StatusBar backgroundColor={'#f1f1f1'}/>
-      <HeaderBackLayout 
+    <>
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
+     <SafeAreaView/>
+     <StatusBar backgroundColor='#f1f1f1' />
+     <HeaderBackLayout 
           butonColor={'#1d3557'} 
           butonPress={()=>navigation.goBack()}
           butonPressRight={()=>setHelpVisible(true)}
           pageName={''}
       />
-      <ScrollView>
-        <View style={styles.container} >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.inner}>
+          <View style={{justifyContent:'center', alignItems:'center'}} >
           <UsersWelcome warning={warning} 
             infoColor={infoColor} setWarning={()=>setWarning('null')}/>
          <TwoInputText
             type={'name'} 
-            placeholder={"İsim"} value={name} onChangeText={(text)=>setName(text)}
-            placeholderTwo={"Soyisim"} valueTwo={lastName} onChangeTextTwo={(text)=>setLastName(text)}
+            placeholder={"Ad"} value={name} onChangeText={(text)=>setName(text)}
+            placeholderTwo={"Soyad"} valueTwo={lastName} onChangeTextTwo={(text)=>setLastName(text)}
         />
         <TextInputCom
             placeholder={"Mail Adresi"} value={email}
@@ -174,6 +231,7 @@ useEffect(() => {
             value={passwordRepeat} onChangeText={(text)=>setpasswordRepeat(text)}
             passwordHide={passwordHide} setPasswordHide={()=>setPasswordHide(!passwordHide)}
         />
+
         <View style={{width:'82%',justifyContent:'flex-start', alignItems:'flex-start', paddingTop:10}} >
             <View style={{flexDirection:'row', justifyContent:'flex-start', alignItems:'center', paddingTop:5}} >
               { checkbox 
@@ -189,13 +247,13 @@ useEffect(() => {
               <View>
                 <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
                   <TouchableOpacity activeOpacity={0.9} onPress={()=>setTermsOfUseVisible(true)}>
-                    <Text  style={{fontFamily:'GoogleSans-Medium', color:'#333'}}> Kullanıcı Sözleşmesi  <Text style={{fontFamily:'GoogleSans-Regular'}} >ve</Text> </Text>  
+                    <Text  style={{ fontSize:12, fontFamily:'GoogleSans-Medium', color:'#333'}}> Kullanıcı Sözleşmesi  <Text style={{fontFamily:'GoogleSans-Regular'}} >ve</Text> </Text>  
                   </TouchableOpacity>
                   <TouchableOpacity activeOpacity={0.9} onPress={()=>setPrivacyPolicyVisible(true)}>
-                    <Text style={{fontFamily:'GoogleSans-Medium', color:'#333'}}>Gizlilik Politikasını </Text>  
+                    <Text style={{fontSize:12,fontFamily:'GoogleSans-Medium', color:'#333'}}>Gizlilik Politikasını </Text>  
                   </TouchableOpacity>
                 </View>
-                  <Text style={{fontFamily:'GoogleSans-Regular', color:'#333'}}> okudum ve kabul ediyorum</Text>
+                  <Text style={{fontSize:12,fontFamily:'GoogleSans-Regular', color:'#333'}}> okudum ve kabul ediyorum</Text>
               </View>
                
             </View>
@@ -209,31 +267,25 @@ useEffect(() => {
           redirectText={'Oturum Açın'}
           buttonPress={()=> navigation.replace('LogIn')}
        />
-       </View>
-    </ScrollView> 
-    <TermOfUse 
-      visible={termsOfUseVisible}  
-      setVisible={()=>setTermsOfUseVisible(false)}/>
-    <PrivacyPolicy 
-      visible={privacyPolicyVisible}  
-      setVisible={()=>setPrivacyPolicyVisible(false)}/>
-    <HelpModal 
-      visible={helpVisible}  
-      setVisible={()=>setHelpVisible(false)}
-    />
-  </View>
-  </View>  
-  )
-}
+          <HelpModal visible={helpVisible} setVisible={()=>setHelpVisible(false)}/>
+           </View>
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
+    </>
+  );
+};
 
 const styles = StyleSheet.create({
-
-  container:{
-    height:Dimensions.get('screen').height-50,
-    width:Dimensions.get('screen').width, 
-    justifyContent:'center',
-    alignItems:'center'
+  container: {
+    flex: 1
   },
+  inner: {
+    padding: 4,
+    flex: 1,
+    justifyContent: "space-around"
+  },
+
    submitButton:{
     width:'85%',
     marginVertical:20,

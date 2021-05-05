@@ -15,6 +15,7 @@ import RequestManager from "../../utils/requestManager"
 import PleaseWait from "../../components/pleaseWait";
 import RNSecureStorage from "rn-secure-storage";
 import Activator from '../../components/Indicator/Activator'
+import getStyles from './styles'
 
 const categoriesIcon = {
   0:'earth-outline',
@@ -29,6 +30,7 @@ const categoriesIcon = {
   9:'business-outline',
 }
 export default function HomeScreen({ navigation }){
+  const styles=getStyles();
   const [categories, setCategories] = useState([])
   const [fetching, setFetching] = useState(false)
   const [token, setToken] = useState(" ")
@@ -89,12 +91,12 @@ export default function HomeScreen({ navigation }){
               <Icon name="menu-outline" size={32} color="#333" />
             </TouchableOpacity>
             <Logom/>
-            {1===1
+            {token==' '
             ?
-            <TouchableOpacity activeOpacity={0.9}  style={{ paddingHorizontal: 12 }} onPress={() => navigation.push("SingIn")}>
+            <TouchableOpacity activeOpacity={0.9}  style={{ paddingHorizontal: 12 }} onPress={() => navigation.push("LogIn")}>
               <Icon name="person-circle-outline" size={36} color="#555" />
             </TouchableOpacity>
-            :null}{
+            :
             <TouchableOpacity activeOpacity={0.9}  style={{ paddingHorizontal: 12 }} onPress={() => navigation.push("UserInfo")}>
               <Icon name="person-circle-outline" size={36} color="#555" />
             </TouchableOpacity>
@@ -137,7 +139,7 @@ export default function HomeScreen({ navigation }){
             categoryID={'1'}
             sharedKey={'Öne Çıkanlar'}
             title={'Öne Çıkanlar'}
-            onPress={() => navigation.push("BookCategories",{sharedKey: 'Öne Çıkanlar',item:categories[1]})}               
+            onPress={() => navigation.push("BookCategories",{sharedKey: 'Öne Çıkanlar',item:categories[1], pageName:'Anasayfa'})}               
             request={{
               method: endpoints.products.method,
               url: endpoints.productsByCategory.path + "/" + 2,
@@ -154,7 +156,7 @@ export default function HomeScreen({ navigation }){
             categoryID={'4'}
             sharedKey={'edebiyat'}
             title={'Edebiyat'}
-            onPress={() => navigation.push("BookCategories",{sharedKey:'Edebiyat',item:categories[2]})}               
+            onPress={() => navigation.push("BookCategories",{sharedKey:'Edebiyat',item:categories[2], pageName:'Anasayfa'})}               
             request={{
               method: endpoints.products.method,
               url: endpoints.productsByCategory.path + "/" + 4,
@@ -224,5 +226,6 @@ const styles = StyleSheet.create({
     elevation: 2,
   }
 })
+
 
 

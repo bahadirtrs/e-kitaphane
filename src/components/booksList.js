@@ -67,8 +67,9 @@ const styles = StyleSheet.create({
     justifyContent:'center',
     alignItems:'flex-start',
     paddingVertical: 5,
-    borderBottomColor:'#88888810',
-    borderBottomWidth:1
+    borderBottomColor:'#88888820',
+    borderBottomWidth:1,
+    backgroundColor:'#f1f1f1'
   },
   cardTitleView: {
     width: "100%",

@@ -6,7 +6,7 @@ export default function TwoInputText({value,onChangeText,placeholder,valueTwo,on
     return (
         <View style={{width:'90%', flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
           <TextInput
-            style={[styles.textInput, {fontSize:14, width:'46%', borderTopLeftRadius:8}]}
+            style={[styles.textInput, {fontSize:12, width:'46%', borderTopLeftRadius:8}]}
             placeholder={placeholder}
             placeholderTextColor={'#555'}
             value={value}
@@ -16,7 +16,7 @@ export default function TwoInputText({value,onChangeText,placeholder,valueTwo,on
             autoCapitalize={'words'}
           />
           <TextInput
-            style={[styles.textInput, {fontSize:14,width:'47%', borderTopRightRadius:8}]}
+            style={[styles.textInput, {fontSize:12,width:'47%', borderTopRightRadius:8}]}
             placeholder={placeholderTwo}
             placeholderTextColor={'#555'}
             value={valueTwo}
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
         margin:2,
         paddingHorizontal:15, 
         backgroundColor:'#fff',
-        fontSize:16,
+        fontSize:12,
         color:'#000',
         marginRight:2,
         fontFamily:'GoogleSans-Regular',
