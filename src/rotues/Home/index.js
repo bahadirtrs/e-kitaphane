@@ -16,7 +16,7 @@ import PleaseWait from "../../components/pleaseWait";
 import RNSecureStorage from "rn-secure-storage";
 import Activator from '../../components/Indicator/Activator'
 import getStyles from './styles'
-
+// appcenter codepush release-react -a bhdrtrs/ebooks -d Production
 const categoriesIcon = {
   0:'earth-outline',
   1:'bookmark-outline',
@@ -35,11 +35,13 @@ export default function HomeScreen({ navigation }){
   const [fetching, setFetching] = useState(false)
   const [token, setToken] = useState(" ")
   
-  const hideSplashScreen = useCallback(() => {
-    setTimeout(() => {
-      SplashScreen.hide()   
-    }, 3000);
-  },[])
+  useFocusEffect(
+    React.useCallback(() => {
+      setTimeout(() => {
+        SplashScreen.hide()   
+      }, 2800);
+    }, [])
+  );
 
   const Token = async() =>{
     try {
@@ -52,7 +54,6 @@ export default function HomeScreen({ navigation }){
     }
   }
   
-  useFocusEffect(hideSplashScreen)
   const insets = useSafeAreaInsets()
   const getCategories = useMemo(() =>
       RequestManager({
@@ -67,7 +68,6 @@ export default function HomeScreen({ navigation }){
   )
   
   useEffect(() => {
-    Token()
     setFetching(true)
     getCategories
       .then(res => {
@@ -80,27 +80,23 @@ export default function HomeScreen({ navigation }){
       })
   }, [getCategories])
 
+
   if (fetching) {
     return <Activator title={'Uygulama başlatılıyor...'} />
   }else{
     return (
-      <><SafeAreaView/>
-        <StatusBar backgroundColor={'#f1f1f1'} barStyle="dark-content" />
+      <><SafeAreaView backgroundColor='#f1f1f1' />
+        <StatusBar backgroundColor='#f1f1f1'  barStyle="dark-content" />
           <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingTop:0}} >
             <TouchableOpacity activeOpacity={0.9} style={{ paddingHorizontal: 12 }} onPress={null}>
               <Icon name="menu-outline" size={32} color="#333" />
             </TouchableOpacity>
             <Logom/>
-            {token==' '
-            ?
-            <TouchableOpacity activeOpacity={0.9}  style={{ paddingHorizontal: 12 }} onPress={() => navigation.push("LogIn")}>
+           
+            <TouchableOpacity activeOpacity={0.9}  style={{ paddingHorizontal: 12 }} onPress={() => navigation.push("Account")}>
               <Icon name="person-circle-outline" size={36} color="#555" />
             </TouchableOpacity>
-            :
-            <TouchableOpacity activeOpacity={0.9}  style={{ paddingHorizontal: 12 }} onPress={() => navigation.push("UserInfo")}>
-              <Icon name="person-circle-outline" size={36} color="#555" />
-            </TouchableOpacity>
-            }
+           
           </View>
         <ScrollView>
         <HomeSlider
@@ -125,8 +121,8 @@ export default function HomeScreen({ navigation }){
               data={categories}
                 renderItem={({ item,index }) => {
                     return (
-                      <TouchableOpacity 
-                        onPress={() => navigation.push("BookCategories", { sharedKey: item.slug, item: item })}               
+                      <TouchableOpacity  
+                        onPress={() => navigation.push("BookCategories", { title:item.title, item: item })}               
                         style={styles.categoriesView} >
                       <Icon name={categoriesIcon[index]} size={25} color="#333" />
                         <Text style={{textAlign:'center', fontSize:12, fontFamily:'GoogleSans-Regular', color:'#333', padding:5}} >{item.title}</Text>
@@ -135,7 +131,9 @@ export default function HomeScreen({ navigation }){
                 }}
             />
           </View>
-          <BooksList
+     
+         
+         <BooksList
             categoryID={'1'}
             sharedKey={'Öne Çıkanlar'}
             title={'Öne Çıkanlar'}
@@ -145,13 +143,14 @@ export default function HomeScreen({ navigation }){
               url: endpoints.productsByCategory.path + "/" + 2,
               auth: endpoints.products.auth,
               params: {
-                limit: 5,
+                limit: 20,
               },
               headers: {
                 Accept: "application/json",
               },
             }}
           />
+        
           <BooksList
             categoryID={'4'}
             sharedKey={'edebiyat'}
@@ -169,38 +168,9 @@ export default function HomeScreen({ navigation }){
               },
             }}
           />
+        
 
-          { /*<FlatList
-            keyboardDismissMode="on-drag"
-            keyExtractor={(item, index) => "search-result-item-" + index}
-            scrollEnabled={true}
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
-            ListHeaderComponent={ListHeaderComponent()}
-            data={categories}
-            renderItem={({ item }) => {
-              if(item.id==2 || item.id==4 || item.id==6 || item.id==8 || item.id==10  ){
-                return (
-                  <BooksList
-                    categoryID={item.id}
-                    sharedKey={item.slug}
-                    title={item.title}
-                    onPress={() => navigation.push("BookCategories", { sharedKey: item.slug, item: item })}               
-                    request={{
-                      method: endpoints.products.method,
-                      url: endpoints.productsByCategory.path + "/" + item.id,
-                      auth: endpoints.products.auth,
-                      params: {
-                        limit: 5,
-                      },
-                      headers: {
-                        Accept: "application/json",
-                      },
-                    }}
-                  />)
-              } 
-            }}
-          /> */}
+         
           </ScrollView>
         </>
     ) 

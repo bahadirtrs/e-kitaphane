@@ -2,7 +2,7 @@ import axios from "axios"
 import RNSecureStorage from "rn-secure-storage"
 import { BASE_URL} from "../utils/constants"
 import { View, Text,StyleSheet,Platform } from 'react-native'
-
+import AsyncStorage from '@react-native-community/async-storage';
 
   const BuyProduct = async(user_idx,product_id,status,payment_type)=>{
     const date=new Date().toJSON().slice(0, 19).replace('T', ' ')
@@ -26,6 +26,7 @@ import { View, Text,StyleSheet,Platform } from 'react-native'
       };
       await axios.post(`${BASE_URL+'api/private/order-create'}`, data, config)
       .then(response =>{
+        AsyncStorage.removeItem(JSON.stringify(product_id));
         message=response.data.message,
         statusMsg=true
         }

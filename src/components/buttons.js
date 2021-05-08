@@ -28,7 +28,7 @@ const ReadButton = (data) => {
     setFetching(true)
     getCategories
       .then(res => { let count=0;
-        for (let index = 0; index < res.length; index++) {
+        for(let index = 0; index < res.length; index++) {
           if(res[index].id===data.id){count++;}
         }
         if(count>0){setUserInfo(true)}
@@ -62,7 +62,10 @@ const ReadButton = (data) => {
       <View style={[styles.buttonContainer, { backgroundColor: "#2b4768" }]}>
         <View style={styles.buttonContent}>
           <View style={styles.buttonTextAndIcon}>
-            <Icon name={data?.buyStatus?'book':"basket"} size={24} color="#FFF" />
+            {data.loading
+              ? <ActivityIndicator color='#fff' />
+              : <Icon name={data?.buyStatus?'book':"basket"} size={24} color="#FFF" />
+            }
             <Text style={styles.readButtonText}>{data.text}</Text>
           </View>
           <View style={styles.readButtonCompleteView}>

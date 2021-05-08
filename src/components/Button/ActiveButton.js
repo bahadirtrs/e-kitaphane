@@ -1,16 +1,16 @@
 import React from 'react'
 import { View, Text,StyleSheet,TouchableOpacity } from 'react-native'
 
-export default function ActiveButton({isLogInFormControl,buttonClick}) {
+export default function ActiveButton({isLogInFormControl,buttonClick,text}) {
     return (
         <View style={styles.container} >
        { buttonClick
          ?   <TouchableOpacity activeOpacity={0.9} onPress={()=>{isLogInFormControl()}} style={styles.submitButtonEnable} >
-               <Text style={styles.buttonText}>Giriş Yapın</Text>
+               <Text style={styles.buttonText}>{text}</Text>
              </TouchableOpacity>
          :
            <TouchableOpacity activeOpacity={1} onPress={()=>isLogInFormControl()} style={styles.submitButton} >
-               <Text style={styles.buttonText}>Giriş Yap</Text>
+               <Text style={styles.buttonText}>{text}</Text>
            </TouchableOpacity>
        }
      </View>

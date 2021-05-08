@@ -3,7 +3,7 @@ import { View, Dimensions,StyleSheet,ActivityIndicator,Text } from 'react-native
 
 export default function BeingIndicator({title=''}) {
     return (
-    <View style={{zIndex:1, backgroundColor: 'transparent', height:Dimensions.get('screen').height,  width:Dimensions.get('screen').width, justifyContent:'center',alignItems:'center'}} >
+    <View style={{justifyContent:'center',alignItems:'center'}} >
         <View style={styles.activityStyle} >
             <ActivityIndicator color='#fff' size="large" />
             <Text style={styles.title}>{title}</Text>
@@ -13,7 +13,6 @@ export default function BeingIndicator({title=''}) {
 }
 const styles = StyleSheet.create({
     activityStyle:{ 
-        position:'absolute',
         padding:30,
         backgroundColor:'#00000090', 
         justifyContent:'center',

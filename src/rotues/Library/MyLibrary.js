@@ -13,20 +13,38 @@ import RNSecureStorage from "rn-secure-storage"
 import AsyncStorage from '@react-native-community/async-storage';
 import RequestManager from "../../utils/requestManager"
 import {logout} from "../../utils/requestManager"
+import { ScrollView } from "react-native";
+import SubmitButton from '../../components/Button/SubmitButton'
+import { ActivityIndicator } from "react-native";
 
 
 export default function UserInfo({navigation}) {
-  const [userInfo, setUserInfo] = useState(null)
+  const [userInfo, setUserInfo] = useState([])
   const [fetching, setFetching] = useState(false)
   const [term, setTerm] = useState("")
   const [filterData, setFilterData] = useState([])
+  const [token, setToken] = useState(" ")
 
   useFocusEffect(
     React.useCallback(() => {
-      getProduct()
+      
+      Token()
     }, [])
   );
 
+
+  const Token = async() =>{
+    try {
+      await RNSecureStorage.get("access_token").then((value) => {
+        if(value!=null)
+          setToken(value);
+          getProduct()
+      })
+    } catch (error) {
+        setToken(false)
+      console.log(error)
+    }
+  }
   const getProduct = async()=>{
     setFetching(true)
     RequestManager({
@@ -39,14 +57,24 @@ export default function UserInfo({navigation}) {
       },
     })
     .then(res => {
-      setUserInfo(res)
+      dateToASC(res)
       setFetching(false)
     })
     .catch(err => {
       console.log("err", err)
+      setUserInfo(false)
       setFetching(false)
     })
   }
+
+  const dateToASC = (res)  =>{
+    var ownedBooks= [];
+    for (let index =0; index < res.length; index++) {
+      ownedBooks.push(res[(res.length-index)-1]);
+    }
+    setUserInfo(ownedBooks) 
+  }
+
 
   const SearchFilter = (text)=>{
     const newData = userInfo.filter( item =>{
@@ -64,37 +92,32 @@ export default function UserInfo({navigation}) {
   }
 
   useEffect(() => {
-    if(term?.length > 2) {
+    if(term?.length > 2 && token) {
       SearchFilter(term)
     }
   },[term])
 
-  const isLogoutUser = async () => {
-    logout()
-    navigation.replace('Anasayfa') 
-    await AsyncStorage.removeItem('token');
+  if(token==' '|| userInfo.length==0){
+    return(
+      <View style={{height:Dimensions.get('window').height, width:Dimensions.get('window').width, justifyContent:'center',alignItems:'center', backgroundColor:'#f1f1f1'}} >
+        <ActivityIndicator/>
+        <Text style={{color:'#555',fontFamily:'GoogleSans-Regular', fontSize:16}}> Kitaplar yükleniyor...</Text>
+      </View>
+    )
   }
 
   const HeaderComponent = ()=>{
     return(
       <View style={{paddingHorizontal:13, paddingTop:15}} >
-        <Text style={{fontFamily:'GoogleSans-Medium', fontSize:20}} >Satın Aldığınız Kitaplar</Text>
+        <Text style={{fontFamily:'GoogleSans-Medium', fontSize:20}}>Satın aldıklarınız</Text>
       </View>
     )
   }
 
-  if(userInfo===false){
-    return(
-    <View style={{flex:1, justifyContent:'center', alignItems:'center'}} >
-        <Text style={{fontFamily:'GoogleSans-Regular', textAlign:'center', fontSize:14, width:'80%' }} >Kütüphanenizi görüntüleyebilmeniz çin giriş yapmanız gerekmektedir.</Text>
-    </View>
-    )
-  } 
-
     return (
-    <View style={{ flex:1,padding:0, justifyContent:'center'}} >
-      {fetching
-        ? <View style={{ zIndex:1, height:Dimensions.get('screen').height, width:Dimensions.get('screen').width,  position:'absolute'}} >
+    <ScrollView style={{ flex:1,padding:0}} >
+      {fetching && token
+        ? <View style={{ zIndex:1, height:Dimensions.get('screen').height, width:Dimensions.get('screen').width, justifyContent:'center',alignItems:'center', position:'absolute'}} >
             <BeingIndicator title={'Yenileniyor'} />
           </View>
         :null
@@ -102,6 +125,7 @@ export default function UserInfo({navigation}) {
       <SafeAreaView  backgroundColor={'#1d3557'}  />
       <StatusBar backgroundColor={'#1d3557'} barStyle={'light-content'} />
       <View style={{ justifyContent:'center', alignItems:'center', paddingVertical:30,backgroundColor:'#1d3557'}}>
+        <Icon name="library-outline" size={70} color="#ccc" />
         <Text style={{color:'#fff', fontFamily:'GoogleSans-Medium', fontSize:24, paddingBottom:10}}> Kütüphanede Ara</Text>
         <SearchBar
           value={term}
@@ -110,30 +134,57 @@ export default function UserInfo({navigation}) {
           title={'Yazarlar veya kitaplar arasında ara'}
         />
        </View>
-      {term?.length > 2 ? <SearchResults fetching={false} products={filterData} /> : undefined}
+      {term?.length  > 2 && token ? <SearchResults fetching={false} products={filterData} /> : undefined}
       {!(term?.length > 2) 
-      
-      ? <FlatList
-          keyboardDismissMode="on-drag"
-          keyExtractor={(item, index) => "search-result-item-" + index}
-          scrollEnabled={true}
-          ListHeaderComponent={()=>HeaderComponent()}
-          horizontal={false}
-          numColumns={2}
-          alignItems={'center'}
-          showsHorizontalScrollIndicator={false}
-          showsVerticalScrollIndicator={false}
-          data={userInfo}
-            renderItem={({ item,index }) => {
-                return (
-                  <LibraryItem categoryID={'1'} sharedKey={"sharedKey"} item={item} />
-                )
-            }}
-        />
-      : undefined}
-      </View>
+        ? token
+          ? userInfo.length>0
+            ? <View style={{justifyContent:'flex-start', alignItems:'flex-start'}} >
+                <FlatList
+                  keyboardDismissMode="on-drag"
+                  keyExtractor={(item, index) => "search-result-item-" + index}
+                  scrollEnabled={true}
+                  //inverted={true}
+                  ListHeaderComponent={()=>HeaderComponent()}
+                  horizontal={false}
+                  scrollEnabled={true}
+                  numColumns={2}
+                  alignItems={'center'}
+                  showsHorizontalScrollIndicator={false}
+                  showsVerticalScrollIndicator={false}
+                  data={userInfo}
+                    renderItem={({ item,index }) => {
+                        return (
+                            <LibraryItem categoryID={'1'} sharedKey={"sharedKey"} item={item} />
+                        )
+                    }}
+                />
+              </View>
+            :<NoItem type={'item'} butonPress={()=>navigation.navigation('Ansayfa')}  />
+          : <NoItem type={'account'} butonPress={()=>navigation.push('LogIn')} />
+        :null
+      }
+      </ScrollView>
     )
 }
+
+const NoItem = ({type,butonPress})=>{
+  return(
+    <View style={{ height:Dimensions.get('window').height*0.6, justifyContent:'center', alignItems:'center'}} >
+      <Text style={{fontFamily:'GoogleSans-Regular', textAlign:'center', fontSize:45, width:'80%', color:'#555' }}>OPPS!</Text>
+      <Text style={{fontFamily:'GoogleSans-Medium', textAlign:'center', fontSize:18, width:'80%', color:'#555', paddingBottom:5 }}>Burada hiç kitap yok!</Text>
+      {type=='account' 
+        ?<Text style={{fontFamily:'GoogleSans-Regular', textAlign:'center', fontSize:12, width:'70%', color:'#555' }}>Oturum açarak satın aldığınız kitaplara bu sayfadan kolayca erişebilirsiniz.</Text>
+        :<Text style={{fontFamily:'GoogleSans-Regular', textAlign:'center', fontSize:12, width:'70%', color:'#555' }}>Bir kitap satın aldığınızda burada görünür ve kolayca erişip okuyabilirsiniz.</Text>
+      }
+      <Text></Text>
+      { type=='account'      
+        ? <SubmitButton butonPress={butonPress} />
+        : null
+      }
+    </View>
+  )
+}
+
 
 const SearchResults = ({ products, fetching }) => {
   const HeaderComponent = ()=>{
@@ -150,6 +201,7 @@ const SearchResults = ({ products, fetching }) => {
         keyExtractor={(item, index) => "search-result-item-" + index}
         data={products}
         numColumns={2}
+        scrollEnabled={false}
         ListHeaderComponent={()=>HeaderComponent()}
         horizontal={false}
         renderItem={({ item }) => {

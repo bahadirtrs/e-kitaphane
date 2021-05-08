@@ -16,7 +16,6 @@ import { useFocusEffect } from '@react-navigation/native';
 import Icon from "react-native-vector-icons/Ionicons"
 import { TouchableOpacity } from "react-native"
 
-
 export default function BookDetailScreen({ navigation, route }) {
   const product = route.params.item
   const sharedKey = route.params.sharedKey
@@ -64,13 +63,11 @@ export default function BookDetailScreen({ navigation, route }) {
   useEffect(() => {
     getToken()
     .then(res => {
-      setToken(res),console.log(res)
+      setToken(res),
+      PageNumber()
+      console.log(res)
     })
     .catch(err => {console.log(err)})
-  }, [])
-
-  useEffect(() => {
-    PageNumber()
   }, [])
 
   const PageNumber = async() =>{
@@ -111,17 +108,20 @@ export default function BookDetailScreen({ navigation, route }) {
     navigation.push('LogIn')
   }
   return (
-    <View style={{flex: 1,  backgroundColor: "#1d3557" }}>
+    <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={'#1d3557'}/>
       <SafeAreaView/>
       <ScrollView >
-      <Image  style={styles.imageStyle} source={{uri: BASE_URL + "products/cover/" + product?.cover_image}} />
+      <Image 
+        style={styles.imageStyle} 
+        source={{uri: BASE_URL + "products/cover/" + product?.cover_image}} 
+      />
         <View style={styles.bookCoverArea}>
-          <View style={{flexDirection:'row',justifyContent:'space-between', alignItems:'center', paddingHorizontal:10 }} >
+          <View style={styles.headerBackButtonContainer} >
             <TouchableOpacity style={{padding:10}} onPress={()=>navigation.goBack()} >
               <Icon name="chevron-back-outline" size={25} color={"#fff"}/> 
             </TouchableOpacity>
-            <Text style={{fontSize:14, fontFamily:'GoogleSans-Medium', color:'#fff'}} >Kitap Detayları</Text>
+            <Text style={styles.headerTitle}>Kitap Detayları</Text>
             <TouchableOpacity style={{padding:10}} onPress={null} >
               <Icon name="ellipsis-horizontal-outline" size={25} color={"#fff"}/> 
             </TouchableOpacity>
@@ -140,7 +140,7 @@ export default function BookDetailScreen({ navigation, route }) {
         </View>
         <View style={styles.bookDetails}>
           <BookInfo
-            pdfUrl={null}
+            pdfUrl={pdfUrl}
             pageNumber={isPageNumber}
             sharedKey={sharedKey}
             id={product?.id}
@@ -184,9 +184,23 @@ export default function BookDetailScreen({ navigation, route }) {
   )
 }
 const styles = StyleSheet.create({
+  container:{
+    flex: 1,  
+    backgroundColor: "#1d3557" 
+  },
+  headerBackButtonContainer:{
+    flexDirection:'row',
+    justifyContent:'space-between', 
+    alignItems:'center', 
+    paddingHorizontal:10 
+  },
+  headerTitle:{
+    fontSize:14, 
+    fontFamily:'GoogleSans-Medium', 
+    color:'#fff'
+  },
   scrollView: {
     backgroundColor: "#FFF",
-   
   },
   bookCoverArea: {
     paddingTop:0,
@@ -195,9 +209,8 @@ const styles = StyleSheet.create({
   },
   bookDetails: {
     backgroundColor: "#FFF",
-    paddingBottom: 72,
+    paddingBottom: 96,
     flex: 1,
-    minHeight: Dimensions.get("window").height / 1.5,
   },
   readBuyButtonArea: {
     width: "100%",

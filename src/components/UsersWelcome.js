@@ -2,12 +2,12 @@ import React from 'react'
 import { View, Text,Image,TouchableOpacity,Dimensions,StyleSheet } from 'react-native'
 import Icon from "react-native-vector-icons/Ionicons"
 
-export default function UsersWelcome({warning, infoColor, setWarning}) {
+export default function UsersWelcome({warning, infoColor, setWarning, text}) {
     return (
         <View style={styles.container} >
           <Image  style={styles.imageStyle} source={require('../../assets/logom-sm.png')} />
           <Text style={[styles.welcomeTextDescription]}>
-            Birbirinden eşsiz kitapları okumak için oturum açın
+            {text}
           </Text>  
           { warning!='null' ?
           <View style={[styles.infoStyle,{backgroundColor:infoColor}]}> 

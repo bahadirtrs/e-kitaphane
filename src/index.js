@@ -15,6 +15,9 @@ import { createStackNavigator, TransitionPresets } from "@react-navigation/stack
 import { SafeAreaProvider } from "react-native-safe-area-context/src/SafeAreaContext"
 import Tab from './navigation/tabs'
 import { StatusBar } from "react-native"
+import codePush from "react-native-code-push";
+
+
 
 export const iosTransitionSpec = {
   animation: "spring",
@@ -80,4 +83,4 @@ const App = () => {
     </Provider>
   )
 }
-export default App
+export default codePush(App);

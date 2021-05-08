@@ -11,18 +11,17 @@ export default function WelcomeLogoLayout() {
 }
 const styles = StyleSheet.create({
     welcome:{
-        flex:2,
         justifyContent:'center',
         alignItems:'center',  
     },
     welcomeTitle:{
-        fontSize:44, 
+        fontSize:36, 
         color:'#fff', 
         fontFamily:'GoogleSans-Medium', 
         textAlign:'center'
     },
     welcomeDescription:{
-        fontSize:16,
+        fontSize:14,
         color:'#fff',
         fontFamily:'GoogleSans-Regular',
         textAlign:'center'

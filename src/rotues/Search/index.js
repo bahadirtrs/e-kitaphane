@@ -105,6 +105,7 @@ export default function SearchScreen({ navigation }) {
       <SafeAreaView backgroundColor={'#1d3557'} />
       <StatusBar backgroundColor='#1d3557' barStyle='light-content' />
        <View style={{ justifyContent:'center', alignItems:'center', paddingVertical:30,backgroundColor:'#1d3557'}}>
+          <Icon name="search-outline" size={70} color="#ccc" />
           <Text style={{color:'#fff', fontFamily:'GoogleSans-Medium', fontSize:24, paddingBottom:10}}> Kitap Ara</Text>
           <SearchBar
             value={term}

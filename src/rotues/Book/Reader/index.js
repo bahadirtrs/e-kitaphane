@@ -9,7 +9,8 @@ import { BASE_URL,endpoints } from "../../../utils/constants"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { Dimensions } from "react-native"
 import RequestManager from "../../../utils/requestManager"
-import RNSecureStorage from "rn-secure-storage"
+import RNSecureStorage from "rn-secure-storage";
+import Activator from '../../../components/Indicator/BeingIndicator'
 
 function getData(number) {
   //sayfa sayısı kadar görünüm oluşturma fonksiyonu
@@ -27,18 +28,20 @@ export default function ReaderScreen({ navigation, route }) {
     const [numberCurrent, setNumberCurrent] = useState(1)
     const [numberofPages, setNumberofPages] = useState(0)
     const [savePage, setSavePage] = useState(0)
-    const [isEnabled, setIsEnabled] = useState(false);
-    const [activity, setActivity] = useState(true)
-    const [isPageControllerHide, setPageControllerHide] = useState(false)
-    const [isZoomActive, setZoomActive] = useState(true)
+    const [isEnabled, setIsEnabled] = useState(true);
+    const [activity, setActivity] = useState(false)
+    const [isPageControllerHide, setPageControllerHide] = useState(true)
+    const [isZoomActive, setZoomActive] = useState(false)
     const [pdfUrl, setPdfUrl] = useState("")
     const [fetching, setFetching] = useState(false)
     const [previewBook, setPreviewBook] = useState(false)
+    const [containuePage, setContainuePage] = useState(0)
+    const [statusBarColor, setStatusBarColor] = useState('#1d3557')
     const SlideInLeft = useRef(new Animated.Value(0)).current;
-   //const source = { uri: BASE_URL +"api/show-preview/" + route.params.id, cache: true }
+    //const source = { uri: BASE_URL +"api/show-preview/" + route.params.id, cache: true }
     const source = { uri: BASE_URL +pdfUrl, cache: true }
    
-    const getCategories = useMemo(async() =>
+  const getShowPDF = useMemo(async() =>
     RequestManager({
       method: endpoints.showPDF.method,
       url: endpoints.showPDF.path +'/' +route.params.id,
@@ -49,10 +52,20 @@ export default function ReaderScreen({ navigation, route }) {
       },
     }),
   [],)
-  
+
     useEffect(() => {
-      setFetching(true)
-      getCategories
+      if(numberofPages>0){
+        setFetching(false)
+        setZoomActive(true)
+      }
+      setTimeout(() => {
+        setPageControllerHide(false)
+        fadeIn()
+      }, 3000);
+    }, [numberofPages])
+    
+    useEffect(() => {
+      getShowPDF
         .then(res => {
           setPdfUrl(res)
           setPreviewBook(true)
@@ -61,37 +74,40 @@ export default function ReaderScreen({ navigation, route }) {
           }, 1000)
         })
         .catch(err => {
+          setFetching(true)
           console.log(err)
           setPdfUrl('api/show-preview/'+route.params.id)
           setPreviewBook(false)
         })
-    }, [getCategories])
+    }, [getShowPDF])
 
 
     useEffect(() => {
       // Sayfaya girilince kalınan sayfa kontrolü
       const pageNum =JSON.stringify(route.params.id)
       const number = JSON.stringify(numberCurrent)
-      
       AsyncStorage.getItem(pageNum).then(item =>{
         if(item!==null){
           pageNumber=item;
-          AsyncStorage.getItem('autoSave').then(item =>{
+          AsyncStorage.getItem(`${pageNum}+autoSave`).then(item =>{
             if(item!==null){
-              if(item==='true'){
+              if(item==='false'){
                 Contiunie(pageNumber,route.params.id)
                 setIsEnabled(false)
-              }else if(item==='false'){
+              }else if(item==='true'){
                 setIsEnabled(true)
-                setNumberCurrent(Number(pageNumber));
+                setContainuePage(Number(pageNumber));
               }
+            }else{
             }
           })
         }else{
           AsyncStorage.setItem(pageNum,number); 
+          AsyncStorage.setItem(`${pageNum}+autoSave`, 'true'); 
           setSavePage(number)
         }
       })  
+
     },[])
 
     useEffect(() => {
@@ -123,6 +139,7 @@ export default function ReaderScreen({ navigation, route }) {
     },[]) //neden
   
     const fadeIn = () => {
+      setStatusBarColor('#fff')
       // Alt barın görünme animasyonu
       Animated.timing(SlideInLeft, {
         toValue: 1,
@@ -132,6 +149,7 @@ export default function ReaderScreen({ navigation, route }) {
     };
   
     const fadeOut = () => {
+      setStatusBarColor('#1d3557')
       // Alt barın kaybolma animasyonu
       Animated.timing(SlideInLeft, {
         toValue: 0,
@@ -157,6 +175,7 @@ export default function ReaderScreen({ navigation, route }) {
     if(params=='true'){
       setSavePage(item)
       AsyncStorage.setItem(pageNum, item);
+      setContainuePage(Number(item))
       setNumberCurrent(Number(item))
     }if(params=='false'){
       let pageNum =JSON.stringify(route.params.id)
@@ -172,6 +191,7 @@ export default function ReaderScreen({ navigation, route }) {
       [
         { text: "Evet",style: "cancel", onPress: () => {
           AsyncStorage.removeItem(pageNum);
+          setContainuePage(1)
           setNumberCurrent(1)
         }  
         },
@@ -182,8 +202,9 @@ export default function ReaderScreen({ navigation, route }) {
 
   const Contiunie =(item,params)=>{
     //Kalınan sayfayı uygulamaya active etme
-    if(isEnabled){
-      setNumberCurrent(Number(item));
+    if(!isEnabled){
+      setNumberCurrent(Number(item))
+      setContainuePage(Number(item));
     }else if(item!=='1'){
       Alert.alert(
         "Kaldığınız sayfayı unutmadık!",`Bu kitabın ${item} sayfasında kaldınız. Okumaya bu sayfadan devam etmek istermisiniz?`,
@@ -198,7 +219,7 @@ export default function ReaderScreen({ navigation, route }) {
   const ZoomActive = (scale)=>{
     //PDF de zoom yapıldığında ekranı temizleme
     console.log(scale)
-    if(scale>1.1){
+    if(scale>1.01){
       setZoomActive(false)
     }else{
       setZoomActive(true)
@@ -208,16 +229,20 @@ export default function ReaderScreen({ navigation, route }) {
   const itemTrue = ()=>{
     // Otomatik kayıt etme statusu
     const pageNum =JSON.stringify(route.params.id)
-    if(isEnabled)
-      AsyncStorage.setItem('autoSave', 'true'); 
-    else
-      AsyncStorage.setItem('autoSave', 'false'); 
-      Enable()
+    if(isEnabled){
+      AsyncStorage.setItem(`${pageNum}+autoSave`, 'false'); 
+      setIsEnabled(false)
+    }
+    else{
+      AsyncStorage.setItem(`${pageNum}+autoSave`, 'true'); 
+      setIsEnabled(true)
+    }
+
   }
 
   const Enable =()=>{
     // otomatik kayıt checkbox statusu
-    setIsEnabled(!isEnabled)
+   
   }
 
   const PageSave =()=>{
@@ -237,24 +262,24 @@ export default function ReaderScreen({ navigation, route }) {
       )
     }
   }
-
   const ScreenClick = async ()=>{
     //PDF ekranına tıklayınca alt ve üst barı kaybetme
     await setPageControllerHide(!isPageControllerHide); 
-    if(isPageControllerHide){
+    if(!isPageControllerHide){
       fadeOut()
     }else{
       fadeIn()
+      
     }
   }
 
   return (
   <>
     <View style={styles.container}> 
-   
+     
       {isPageControllerHide ?
         <SafeAreaView style={{ zIndex:1, position:'absolute', backgroundColor:'#1d3557', paddingBottom:0, paddingTop:5}}>
-          <StatusBar barStyle="light-content" backgroundColor={'#1d3557'}/>
+          <StatusBar barStyle="light-content" backgroundColor={statusBarColor}/>
           <PageHeaderBackLayout 
             type={'pdf'}
             butonColor={'#fff'} 
@@ -267,10 +292,16 @@ export default function ReaderScreen({ navigation, route }) {
             />  
         </SafeAreaView>
     :null}
-        <StatusBar barStyle="dark-content" backgroundColor={'#eee'}/>
+     <StatusBar barStyle="dark-content" backgroundColor={statusBarColor}/>
+     {fetching? 
+     <View style={{position:'absolute', zIndex:1, height:Dimensions.get('screen').height, width:Dimensions.get('screen').width, justifyContent:'center',alignItems:'center' }} >
+      <Activator title='Kitap yükleniyor' />
+     </View>
+     :null}
+      
     <Pdf
       source={source}
-      page={numberCurrent}
+      page={containuePage}
       horizontal={true}
       enablePaging={true}
       fitWidth={true}
@@ -278,30 +309,28 @@ export default function ReaderScreen({ navigation, route }) {
       onScaleChanged={(scale)=>ZoomActive(scale)}
       style={styles.pdf}
       onPageSingleTap={()=>ScreenClick()}
-      
       onLoadComplete={(numberOfPages, filePath) => {
         setNumberofPages(numberOfPages)
       }}
       onPageChanged={ (page) => {
           scrollToItem(page)
-          if(page !== 1 && numberCurrent){
-            setNumberCurrent(page)
-          }
+          setNumberCurrent(page)
         if(isEnabled){
           let pageNum =JSON.stringify(route.params.id)
           let number = JSON.stringify(page)
           AsyncStorage.setItem(pageNum, number); 
           setSavePage(number)
         }
-     
       }}
     />
+
+      
       <Animated.View style={[styles.numberCurrent, {
         transform: [
           {
             translateY: SlideInLeft.interpolate({
               inputRange: [0, 1],
-              outputRange: [600, 0]
+              outputRange: [0, 600]
             })
           }
         ],
@@ -309,6 +338,7 @@ export default function ReaderScreen({ navigation, route }) {
         <View style={{  position:'absolute', bottom:175,width:100, justifyContent:'center', alignItems:'center', backgroundColor:'#00000050', borderRadius:5}} >
           <Text style={styles.numberCurrentText} > {numberCurrent}/{numberofPages} </Text>
         </View>
+
         <View style={{width:Dimensions.get('screen').width, marginBottom:10, backgroundColor:'#eee', flexDirection:'row', justifyContent:'center',alignItems:'center', padding:5}} >
           {isEnabled
           ? <TouchableOpacity onPress={()=>itemTrue()} >
@@ -318,7 +348,7 @@ export default function ReaderScreen({ navigation, route }) {
               <Icon name="square-outline" size={20} color="#555" />
             </TouchableOpacity>
           }
-          <Text style={{fontFamily:'GoogleSans-Regular',color:'#555', fontSize:12}}> Kaldığım sayfayı otomatik olarak kaydet </Text>
+          <Text style={{fontFamily:'GoogleSans-Regular',color:'#555', fontSize:12}}>Kaldığım sayfayı otomatik olarak kaydet</Text>
         </View>
         <View style={{ width:Dimensions.get('screen').width, flexDirection:'column',justifyContent:'center', alignItems:'center'}} >
           <FlatList
@@ -330,8 +360,8 @@ export default function ReaderScreen({ navigation, route }) {
             getItemLayout={getItemLayout}
             data={getData(numberofPages)}
             renderItem={({ item, index}) => (
-              item-1==numberofPages ?null:
-                <TouchableOpacity activeOpacity={0.9} onPress={()=>setNumberCurrent(Number(item))} style={{width:Dimensions.get('screen').width,  backgroundColor:'#fff', width:65, height:90, borderColor: item==numberCurrent?'#1d3557':'#ccc', borderWidth:item==numberCurrent?3:1, marginHorizontal:10, marginVertical:5, borderRadius:5, justifyContent:'center', alignItems:'center'}} >
+              item-1==numberofPages ? null:
+                <TouchableOpacity activeOpacity={0.9} onPress={()=>setContainuePage(Number(item))} style={{width:Dimensions.get('screen').width,  backgroundColor:'#fff', width:65, height:90, borderColor: item==numberCurrent?'#1d3557':'#ccc', borderWidth:item==numberCurrent?3:1, marginHorizontal:10, marginVertical:5, borderRadius:5, justifyContent:'center', alignItems:'center'}} >
                 <View style={{width:Dimensions.get('screen').width,  zIndex:1, width:65, height:90, backgroundColor:'#1d355701', position:'absolute', justifyContent:'center', alignItems:'center'}}>
                   <Text style={{fontFamily:'GoogleSans-Regular', color:'#333', fontSize:14}}>{item}</Text>
                 </View>
@@ -344,14 +374,14 @@ export default function ReaderScreen({ navigation, route }) {
       {!isPageControllerHide && isZoomActive
       ? 
       <>
-      <View style={{ position:'absolute', bottom:60, justifyContent:'center', alignItems:'center', width:Dimensions.get('screen').width }} >
+      <View style={{ position:'absolute', bottom:40, justifyContent:'center', alignItems:'center', width:Dimensions.get('screen').width }} >
          <View style={{ width:100, justifyContent:'center', alignItems:'center', backgroundColor:'#00000050', borderRadius:5}} >
            <Text style={styles.numberCurrentText}> {numberCurrent}/{numberofPages} </Text>
           </View>
         </View>
         <View style={{ position:'absolute', top:50, justifyContent:'center', alignItems:'center', width:Dimensions.get('screen').width }} >
          <View style={{justifyContent:'center', alignItems:'center', backgroundColor:'#00000050', borderRadius:5}} >
-           <Text style={styles.numberCurrentTextPage} > En son kaydedilen sayfa: {savePage} </Text>
+           <Text style={styles.numberCurrentTextPage}> En son kaydedilen sayfa: {savePage} </Text>
           </View>
         </View>
       </>

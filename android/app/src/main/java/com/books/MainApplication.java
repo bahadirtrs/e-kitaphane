@@ -1,7 +1,8 @@
 package com.books;
 
+import com.microsoft.codepush.react.CodePush;
 import android.app.Application;
-
+import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
@@ -38,6 +39,11 @@ public class MainApplication extends Application implements ReactApplication {
                 protected JSIModulePackage getJSIModulePackage() {
                     return new ReanimatedJSIModulePackage(); // <- add
                 }
+
+                @Override
+                protected String getJSBundleFile() {
+                   return CodePush.getJSBundleFile();
+        }
             };
 
     @Override

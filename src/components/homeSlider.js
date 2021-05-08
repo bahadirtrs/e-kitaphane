@@ -19,9 +19,7 @@ const HomeSlider = ({ request }) => {
     getSliders
       .then(res => {
         setSliders(res)
-        setTimeout(() => {
-          setFetching(false)
-        }, 500)
+        setFetching(false)
       })
       .catch(err => {
         setFetching(false)

@@ -24,6 +24,7 @@ const BookCover = (product) => {
     </View>
   )
 }
+
 const BookDetails = (product)=>{
  return(
   <View>
@@ -80,13 +81,13 @@ const BookInfo = (product) => {
               title: product?.title 
             })}
             style={styles.summaryButtonView}>
-            <IconPack name="open-book" color={"#333"} size={24} />
+            <IconPack name="open-book" color={"#333"} size={20} />
             <Text style={styles.summaryButtonText}>Kitap önizlemesine gözat </Text>
           </Pressable>
         :
           <Pressable
             style={styles.summaryButtonView}>
-            <IconPack name="open-book" color={"#333"} size={24} />
+            <Icon name="alert-circle-outline" color={"#333"} size={24} />
             <Text style={styles.summaryButtonText}>Tanıtım kitabı bulunmamaktadır. </Text>
           </Pressable>
        :  undefined}
@@ -228,12 +229,12 @@ const styles = StyleSheet.create({
     borderTopColor: "#f1f1f1",
   },
   summaryButtonText: {
-    fontFamily:'GoogleSans-Bold',
-    fontSize: 16,
+    fontFamily:'GoogleSans-Medium',
+    fontSize: 15,
     color: "#6B7280",
     lineHeight: 20,
     paddingVertical: 8,
-    paddingLeft: 12,
+    paddingLeft: 6,
   },
 })
 module.exports = { BookCover: BookCover, BookInfo: BookInfo, BookDetails:BookDetails }

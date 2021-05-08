@@ -189,7 +189,7 @@ useEffect(() => {
       await RNSecureStorage.set("user_mail", mail, { accessible: ACCESSIBLE.WHEN_UNLOCKED })
         setWarning('Bilgiler sisteme kaydedildi')
         setTimeout(() => {
-          navigation.push('Anasayfa')
+          navigation.navigate('Anasayfa')
         }, 400);
     } catch (e) {
       throw new Error(e)
@@ -199,18 +199,19 @@ useEffect(() => {
   return (
     <>
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
-     <SafeAreaView/>
-     <StatusBar backgroundColor='#f1f1f1' />
-     <HeaderBackLayout 
-          butonColor={'#1d3557'} 
-          butonPress={()=>navigation.goBack()}
-          butonPressRight={()=>setHelpVisible(true)}
-          pageName={''}
-      />
+      <SafeAreaView backgroundColor={'#f1f1f1'} />
+      <StatusBar barStyle={'dark-content'}  backgroundColor={'#f1f1f1'} />
+      <HeaderBackLayout 
+            butonColor={'#1d3557'} 
+            butonPress={()=>navigation.goBack()}
+            butonPressRight={()=>setHelpVisible(true)}
+            pageName={''}
+        />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.inner}>
           <View style={{justifyContent:'center', alignItems:'center'}} >
           <UsersWelcome warning={warning} 
+            text={'Birbirinden eşsiz kitapları okumak için kayıt olun'}
             infoColor={infoColor} setWarning={()=>setWarning('null')}/>
          <TwoInputText
             type={'name'} 
@@ -259,6 +260,7 @@ useEffect(() => {
             </View>
         </View>
         <ActiveButton
+        text={'Kayıt Ol'}
           isLogInFormControl={()=>CreateAccountControl()}
           buttonClick={buttonClick}
         />

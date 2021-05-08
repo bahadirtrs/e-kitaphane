@@ -19,7 +19,7 @@ export default function BookCategories({ navigation, route }) {
   }, [navigation, route.params.item])
 
   const product = route.params.item
-  const sharedKey = route.params.sharedKey
+  const title = route.params.title
   return (
     <View style={{flex: 1, backgroundColor: "#F3F4F6" }}>
       <SafeAreaView backgroundColor={'#1d3557'} />
@@ -28,7 +28,7 @@ export default function BookCategories({ navigation, route }) {
         butonColor={'#fff'} 
         butonPress={()=>navigation.goBack()}
         butonPressRight={null}
-        title={route.params?.pageName}
+        title={route.params?.title}
         backgrounColor={'#1d3557'}
         />
         <View style={styles.bookDetails}>

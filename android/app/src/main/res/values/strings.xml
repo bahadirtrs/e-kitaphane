@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">e-Kitaphane</string>
-</resources>
+    <string moduleConfig="true" name="CodePushDeploymentKey">09LsOdm_gqghavTT0RiqeSscXUs-e-oEkeAUc</string>
+ </resources>
+

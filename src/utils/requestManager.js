@@ -133,7 +133,7 @@ const refreshSession = async () => {
 export const logout = () => {
   removeTokens()
     .then(() => {
-      navigation.push('Anasayfa')
+      navigation.navigate('Anasayfa')
     })
     .catch(() => {
       // LOGOUT ERROR

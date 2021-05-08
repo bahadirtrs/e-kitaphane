@@ -1,4 +1,4 @@
-import { View, StyleSheet, KeyboardAvoidingView, TextInput, StatusBar, Platform, TouchableWithoutFeedback, Button, Keyboard  } from 'react-native';
+import { View, StyleSheet, KeyboardAvoidingView, Text, StatusBar, Platform, TouchableWithoutFeedback, Button, Keyboard  } from 'react-native';
 import React,{useState,useMemo, useEffect} from "react"
 import { BASE_URL,endpoints, CLIENT_ID, CLIENT_SECRET} from "../../utils/constants"
 import { SafeAreaView } from "react-native"
@@ -14,6 +14,8 @@ import HelpModal from '../../components/HelpModal'
 import axios from "axios"
 import RequestManager from "../../utils/requestManager"
 import RNSecureStorage, { ACCESSIBLE } from "rn-secure-storage"
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Dimensions } from 'react-native';
 
 export default function LogIn({navigation}) {
 
@@ -129,7 +131,7 @@ export default function LogIn({navigation}) {
           await RNSecureStorage.set("user_mail", mail, { accessible: ACCESSIBLE.WHEN_UNLOCKED })
           setWarning('Bilgiler sisteme kaydedildi')
           setTimeout(() => {
-            navigation.push('Anasayfa')
+            navigation.navigate('Anasayfa')
         }, 500);
         } catch (e) {
           throw new Error(e)
@@ -155,10 +157,10 @@ export default function LogIn({navigation}) {
   return (
     <>
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
-     <SafeAreaView/>
-     <StatusBar backgroundColor='#f1f1f1' />
+     <SafeAreaView backgroundColor={'#f1f1f1'} />
+      <StatusBar barStyle={'dark-content'}  backgroundColor={'#f1f1f1'} />
       <HeaderBackLayout 
-        butonColor={'#118ab2'} 
+        butonColor={'#1d3557'} 
         butonPress={()=>navigation.goBack()}
         butonPressRight={()=>setHelpVisible(true)}
         pageName={''}
@@ -167,7 +169,9 @@ export default function LogIn({navigation}) {
         <View style={styles.inner}>
           <View style={{justifyContent:'center', alignItems:'center'}} >
           <UsersWelcome warning={warning} 
-            infoColor={infoColor} setWarning={()=>setWarning('null')}/>
+            infoColor={infoColor} setWarning={()=>setWarning('null')}
+            text={'Birbirinden eşsiz kitapları okumak için oturum açın'}
+            />
           <TextInputCom
             placeholder={"Mail Adresi"} value={email}
             onChangeText={(text)=>setemail(text)} type={'email'}
@@ -177,7 +181,14 @@ export default function LogIn({navigation}) {
             value={password} onChangeText={(text)=>setpassword(text)}
             passwordHide={passwordHide} setPasswordHide={()=>setPasswordHide(!passwordHide)}
           />
+          <TouchableOpacity style={{justifyContent:'flex-end'}} >
+            <View style={{justifyContent:'flex-end', alignItems:'flex-end',  width:Dimensions.get('screen').width*0.85, padding:10}} >
+              <Text style={{fontFamily:'GoogleSans-Medium', color:'#555'}} >Şifremi unuttum</Text>
+            </View>
+          </TouchableOpacity>
+
           <ActiveButton
+          text={'Oturum Aç      '}
             isLogInFormControl={()=>isLogInFormControl()}
             buttonClick={buttonClick}
           />

@@ -15,14 +15,13 @@ function BooksList({ sharedKey, title = "", onPress, request, categoryID, column
     getProducts
       .then(res => {
         setProducts(res.data)
-        setTimeout(() => {
           setFetching(false)
-        }, 500)
       })
       .catch(err => {
         setFetching(false)
       })
   }, [getProducts])
+
 
   return (
     <View style={styles.container}>
