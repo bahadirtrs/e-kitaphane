@@ -1,17 +1,18 @@
-import { Pressable, Image, StyleSheet, Text, View, Dimensions } from "react-native"
+import {StyleSheet, Text, View, Dimensions } from "react-native"
 import FastImage from "react-native-fast-image"
 import React from "react"
 import { useNavigation } from "@react-navigation/native"
 import { BASE_URL, bookCoverRatio } from "../utils/constants"
 import { numberFormat } from "../utils/utils"
 import SkeletonPlaceholder from "react-native-skeleton-placeholder"
-import { SharedElement } from "react-navigation-shared-element"
 import { TouchableOpacity } from "react-native"
 
 export default function BooksItem({ item, sharedKey }) {
   const { push } = useNavigation()
   return (
-    <TouchableOpacity activeOpacity={0.9} style={styles.container} onPress={() => push("BookDetail", { sharedKey: sharedKey, item: item , image:item?.cover_image })}>
+    <TouchableOpacity activeOpacity={0.9} style={styles.container} 
+      onPress={() => push("BookDetail", {sharedKey: sharedKey, item: item , image:item?.cover_image })}
+    >
       <View style={styles.bookImage}>
         <View>
         <FastImage

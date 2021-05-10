@@ -8,6 +8,8 @@ import MyLibrary from './rotues/Library/MyLibrary'
 import BookDetailScreen from "./rotues/Book/Detail"
 import BookCategories from "./rotues/Book/Categories"
 import ReaderScreen from "./rotues/Book/Reader"
+import Support from "./rotues/Support"
+import SupportMessageDetail from './rotues/Support/SupportMessageDetail'
 import Splashscreen from './rotues/Splashscreen'
 import { createSharedElementStackNavigator } from "react-navigation-shared-element"
 import SearchScreen from "./rotues/Search"
@@ -16,7 +18,6 @@ import { SafeAreaProvider } from "react-native-safe-area-context/src/SafeAreaCon
 import Tab from './navigation/tabs'
 import { StatusBar } from "react-native"
 import codePush from "react-native-code-push";
-
 
 
 export const iosTransitionSpec = {
@@ -66,6 +67,8 @@ function MainStackScreen() {
       <MainStack.Screen name="BookCategories" options={{headerShown: false}} component={BookCategories}/>
       <MainStack.Screen name="Reader" component={ReaderScreen} />
       <MainStack.Screen name="Search" component={SearchScreen} />
+      <MainStack.Screen name="DestekDetay" options={{headerShown: false}}  component={SupportMessageDetail} />
+      <MainStack.Screen name="Destek" options={{headerShown: false}} component={Support} />
     </MainStack.Navigator>
   )
 }

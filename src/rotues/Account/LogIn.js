@@ -112,7 +112,7 @@ export default function LogIn({navigation}) {
           setUserInfo(res)
           setWarning('Giriş bilgileri sisteme kaydediliyor...')
           setTimeout(() => {
-            storeUserInfo(res.id,res.first_name,res.email)
+            storeUserInfo(res.id,res.first_name,res.last_name,res.email)
             setFetching(false)
             //navigation.replace('Anasayfa');
         }, 500);
@@ -124,10 +124,11 @@ export default function LogIn({navigation}) {
         })
     }
      
-      const storeUserInfo = async (id, name, mail) => {
+      const storeUserInfo = async (id, name,lastname, mail) => {
         try {
           await RNSecureStorage.set("user_id", JSON.stringify(id), { accessible: ACCESSIBLE.WHEN_UNLOCKED })
           await RNSecureStorage.set("user_name", name, { accessible: ACCESSIBLE.WHEN_UNLOCKED })
+          await RNSecureStorage.set("user_lastname", lastname, { accessible: ACCESSIBLE.WHEN_UNLOCKED })
           await RNSecureStorage.set("user_mail", mail, { accessible: ACCESSIBLE.WHEN_UNLOCKED })
           setWarning('Bilgiler sisteme kaydedildi')
           setTimeout(() => {

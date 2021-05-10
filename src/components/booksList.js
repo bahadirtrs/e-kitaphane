@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react"
 import { Dimensions } from "react-native"
+import { ActivityIndicator } from "react-native"
 import { FlatList, StyleSheet, Text, View } from "react-native"
 import RequestManager from "../utils/requestManager"
 import BooksItem, { BooksItemPlaceholder } from "./booksItem"
@@ -18,10 +19,9 @@ function BooksList({ sharedKey, title = "", onPress, request, categoryID, column
           setFetching(false)
       })
       .catch(err => {
-        setFetching(false)
+        setFetching(true)
       })
   }, [getProducts])
-
 
   return (
     <View style={styles.container}>
@@ -42,16 +42,8 @@ function BooksList({ sharedKey, title = "", onPress, request, categoryID, column
         keyExtractor={(item, index) => "featured-item-" + index}
         renderItem={({ item }) => {
           if (fetching) {
-            if(columnType=='categorys'){
-              return <CategorysItemPlaceholder />
-            }else{
-              return <BooksItemPlaceholder />
-            }
-
-          }
-          if(columnType=='categorys'){
-            return <CategorysItem categoryID={categoryID} sharedKey={sharedKey} item={item} />
-          }else{
+            return <ActivityIndicator />
+          }{
             return <BooksItem categoryID={categoryID} sharedKey={sharedKey} item={item} />
           }
         }}

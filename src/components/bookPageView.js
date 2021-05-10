@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 import { Text, View, FlatList, Dimensions, Button, StyleSheet } from 'react-native';
 
 const { width } = Dimensions.get('window');
-
 const style = {
   justifyContent: 'center',
   alignItems: 'center',

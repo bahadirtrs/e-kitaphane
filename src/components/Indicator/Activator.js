@@ -21,7 +21,7 @@ export default class ActivatorActivator extends Component {
     Animated.loop(
       Animated.timing(this.state.rotateValue, {
         toValue: 1,
-        duration: 800,
+        duration: 1500,
         Infinite: true,
         useNativeDriver:false
       })
@@ -43,19 +43,18 @@ export default class ActivatorActivator extends Component {
                 })
               }
             ],
-            height: 80,
-            width: 80,
+            height: 130,
+            width: 130,
             margin: 5,
             borderWidth: 2,
             borderColor: "#bbb",
-            borderBottomColor: "#1d3557",
-            borderRadius: 50,
+            borderColor: "#1d3557",
+            borderRadius: 40,
             justifyContent: "center",
             position:'absolute',
           }}
         />
-          <Image style={{width:40, height:40}}  source={require('../../../assets/books-logo-cover.png')} />
-        <Animated.View/>
+          <Image style={{width:50, height:50}}  source={require('../../../assets/books-logo-cover.png')} />
         <Animated.View />
       </View>
       </>

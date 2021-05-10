@@ -173,7 +173,7 @@ useEffect(() => {
         setTimeout(() => {setFetching(false)}, 200)
         setWarning('Bilgiler sisteme ekleniyor')
         setTimeout(() => {  
-          storeUserInfo(res.id,res.first_name,res.email)
+          storeUserInfo(res.id,res.first_name,res.last_name,res.email)
         }, 300);
       })
       .catch(err => {
@@ -182,10 +182,11 @@ useEffect(() => {
       })
   }
 
-  const storeUserInfo = async (id, name, mail) => {
+  const storeUserInfo = async (id, name,lastname, mail) => {
     try {
       await RNSecureStorage.set("user_id", JSON.stringify(id), { accessible: ACCESSIBLE.WHEN_UNLOCKED })
       await RNSecureStorage.set("user_name", name, { accessible: ACCESSIBLE.WHEN_UNLOCKED })
+      await RNSecureStorage.set("user_lastname", lastname, { accessible: ACCESSIBLE.WHEN_UNLOCKED })
       await RNSecureStorage.set("user_mail", mail, { accessible: ACCESSIBLE.WHEN_UNLOCKED })
         setWarning('Bilgiler sisteme kaydedildi')
         setTimeout(() => {
@@ -211,7 +212,7 @@ useEffect(() => {
         <View style={styles.inner}>
           <View style={{justifyContent:'center', alignItems:'center'}} >
           <UsersWelcome warning={warning} 
-            text={'Birbirinden eşsiz kitapları okumak için kayıt olun'}
+            text={'Birbirinden eşsiz kitapları okumak için kayıt olun!'}
             infoColor={infoColor} setWarning={()=>setWarning('null')}/>
          <TwoInputText
             type={'name'} 

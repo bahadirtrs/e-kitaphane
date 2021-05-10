@@ -38,45 +38,43 @@ const ReadButton = (data) => {
   }, [getCategories])
   
   if(userInfo){
-  return (
-    <TouchableOpacity activeOpacity={0.9} style={({ pressed }) => (pressed ? { opacity: 0.9 } : { opacity: 1 })} onPress={data.bookViewPress}>
-      <View style={[styles.buttonContainer, { backgroundColor: "#2b4768" }]}>
-        <View style={styles.buttonContent}>
-          <View style={styles.buttonTextAndIcon}>
-            <Icon name="book" size={24} color="#FFF" />
-            <Text style={styles.readButtonText}> {data.pageAll>0 ?  data.pageAll===data.page ? 'Kitabı Tekrar Oku' :'Okumaya Devam Et': 'Okumaya Başla'} </Text>
+    return (
+      <TouchableOpacity activeOpacity={0.9} style={({ pressed }) => (pressed ? { opacity: 0.9 } : { opacity: 1 })} onPress={data.bookViewPress}>
+        <View style={[styles.buttonContainer, { backgroundColor: "#2b4768" }]}>
+          <View style={styles.buttonContent}>
+            <View style={styles.buttonTextAndIcon}>
+              <Icon name="book" size={24} color="#FFF" />
+              <Text style={styles.readButtonText}> {data.pageAll>0 ?  data.pageAll===data.page ? 'Kitabı Tekrar Oku' :'Okumaya Devam Et': 'Okumaya Başla'} </Text>
+            </View>
+            <View style={styles.readButtonCompleteView}>
+              <Text style={styles.readButtonCompletePercent}> {data.pageAll>0 ? data.page+'/'+data.pageAll:' ' } </Text>
+            </View>
           </View>
-          <View style={styles.readButtonCompleteView}>
-            <Text style={styles.readButtonCompletePercent}> {data.pageAll>0 ? data.page+'/'+data.pageAll:' ' } </Text>
-            {//Number(data.page)!==1 && Number(data.pageAll)>1  ? completePercent:'1' 
-            }
-          </View>
+          <View style={[styles.completePercentView, { width: Number(data.page)!==1 && Number(data.pageAll)!==1 ? completePercent+5 + "%":0   }]} />
         </View>
-        <View style={[styles.completePercentView, { width: Number(data.page)!==1 && Number(data.pageAll)!==1 ? completePercent+5 + "%":0   }]} />
-      </View>
-    </TouchableOpacity>
-  )
-}else{
-  return (
-    <TouchableOpacity activeOpacity={0.9} style={({ pressed }) => (pressed ? { opacity: 0.9 } : { opacity: 1 })} onPress={ data?.buyStatus? data.bookViewPress :data.onPress}>
-      <View style={[styles.buttonContainer, { backgroundColor: "#2b4768" }]}>
-        <View style={styles.buttonContent}>
-          <View style={styles.buttonTextAndIcon}>
-            {data.loading
-              ? <ActivityIndicator color='#fff' />
-              : <Icon name={data?.buyStatus?'book':"basket"} size={24} color="#FFF" />
-            }
-            <Text style={styles.readButtonText}>{data.text}</Text>
+      </TouchableOpacity>
+    )
+  }else{
+    return (
+      <TouchableOpacity activeOpacity={0.9} style={({ pressed }) => (pressed ? { opacity: 0.9 } : { opacity: 1 })} onPress={ data?.buyStatus? data.bookViewPress :data.onPress}>
+        <View style={[styles.buttonContainer, { backgroundColor: "#2b4768" }]}>
+          <View style={styles.buttonContent}>
+            <View style={styles.buttonTextAndIcon}>
+              {data.loading
+                ? <ActivityIndicator color='#fff' />
+                : <Icon name={data?.buyStatus?'book':"basket"} size={24} color="#FFF" />
+              }
+              <Text style={styles.readButtonText}>{data.text}</Text>
+            </View>
+            <View style={styles.readButtonCompleteView}>
+              <Text style={styles.readButtonCompletePercent}> {data?.buyStatus?null:data.price}</Text>
+            </View>
           </View>
-          <View style={styles.readButtonCompleteView}>
-            <Text style={styles.readButtonCompletePercent}> {data?.buyStatus?null:data.price}</Text>
-          </View>
+          <View style={[styles.completePercentView, {width:0}]} />
         </View>
-        <View style={[styles.completePercentView, {width:0}]} />
-      </View>
-    </TouchableOpacity>
-  )
-}
+      </TouchableOpacity>
+    )
+  }
 }
 
 const styles = StyleSheet.create({

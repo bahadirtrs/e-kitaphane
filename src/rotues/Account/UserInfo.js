@@ -5,7 +5,7 @@ import { endpoints } from "../../utils/constants"
 import RNSecureStorage, { ACCESSIBLE } from "rn-secure-storage"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import UserBooksItem, { BooksItemPlaceholder } from "../../components/UserBookItem"
-
+import ChangePassword from '../../components/ChangePassword'
 import {logout} from "../../utils/requestManager"
 import AsyncStorage from '@react-native-community/async-storage';
 import  Icon  from "react-native-vector-icons/Ionicons"
@@ -14,6 +14,7 @@ import { SafeAreaView, FlatList } from "react-native"
 import { StatusBar } from "react-native"
 import moment from 'moment'
 import 'moment/locale/tr'
+import { ScrollView } from "react-native"
 moment.locale('tr')
 export default function UserInfo({navigation}) {
 
@@ -26,6 +27,7 @@ export default function UserInfo({navigation}) {
     const [userInfo, setUserInfo] = useState([])
     const [fetching, setFetching] = useState(false)
     const [ownedBooks, setOwnedBooks] = useState("")
+    const [changePasswordModal, setChangePasswordModal] = useState(false)
     const getCategories = useMemo(async() =>
       RequestManager({
         method: endpoints.user.method,
@@ -81,9 +83,21 @@ export default function UserInfo({navigation}) {
       }
 
     return (
+      <>
+      <SafeAreaView  backgroundColor={'#1d3557'}  />
+      <StatusBar backgroundColor={'#1d3557'} barStyle={'light-content'} />
       <View style={styles.container}>
-        <SafeAreaView backgroundColor={'#1d3557'}/>
-        <StatusBar barStyle={'light-content'}  backgroundColor={'#1d3557'}/>
+      
+        <View style={styles.headerBackButtonContainer} >
+            <TouchableOpacity style={{padding:10}} onPress={()=>navigation.goBack()} >
+              <Icon name="chevron-back-outline" size={25} color={"#fff"}/> 
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Kullanıcı Bilgileri</Text>
+            <TouchableOpacity style={{padding:10}} onPress={null} >
+              <Icon name="ellipsis-horizontal-outline" size={25} color={"#fff"}/> 
+            </TouchableOpacity>
+          </View>
+          <ScrollView>
         <View style={styles.headerContainer} >
           <View>
             <Icon name={'person-circle-outline'} size={100} color={'#fff'} />
@@ -106,6 +120,14 @@ export default function UserInfo({navigation}) {
             <Text style={styles.itemOne}>Mail adresi: </Text>
             <Text style={styles.itemTwo} >{userInfo.email}</Text>
           </View>
+
+          <View  style={styles.itemArc}>
+            <Text style={styles.itemOne}>Parola:  </Text>
+            <TouchableOpacity activeOpacity={0.4} onPress={()=>setChangePasswordModal(!changePasswordModal)} >
+             <Text style={[styles.itemTwo, {fontFamily:'GoogleSans-Medium'}]}>Parolayı güncelle</Text>
+            </TouchableOpacity>
+          </View>
+
           <View  style={styles.itemArc}>
             <Text style={styles.itemOne}>Kayıt Tarihi: </Text>
             <Text style={styles.itemTwo}>
@@ -113,37 +135,59 @@ export default function UserInfo({navigation}) {
               {' '}
               {moment(userInfo.created_at).format('dddd')}</Text>
           </View>
+         
+
+         
+
         </View>
         <View style={styles.itemTitle}>
           <Text style={styles.itemTitleText}>Satın Alınan Kitaplar</Text>
         </View>
         <View style={styles.listContainer} >
-        <FlatList
-          keyExtractor={(item, index) => "search-result-item-" + index}
-          scrollEnabled={true}
-          //inverted={true}
-          horizontal={true}
-          scrollEnabled={true}
-          alignItems={'center'}
-          showsHorizontalScrollIndicator={false}
-          showsVerticalScrollIndicator={false}
-          data={ownedBooks}
-            renderItem={({ item,index }) => {
-                return (
-                  index==0 
-                  ? <View style={{paddingLeft:20}}>
-                       <UserBooksItem sharedKey={"Kitaplar"} item={item}/>
-                    </View> 
-                  : <UserBooksItem sharedKey={"Kitaplar"} item={item}/>
-                   // <Text style={{fontFamily:'GoogleSans-Regular', fontSize:14}} > * {item.title} </Text>
-                )
-            }}
-        />
+          {ownedBooks.length>0
+          ?<FlatList
+              keyExtractor={(item, index) => "search-result-item-" + index}
+              scrollEnabled={true}
+              //inverted={true}
+              horizontal={true}
+              scrollEnabled={true}
+              alignItems={'center'}
+              showsHorizontalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
+              data={ownedBooks}
+                renderItem={({ item,index }) => {
+                    return (
+                      index==0 
+                      ? <View style={{paddingLeft:20,}}>
+                          <UserBooksItem sharedKey={"Kitaplar"} item={item}/>
+                        </View> 
+                      : <UserBooksItem sharedKey={"Kitaplar"} item={item}/>
+                      // <Text style={{fontFamily:'GoogleSans-Regular', fontSize:14}} > * {item.title} </Text>
+                    )
+                }}
+            />
+          :
+          <View style={{width:Dimensions.get('screen').width, flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
+            <Icon name="information-circle-outline" size={25} color={"#333"}/> 
+            <Text style={{fontFamily:'GoogleSans-Regular', color:'#333'}}> Şuana kadar hiç kitap satın alınmamış</Text>
+          </View>
+          }
         </View>
+        <View style={{width:Dimensions.get('screen').width, justifyContent:'center', alignItems:'center', marginVertical:20}} >
         <TouchableOpacity style={styles.logoutButton}  activeOpacity={0.9} onPress={()=>isLogoutUser()} >
           <Text style={styles.buttonText}>Çıkış Yap</Text>
         </TouchableOpacity>
+        </View>
+        <ChangePassword
+          first_name={userInfo.first_name}
+          last_name={userInfo.last_name}
+          email={userInfo.email}
+          visible={changePasswordModal}
+          setVisible={()=>setChangePasswordModal(!changePasswordModal)}
+        />
+        </ScrollView>
       </View>
+      </>
     )
 }
 const styles = StyleSheet.create({
@@ -153,7 +197,19 @@ const styles = StyleSheet.create({
         justifyContent:'flex-start',
         alignItems:'center'
     },
-    
+    headerBackButtonContainer:{
+      width:Dimensions.get('window').width,
+      backgroundColor:'#1d3557',
+      flexDirection:'row',
+      justifyContent:'space-between', 
+      alignItems:'center', 
+      paddingHorizontal:10 
+    },
+    headerTitle:{
+      fontSize:14, 
+      fontFamily:'GoogleSans-Medium', 
+      color:'#fff'
+    },
     headerContainer:{
       justifyContent:'center', 
       alignItems:'center', 
@@ -173,7 +229,7 @@ const styles = StyleSheet.create({
       paddingHorizontal:30, 
       paddingBottom:5, 
       paddingTop:10, 
-      borderBottomColor:'#bbb', 
+      borderBottomColor:'#ccc', 
       borderBottomWidth:1
     },
     itemTitleText:{
@@ -208,10 +264,12 @@ const styles = StyleSheet.create({
       paddingHorizontal:0
     },
     logoutButton:{
+      justifyContent:'center',
+      alignItems:'center',
+      width:300,
       backgroundColor:'#1d3557', 
       paddingVertical:10, 
-      paddingHorizontal:100, 
-      marginTop:20, 
+      paddingHorizontal:30, 
       borderRadius:10
     },
     buttonText:{

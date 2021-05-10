@@ -26,7 +26,7 @@ const PrivacyPolicy = ({visible, setVisible}) => {
           </View>
         </View>
       </Modal>
-     
+
     </View>
   );
 };

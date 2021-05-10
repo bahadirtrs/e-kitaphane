@@ -3,6 +3,7 @@ import { SafeAreaView } from 'react-native'
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Icon from 'react-native-vector-icons/Ionicons';
 import Home from '../rotues/Home'
+import Support from '../rotues/Support'
 import SearchScreen from "../rotues/Search"
 import MyLibrary from '../rotues/Library/MyLibrary'
 
@@ -35,7 +36,7 @@ const Tabs = () => {
                             return (<Icon  name={'search-outline'} size={25} color={tintColor}/>)
                         case "Bildirimler":
                             return (<Icon  name={'notifications-outline'} size={25} color={tintColor}/>)
-                        case "Mesajlar":
+                        case "Destek":
                             return (<Icon  name={'mail-outline'} size={25} color={tintColor}/>)
                         case "Kütüphane":
                             return (<Icon  name={'book-outline'} size={25} color={tintColor}/>)
@@ -48,7 +49,7 @@ const Tabs = () => {
             <Tab.Screen name="Arama" component={SearchScreen}/>
             <Tab.Screen name="Bildirimler" component={Home}/>
             <Tab.Screen name="Kütüphane" component={MyLibrary}/>
-            <Tab.Screen name="Mesajlar" component={Home}/>
+            <Tab.Screen name="Destek" component={Support}/>
         </Tab.Navigator>
         <SafeAreaView backgroundColor='#fff' />
         </>

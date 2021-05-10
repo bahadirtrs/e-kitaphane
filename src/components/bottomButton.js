@@ -7,8 +7,8 @@ const BottomButton = ({ onPress, title, containerStyle }) => {
   const insets = useSafeAreaInsets()
   return (
     <TouchableOpacity
-    activeOpacity={0.9}
-      style={[styles.container, containerStyle, { paddingBottom: Math.max(insets.bottom, 18) }]}
+      activeOpacity={0.9}
+      style={[styles.container, containerStyle, {paddingBottom: Math.max(insets.bottom, 18) }]}
       onPress={onPress}>
       <Text style={styles.text}>{title}</Text>
     </TouchableOpacity>

@@ -1,6 +1,5 @@
 import React, { useCallback,useEffect, useState, useMemo } from "react"
 import { TouchableOpacity, FlatList, View,Text,StyleSheet } from "react-native"
-import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { useFocusEffect } from "@react-navigation/native"
 import { StatusBar } from "react-native"
 import { ScrollView } from "react-native"
@@ -12,8 +11,7 @@ import SplashScreen from "react-native-splash-screen"
 import Icon from "react-native-vector-icons/Ionicons"
 import Logom from '../../components/logo'
 import RequestManager from "../../utils/requestManager"
-import PleaseWait from "../../components/pleaseWait";
-import RNSecureStorage from "rn-secure-storage";
+import NetworkError from '../../components/NetworkError'
 import Activator from '../../components/Indicator/Activator'
 import getStyles from './styles'
 // appcenter codepush release-react -a bhdrtrs/ebooks -d Production
@@ -32,7 +30,7 @@ const categoriesIcon = {
 export default function HomeScreen({ navigation }){
   const styles=getStyles();
   const [categories, setCategories] = useState([])
-  const [fetching, setFetching] = useState(false)
+  const [fetching, setFetching] = useState(true)
   const [token, setToken] = useState(" ")
   
   useFocusEffect(
@@ -42,19 +40,7 @@ export default function HomeScreen({ navigation }){
       }, 2800);
     }, [])
   );
-
-  const Token = async() =>{
-    try {
-      await RNSecureStorage.get("access_token").then((value) => {
-        if(value!=null)
-          setToken(value);
-      })
-    } catch (error) {
-      console.log(error)
-    }
-  }
   
-  const insets = useSafeAreaInsets()
   const getCategories = useMemo(() =>
       RequestManager({
         method: endpoints.categories.method,
@@ -72,7 +58,7 @@ export default function HomeScreen({ navigation }){
     getCategories
       .then(res => {
         setCategories(res)
-        setTimeout(() => {setFetching(false)}, 1000)
+        setFetching(false)
       })
       .catch(err => {
         console.log(err)
@@ -92,7 +78,7 @@ export default function HomeScreen({ navigation }){
               <Icon name="menu-outline" size={32} color="#333" />
             </TouchableOpacity>
             <Logom/>
-           
+
             <TouchableOpacity activeOpacity={0.9}  style={{ paddingHorizontal: 12 }} onPress={() => navigation.push("Account")}>
               <Icon name="person-circle-outline" size={36} color="#555" />
             </TouchableOpacity>
@@ -143,7 +129,7 @@ export default function HomeScreen({ navigation }){
               url: endpoints.productsByCategory.path + "/" + 2,
               auth: endpoints.products.auth,
               params: {
-                limit: 20,
+                limit: 8,
               },
               headers: {
                 Accept: "application/json",
@@ -168,10 +154,8 @@ export default function HomeScreen({ navigation }){
               },
             }}
           />
-        
-
-         
           </ScrollView>
+          <NetworkError/>
         </>
     ) 
   }
@@ -196,6 +180,3 @@ const styles = StyleSheet.create({
     elevation: 2,
   }
 })
-
-
-

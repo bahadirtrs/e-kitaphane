@@ -32,6 +32,7 @@ export default function BookDetailScreen({ navigation, route }) {
   useFocusEffect(
     React.useCallback(() => {
       PageNumber()
+      getToken()
     }, [])
   );
  
@@ -111,13 +112,7 @@ export default function BookDetailScreen({ navigation, route }) {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={'#1d3557'}/>
       <SafeAreaView/>
-      <ScrollView >
-      <Image 
-        style={styles.imageStyle} 
-        source={{uri: BASE_URL + "products/cover/" + product?.cover_image}} 
-      />
-        <View style={styles.bookCoverArea}>
-          <View style={styles.headerBackButtonContainer} >
+      <View style={styles.headerBackButtonContainer} >
             <TouchableOpacity style={{padding:10}} onPress={()=>navigation.goBack()} >
               <Icon name="chevron-back-outline" size={25} color={"#fff"}/> 
             </TouchableOpacity>
@@ -126,6 +121,13 @@ export default function BookDetailScreen({ navigation, route }) {
               <Icon name="ellipsis-horizontal-outline" size={25} color={"#fff"}/> 
             </TouchableOpacity>
           </View>
+      <ScrollView >
+      <Image 
+        style={styles.imageStyle} 
+        source={{uri: BASE_URL + "products/cover/" + product?.cover_image}} 
+      />
+        <View style={styles.bookCoverArea}>
+          
           <BookCover 
             sharedKey={sharedKey} 
             id={product.id} 
@@ -192,7 +194,8 @@ const styles = StyleSheet.create({
     flexDirection:'row',
     justifyContent:'space-between', 
     alignItems:'center', 
-    paddingHorizontal:10 
+    paddingHorizontal:10,
+    paddingVertical:0
   },
   headerTitle:{
     fontSize:14, 

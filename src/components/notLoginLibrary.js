@@ -1,9 +1,7 @@
 import React from 'react'
-import { TouchableOpacity } from 'react-native';
-import { View, Text,Dimensions,SafeAreaView,StyleSheet } from 'react-native'
+import {Text,Dimensions,SafeAreaView,StyleSheet } from 'react-native'
 import Icon from "react-native-vector-icons/Ionicons";
 import SubmitButton from '../components/Button/SubmitButton'
-import TextButton from '../components/Button/TextButton'
 import {useNavigation} from '@react-navigation/native'
 const width=Dimensions.get('screen').width;
 const height=Dimensions.get('screen').height;

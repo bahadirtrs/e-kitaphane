@@ -39,7 +39,7 @@ function CategoryList({ sharedKey, title, onPress, request, categoryID, columnTy
   }
   return (
     <View style={styles.container}>
-      <View style={{ width:Dimensions.get('screen').width, justifyContent:'center', alignItems:'center', backgroundColor:'#1d3557', paddingBottom:30}} >
+      <View style={styles.containerExp} >
         <SearchBar
           value={term}
           setTermClick={()=>setTerm("")}
@@ -47,36 +47,35 @@ function CategoryList({ sharedKey, title, onPress, request, categoryID, columnTy
           title={title+" kategorisinde ara"}
         />
       </View>
-     
       {products.length>0
-      ?<CategoryItems 
-      categoryID={categoryID} 
-      fetching={false} 
-      products={term?.length > 1 ?filterData:products} 
-      sharedKey={sharedKey}
-    />
-    :<Loading/>
+        ?<CategoryItems 
+          categoryID={categoryID} 
+          fetching={false} 
+          products={term?.length > 1 ?filterData:products} 
+          sharedKey={sharedKey}
+        />
+        :<Loading/>
       }  
     </View>
   )
 }
 const Loading = () =>{
-return(
-  <View style={{width:Dimensions.get('screen').width, height:Dimensions.get('screen').height*0.7, justifyContent:'center', alignItems:'center', paddingVertical:20}} >
-   <ActivityIndicator size='large' />
-   <Text style={{fontFamily:'GoogleSans-Regular', fontSize:16,paddingVertical:5, color:'#333'}}>Kitaplar yükleniyor...</Text>
-  </View>
-  
-)
+  return(
+    <View style={styles.loadingContainer} >
+      <ActivityIndicator size='large' />
+    <Text style={styles.loadingText}>Kitaplar yükleniyor...</Text>
+    </View>
+  )
 }
 
 const CategoryItems = ({ products, fetching,categoryID,sharedKey})=>{
   if(products.length>0){
     return(
-    <View style={{ width:Dimensions.get('screen').width, justifyContent:'center', alignItems:'center', paddingTop:20}} >
+    <View style={styles.itemContainer} >
         <FlatList
           horizontal={false}
           numColumns={3}
+          style={{paddingBottom:300}}
           pagingEnabled={false}
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
@@ -111,12 +110,25 @@ const styles = StyleSheet.create({
     borderBottomColor:'#88888810',
     borderBottomWidth:1,
   },
+  containerExp:{ 
+    width:Dimensions.get('screen').width, 
+    justifyContent:'center', 
+    alignItems:'center', 
+    backgroundColor:'#1d3557', 
+    paddingBottom:30
+  },
   cardTitleView: {
     width: "100%",
     paddingHorizontal:5,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+  },
+  itemContainer:{ 
+    width:Dimensions.get('screen').width, 
+    justifyContent:'center', 
+    alignItems:'center', 
+    paddingBottom:80
   },
   cardTitle: {
     fontFamily:'GoogleSans-Bold',
@@ -140,6 +152,10 @@ const styles = StyleSheet.create({
     fontFamily:'GoogleSans-Regular', 
     fontSize:16, 
     color:'#333'
-  }
+  },
+  loadingContainer:{width:Dimensions.get('screen').width, height:Dimensions.get('screen').height*0.7, justifyContent:'center', alignItems:'center', paddingVertical:20},
+  loadingText:{fontFamily:'GoogleSans-Regular', fontSize:16,paddingVertical:5, color:'#333'},
+
+
 })
 export default CategoryList;

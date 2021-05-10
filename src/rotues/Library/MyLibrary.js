@@ -10,12 +10,9 @@ import LibraryItem from '../../components/LibraryItem'
 
 import { endpoints } from "../../utils/constants"
 import RNSecureStorage from "rn-secure-storage"
-import AsyncStorage from '@react-native-community/async-storage';
 import RequestManager from "../../utils/requestManager"
-import {logout} from "../../utils/requestManager"
 import { ScrollView } from "react-native";
 import SubmitButton from '../../components/Button/SubmitButton'
-import { ActivityIndicator } from "react-native";
 
 
 export default function UserInfo({navigation}) {
@@ -27,7 +24,6 @@ export default function UserInfo({navigation}) {
 
   useFocusEffect(
     React.useCallback(() => {
-      
       Token()
     }, [])
   );
@@ -97,14 +93,7 @@ export default function UserInfo({navigation}) {
     }
   },[term])
 
-  if(token==' '|| userInfo.length==0){
-    return(
-      <View style={{height:Dimensions.get('window').height, width:Dimensions.get('window').width, justifyContent:'center',alignItems:'center', backgroundColor:'#f1f1f1'}} >
-        <ActivityIndicator/>
-        <Text style={{color:'#555',fontFamily:'GoogleSans-Regular', fontSize:16}}> Kitaplar yükleniyor...</Text>
-      </View>
-    )
-  }
+
 
   const HeaderComponent = ()=>{
     return(
@@ -116,7 +105,7 @@ export default function UserInfo({navigation}) {
 
     return (
     <ScrollView style={{ flex:1,padding:0}} >
-      {fetching && token
+      {fetching
         ? <View style={{ zIndex:1, height:Dimensions.get('screen').height, width:Dimensions.get('screen').width, justifyContent:'center',alignItems:'center', position:'absolute'}} >
             <BeingIndicator title={'Yenileniyor'} />
           </View>
@@ -125,7 +114,7 @@ export default function UserInfo({navigation}) {
       <SafeAreaView  backgroundColor={'#1d3557'}  />
       <StatusBar backgroundColor={'#1d3557'} barStyle={'light-content'} />
       <View style={{ justifyContent:'center', alignItems:'center', paddingVertical:30,backgroundColor:'#1d3557'}}>
-        <Icon name="library-outline" size={70} color="#ccc" />
+        <Icon name="library-outline" size={70} color="#f8f8f8" />
         <Text style={{color:'#fff', fontFamily:'GoogleSans-Medium', fontSize:24, paddingBottom:10}}> Kütüphanede Ara</Text>
         <SearchBar
           value={term}
@@ -152,15 +141,15 @@ export default function UserInfo({navigation}) {
                   showsHorizontalScrollIndicator={false}
                   showsVerticalScrollIndicator={false}
                   data={userInfo}
-                    renderItem={({ item,index }) => {
-                        return (
-                            <LibraryItem categoryID={'1'} sharedKey={"sharedKey"} item={item} />
-                        )
-                    }}
+                  renderItem={({item}) => {
+                    return (
+                        <LibraryItem categoryID={'1'} sharedKey={"sharedKey"} item={item} />
+                    )
+                  }}
                 />
               </View>
             :<NoItem type={'item'} butonPress={()=>navigation.navigation('Ansayfa')}  />
-          : <NoItem type={'account'} butonPress={()=>navigation.push('LogIn')} />
+          : <NoItem type={'account'} butonPress={()=>navigation.push('LogIn')}/>
         :null
       }
       </ScrollView>
@@ -170,8 +159,8 @@ export default function UserInfo({navigation}) {
 const NoItem = ({type,butonPress})=>{
   return(
     <View style={{ height:Dimensions.get('window').height*0.6, justifyContent:'center', alignItems:'center'}} >
-      <Text style={{fontFamily:'GoogleSans-Regular', textAlign:'center', fontSize:45, width:'80%', color:'#555' }}>OPPS!</Text>
-      <Text style={{fontFamily:'GoogleSans-Medium', textAlign:'center', fontSize:18, width:'80%', color:'#555', paddingBottom:5 }}>Burada hiç kitap yok!</Text>
+      <Icon name="book-outline" size={70} color="#118ab2" />
+      <Text style={{fontFamily:'GoogleSans-Medium', textAlign:'center', fontSize:20, width:'80%', color:'#333', paddingBottom:5 }}>Burada hiç kitap yok!</Text>
       {type=='account' 
         ?<Text style={{fontFamily:'GoogleSans-Regular', textAlign:'center', fontSize:12, width:'70%', color:'#555' }}>Oturum açarak satın aldığınız kitaplara bu sayfadan kolayca erişebilirsiniz.</Text>
         :<Text style={{fontFamily:'GoogleSans-Regular', textAlign:'center', fontSize:12, width:'70%', color:'#555' }}>Bir kitap satın aldığınızda burada görünür ve kolayca erişip okuyabilirsiniz.</Text>
