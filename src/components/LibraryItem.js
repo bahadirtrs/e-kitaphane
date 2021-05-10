@@ -15,31 +15,29 @@ const width=(Dimensions.get('screen').width-20)/2.3;
 const height=(Dimensions.get('screen').width-20)/2.5 * bookCoverRatio;
 
 export default function LibraryItem({ item, sharedKey }) {
-const [pageNumber, setPageNumber] = useState(0)
-const [allPageNumber, setAllPageNumber] = useState(0)
+  const [pageNumber, setPageNumber] = useState(0)
+  const [allPageNumber, setAllPageNumber] = useState(0)
+    useFocusEffect(
+      React.useCallback(() => {
+        PageNumber()
+      }, [])
+    );
 
+    const PageNumber = async() =>{
+      await AsyncStorage.getItem(JSON.stringify(item.id)).then(num =>{
+        if(num!==null){
+          setPageNumber(num)
+        }
+      })
+    
+      await AsyncStorage.getItem(`${item.id}+page`).then(num =>{
+        if(num!==null){
+          setAllPageNumber(num)
+        }
+      })
+    }
 
-useFocusEffect(
-  React.useCallback(() => {
-    PageNumber()
-  }, [])
-);
-
-  const PageNumber = async() =>{
-    await AsyncStorage.getItem(JSON.stringify(item.id)).then(num =>{
-      if(num!==null){
-        setPageNumber(num)
-      }
-    })
-  
-    await AsyncStorage.getItem(`${item.id}+page`).then(num =>{
-      if(num!==null){
-        setAllPageNumber(num)
-      }
-    })
-  }
-
-  const { push } = useNavigation()
+    const { push } = useNavigation()
   return (
     // () => push("Reader", {id: item?.id, type: "preview", preview: 'pdfUrl', title: item?.title });
     // () => push("BookDetail", { sharedKey: sharedKey, item: item , image:item?.cover_image })
