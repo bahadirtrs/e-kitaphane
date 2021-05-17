@@ -85,7 +85,7 @@ export default function AccountScreen({navigation}) {
             .then(response => console.log(response.data.message));
             // setActivity(false),
             setInfoColor('#43aa8b')
-            setWarning('Kaydınız Başarıyla oluşturuldu.')
+            setWarning('Kaydınız Başarıyla oluşturuldu...')
             //setTimeout(() => {
              // isLoginAccount()
            // }, 400);
