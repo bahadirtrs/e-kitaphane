@@ -9,7 +9,7 @@ import ChangePassword from '../../components/ChangePassword'
 import {logout} from "../../utils/requestManager"
 import AsyncStorage from '@react-native-community/async-storage';
 import Icon  from "react-native-vector-icons/Ionicons"
-
+import BeingIndicator from '../../components/Indicator/BeingIndicator'
 import moment from 'moment'
 import 'moment/locale/tr'
 import { ScrollView } from "react-native"
@@ -85,6 +85,12 @@ export default function UserInfo({navigation}) {
 
     return (
       <>
+      {fetching
+      ?<View style={styles.activityContainer} >
+          <BeingIndicator title={'Bilgiler yükleniyor...'} />
+       </View>
+      :null
+      }
       <SafeAreaView  backgroundColor={'#1d3557'}  />
       <StatusBar backgroundColor={'#1d3557'} barStyle={'light-content'} />
       <View style={styles.container}>
@@ -122,14 +128,16 @@ export default function UserInfo({navigation}) {
             <Text style={styles.itemOne}>Mail adresi: </Text>
             <Text style={styles.itemTwo} >{userInfo.email}</Text>
           </View>
-
+{
+/*
           <View  style={styles.itemArc}>
             <Text style={styles.itemOne}>Parola:  </Text>
             <TouchableOpacity activeOpacity={0.4} onPress={()=>setChangePasswordModal(!changePasswordModal)} >
              <Text style={[styles.itemTwo,{fontFamily:'GoogleSans-Medium'}]}>Parolayı güncelle</Text>
             </TouchableOpacity>
           </View>
-
+*/
+}
           <View  style={styles.itemArc}>
             <Text style={styles.itemOne}>Kayıt Tarihi: </Text>
             <Text style={styles.itemTwo}>
@@ -293,6 +301,15 @@ const styles = StyleSheet.create({
       justifyContent:'center', 
       alignItems:'center', 
       marginVertical:20
+    },
+
+    activityContainer:{
+       zIndex:1, 
+       width:Dimensions.get('screen').width, 
+       height:Dimensions.get('screen').height, 
+       position:'absolute', 
+       justifyContent:'center',
+      alignContent:'center'
     },
   })
 

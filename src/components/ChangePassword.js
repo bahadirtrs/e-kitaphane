@@ -56,9 +56,9 @@ const ChangePassword = ({visible, setVisible, first_name, last_name, email}) => 
       <Modal animationType="fade" transparent={true} visible={visible}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <View style={{ width:Dimensions.get('window').width*0.76, paddingBottom:5, paddingTop:15, paddingHorizontal:0, marginVertical:10, borderBottomWidth:1, borderBottomColor:'#ccc'}} >
-              <Text style={{fontFamily:'GoogleSans-Medium', fontSize:20}} >Parola güncelle</Text>
-             <Text style={{fontFamily:'GoogleSans-Regular', fontSize:12,color:'#555'}} >Lütfen mevcut parolanızı ve yeni parolanızı giriniz.</Text>
+            <View style={styles.container}>
+              <Text style={styles.passChangeTitle}>Parola güncelle</Text>
+             <Text style={styles.passChangeDescription}>Lütfen mevcut parolanızı ve yeni parolanızı giriniz.</Text>
             </View>
             {warning ?
               <View style={[styles.infoStyle,{backgroundColor:infoColor}]}> 
@@ -83,7 +83,7 @@ const ChangePassword = ({visible, setVisible, first_name, last_name, email}) => 
                 onChangeText={(text)=>setNewPasswordRepeat(text)} type={'password'}
                 passwordHide={passwordHide} setPasswordHide={()=>setPasswordHide(!passwordHide)}
               />
-              <View style={{ flexDirection:'row', justifyContent:'space-around', alignItems:'center', width:Dimensions.get('window').width*0.7, paddingVertical:20}} >
+              <View style={styles.cancelButtonCon} >
                 <Pressable style={[styles.button, styles.buttonClose]} onPress={setVisible}>
                   <Text style={styles.textStyle}>İptal</Text>
                 </Pressable>
@@ -91,12 +91,9 @@ const ChangePassword = ({visible, setVisible, first_name, last_name, email}) => 
                   <Text style={styles.textStyle}>Güncelle</Text>
                 </Pressable>
               </View>
-           
           </View>
         </View>
-
       </Modal>
-     
     </View>
   );
 };
@@ -123,6 +120,31 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 0
+  },
+  container:{ 
+    width:Dimensions.get('window').width*0.76, 
+    paddingBottom:5, 
+    paddingTop:15, 
+    paddingHorizontal:0, 
+    marginVertical:10, 
+    borderBottomWidth:1, 
+    borderBottomColor:'#ccc'
+  },
+  passChange:{
+    fontFamily:'GoogleSans-Medium', 
+    fontSize:20
+  },
+  passChangeDescription:{
+    fontFamily:'GoogleSans-Regular', 
+    fontSize:12,
+    color:'#555'
+  },
+  cancelButtonCon:{ 
+    flexDirection:'row', 
+    justifyContent:'space-around', 
+    alignItems:'center', 
+    width:Dimensions.get('window').width*0.7, 
+    paddingVertical:20
   },
   button: {
     width:120,

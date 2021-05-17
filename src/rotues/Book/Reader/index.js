@@ -3,14 +3,16 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Pdf from "react-native-pdf"
 import Icon from "react-native-vector-icons/Ionicons"
 import PageHeaderBackLayout from '../../../components/Layout/PageHeaderBackLayout'
+import RequestManager from "../../../utils/requestManager"
+import RNSecureStorage from "rn-secure-storage";
+import Activator from '../../../components/Indicator/BeingIndicator'
 import { StyleSheet,View,Text,FlatList,StatusBar,Alert,Animated } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { BASE_URL,endpoints } from "../../../utils/constants"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { Dimensions } from "react-native"
-import RequestManager from "../../../utils/requestManager"
-import RNSecureStorage from "rn-secure-storage";
-import Activator from '../../../components/Indicator/BeingIndicator'
+
+let pageNumber=0;
 
 function getData(number) {
   //sayfa sayısı kadar görünüm oluşturma fonksiyonu
@@ -20,7 +22,6 @@ function getData(number) {
   }
   return data;
 }
-let pageNumber=0;
 export default function ReaderScreen({ navigation, route }) {
   React.useLayoutEffect(() => {
     navigation.setOptions({headerShown: false})
@@ -43,6 +44,7 @@ export default function ReaderScreen({ navigation, route }) {
     const source = { uri: BASE_URL +pdfUrl, cache: true }
    
   const getShowPDF = useMemo(async() =>
+  //PDF izin kontrolü
     RequestManager({
       method: endpoints.showPDF.method,
       url: endpoints.showPDF.path +'/' +route.params.id,
@@ -125,7 +127,7 @@ export default function ReaderScreen({ navigation, route }) {
     }, [numberofPages]) 
 
     useEffect(() => {
-      // Otomatik kaydetme checkbox değeri değiştiğinde bulunulan sayfayı asyncstronge ye atama
+      // Otomatik kaydetme... Checkbox değeri değiştiğinde bulunulan sayfayı asyncstronge ye atama
       const pageNum =JSON.stringify(route.params.id)
       const number = JSON.stringify(numberCurrent)
       AsyncStorage.setItem(pageNum, number);
@@ -270,7 +272,6 @@ export default function ReaderScreen({ navigation, route }) {
       fadeOut()
     }else{
       fadeIn()
-      
     }
   }
 

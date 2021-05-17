@@ -5,12 +5,18 @@ export default function ActiveButton({isLogInFormControl,buttonClick,text}) {
     return (
         <View style={styles.container} >
        { buttonClick
-         ?   <TouchableOpacity activeOpacity={0.9} onPress={()=>{isLogInFormControl()}} style={styles.submitButtonEnable} >
-               <Text style={styles.buttonText}>{text}</Text>
+         ?   <TouchableOpacity 
+              activeOpacity={0.8} 
+              onPress={()=>isLogInFormControl()} 
+              style={styles.submitButtonEnable} >
+                <Text style={styles.buttonText}>{text}</Text>
              </TouchableOpacity>
          :
-           <TouchableOpacity activeOpacity={1} onPress={()=>isLogInFormControl()} style={styles.submitButton} >
-               <Text style={styles.buttonText}>{text}</Text>
+           <TouchableOpacity 
+              activeOpacity={0.8} 
+              onPress={()=>isLogInFormControl()} 
+              style={styles.submitButton}>
+                <Text style={styles.buttonText}>{text}</Text>
            </TouchableOpacity>
        }
      </View>

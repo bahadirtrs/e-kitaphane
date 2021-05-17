@@ -91,7 +91,7 @@ const SupportCreateModal = ({visible, setVisible, permisson}) => {
                 <Icon name="close-outline" size={30} color="#1d3557" />
               </TouchableOpacity>
             {permisson 
-              ? <View style={styles.headerContainer} >
+              ? <View style={styles.headerContainer}>
                   <Text style={styles.title}>Destek Mesajı Oluştur</Text>
                   <Text style={styles.description}>Lütfen destek almak istediğiniz konuyu açıkla yazınız.</Text>
                 </View>
@@ -99,9 +99,11 @@ const SupportCreateModal = ({visible, setVisible, permisson}) => {
              }
             <View>
           {!permisson 
-            ? <View style={[styles.headerContainer, {alignItems:'center', paddingVertical:0, borderBottomWidth:0}]} >
+            ? <View style={styles.headerContainerErr} >
                  <Icon name="alert-circle-outline" size={70} color="#118ab2" />
-                <Text style={[styles.description, {textAlign:'center', fontSize:14, paddingTop:10}]}>Çok fazla bekleyen destek kaydınız olduğu için yeni kayıt oluşturamazsınız. Lütfen Destek kayıtlarının cevaplanmasını bekleyiniz </Text>
+                <Text style={styles.descriptionErr}>
+                  Çok fazla bekleyen destek kaydınız olduğu için yeni kayıt oluşturamazsınız. Lütfen Destek kayıtlarının cevaplanmasını bekleyiniz. 
+                </Text>
               </View>
             : 
              <View>
@@ -139,7 +141,7 @@ const SupportCreateModal = ({visible, setVisible, permisson}) => {
            {permisson ?
            <View style={styles.buttonContainer} >
            <TouchableOpacity onPress={()=>CreateSupport()} style={styles.button}>
-             <Text style={styles.buttonText} >Gönder</Text>
+             <Text style={styles.buttonText}>Gönder</Text>
            </TouchableOpacity>
          </View>
          :null
@@ -151,7 +153,7 @@ const SupportCreateModal = ({visible, setVisible, permisson}) => {
               <Text style={[styles.title, {textAlign:'center'}]}>Kaydınız başarıyla oluşturuldu</Text>
               <Text style={[styles.description, {textAlign:'center'}]}>İsteğinizi en kısa süre içerisinde inceleneğiz ve sizi bilgilendireceğiz.</Text>
               <TouchableOpacity onPress={setVisible} style={styles.buttonTwo}>
-                <Text style={styles.buttonText} >Kapat</Text>
+                <Text style={styles.buttonText}>Kapat</Text>
               </TouchableOpacity>
             </View>
           }
@@ -199,6 +201,17 @@ const styles = StyleSheet.create({
     borderBottomColor:'#ddd',
     marginVertical:5,
   },
+  headerContainerErr:{ 
+    width:Dimensions.get('screen').width*0.8, 
+    justifyContent:'flex-start', 
+    alignItems:'flex-start',
+    borderBottomWidth:0,
+    borderBottomColor:'#ddd',
+    marginVertical:5,
+    alignItems:'center', 
+    paddingVertical:0, 
+    borderBottomWidth:0
+  },
   textInput:{ 
     width:Dimensions.get('screen').width*0.8, 
     fontFamily:'GoogleSans-Regular',
@@ -229,6 +242,16 @@ const styles = StyleSheet.create({
     paddingHorizontal:0,
   },
   description:{
+    fontFamily:'GoogleSans-Regular',
+    fontSize:12,
+    paddingBottom:5,
+    paddingHorizontal:0,
+    color:'#555',
+    textAlign:'center', 
+    fontSize:14, 
+    paddingTop:10
+  }, 
+  descriptionErr:{
     fontFamily:'GoogleSans-Regular',
     fontSize:12,
     paddingBottom:5,

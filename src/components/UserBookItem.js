@@ -11,7 +11,10 @@ import { TouchableOpacity } from "react-native"
 export default function UserBooksItem({ item, sharedKey }) {
   const { push } = useNavigation()
   return (
-    <TouchableOpacity activeOpacity={0.9} style={styles.container} onPress={() => push("BookDetail", { sharedKey: sharedKey, item: item , image:item?.cover_image })}>
+    <TouchableOpacity 
+      activeOpacity={0.9} 
+      style={styles.container} onPress={() => push("BookDetail", { sharedKey: sharedKey, item: item , image:item?.cover_image })}
+    >
       <View style={styles.bookImage}>
         <View>
         <FastImage

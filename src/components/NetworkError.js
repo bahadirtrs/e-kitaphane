@@ -25,10 +25,6 @@ const PrivacyPolicy = ({visible, setVisible}) => {
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          setModalVisible(!modalVisible);
-        }}
       >
         <TouchableOpacity onPress={()=>setModalVisible('false')} style={styles.centeredView}>
           <View style={styles.modalView}>
@@ -40,7 +36,7 @@ const PrivacyPolicy = ({visible, setVisible}) => {
           </View>
         </TouchableOpacity>
       </Modal>
-<SafeAreaView/>
+      <SafeAreaView/>
     </View>
   );
 };

@@ -4,9 +4,12 @@ import { Text,StyleSheet  } from 'react-native'
 
 export default function TextButton({questions,redirectText, buttonPress}) {
     return (
-        <TouchableOpacity activeOpacity={0.9} onPress={buttonPress} style={styles.container}>
-            <Text style={styles.questionText}>{questions}</Text>
-            <Text style={styles.redirectText}>{redirectText}</Text>
+        <TouchableOpacity 
+            activeOpacity={0.9} 
+            onPress={buttonPress} 
+            style={styles.container}>
+                <Text style={styles.questionText}>{questions}</Text>
+                <Text style={styles.redirectText}>{redirectText}</Text>
         </TouchableOpacity>
     )
 }

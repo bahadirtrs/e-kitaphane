@@ -21,8 +21,6 @@ import TwoInputText from '../../components/TwoInputText'
 import HelpModal from '../../components/HelpModal'
 import { StatusBar } from "react-native";
 
-
-
 export default function SingIn({navigation}) {
   React.useLayoutEffect(() => {
     navigation.setOptions({

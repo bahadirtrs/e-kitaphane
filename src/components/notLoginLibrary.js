@@ -1,3 +1,4 @@
+//devredisi
 import React from 'react'
 import {Text,Dimensions,SafeAreaView,StyleSheet } from 'react-native'
 import Icon from "react-native-vector-icons/Ionicons";

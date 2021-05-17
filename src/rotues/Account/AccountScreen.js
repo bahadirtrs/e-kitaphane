@@ -1,36 +1,33 @@
 import React, {useState} from 'react'
-import { SafeAreaView } from 'react-native'
-import { StatusBar } from 'react-native'
-import { View, StyleSheet, Text } from 'react-native'
+import { View, StyleSheet, Text,TouchableOpacity ,Dimensions,StatusBar,SafeAreaView } from 'react-native'
 import TextButton from '../../components/Button/TextButton'
 import AccountLayout from '../../components/Layout/AccountLayout'
 import HeaderBackLayout from '../../components/Layout/HeaderBackLayout'
 import WelcomeLogoLayout from '../../components/Layout/WelcomeLogoLayout'
-import SubmitButton from '../../components/Button/SubmitButton'
 import HelpModal from '../../components/HelpModal'
 import RNSecureStorage, { ACCESSIBLE } from "rn-secure-storage"
 import axios from "axios"
 import RequestManager from "../../utils/requestManager"
 import { storeTokens } from "../../utils/utils";
-import UsersWelcome from '../../components/UsersWelcome'
 import Icon  from "react-native-vector-icons/Ionicons"
-
+import BeingIndicator from '../../components/Indicator/BeingIndicator'
 import AsyncStorage from '@react-native-community/async-storage';
 import { BASE_URL,endpoints, CLIENT_ID, CLIENT_SECRET} from "../../utils/constants"
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
-import { TouchableOpacity } from 'react-native'
-import { Dimensions } from 'react-native'
+
 GoogleSignin.configure({
-    webClientId: '327239986721-1cmas50va13i5oj031jpfcvcne5fi50i.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
-    androidClientId:'327239986721-s0fqjpua0hdv1m8kik5qschq29ies5fp.apps.googleusercontent.com',
-    offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
-  });
+  webClientId: '327239986721-1cmas50va13i5oj031jpfcvcne5fi50i.apps.googleusercontent.com',
+  androidClientId:'327239986721-s0fqjpua0hdv1m8kik5qschq29ies5fp.apps.googleusercontent.com',
+  offlineAccess: true, 
+});
+
 export default function AccountScreen({navigation}) {
     const [token, setToken] = useState(" ")
     const [helpVisible, setHelpVisible] = useState(false)
     const [googleUserInfo, setGoogleUserInfo] = useState([])
-    const [warning, setWarning] = useState("null")
+    const [warning, setWarning] = useState("")
     const [infoColor, setInfoColor] = useState('#43aa8b')
+
     React.useLayoutEffect(() => {
         Token()
         navigation.setOptions({
@@ -72,7 +69,8 @@ export default function AccountScreen({navigation}) {
       }
 
       const CreateAccount = async(userInfo)=>{
-      //  setActivity(true)
+      //  setActivity(true) 
+      //Hepböylekal
         try {
           let data = { 
             first_name:userInfo.user.givenName,
@@ -85,23 +83,20 @@ export default function AccountScreen({navigation}) {
             .then(response => console.log(response.data.message));
             // setActivity(false),
             setInfoColor('#43aa8b')
-            setWarning('Kaydınız Başarıyla oluşturuldu...')
+            //setWarning('Kaydınız Başarıyla oluşturuldu.')
             //setTimeout(() => {
              // isLoginAccount()
            // }, 400);
         } catch (error) {
            // setActivity(false),
-         
-        
             if(error.message==='Request failed with status code 422'){
-            setTimeout(() => {
-                isLoginAccount(userInfo)
-            }, 400);
+              setTimeout(() => {
+                  isLoginAccount(userInfo)
+              }, 500);
             }else{
                 setInfoColor('#43aa8b')
                 setWarning(error.message)
-            }
-            
+            }  
         }
       }
 
@@ -146,7 +141,7 @@ export default function AccountScreen({navigation}) {
             AsyncStorage.setItem('token', access_token);
             //alert("token kaydedildi")
         });
-          setWarning('Başarıyla oturum açıldı.')
+          setWarning('Başarıyla oturum açıldı...')
           getUserInfo()
           setTimeout(() => {
            // storeUserInfo()
@@ -179,7 +174,7 @@ export default function AccountScreen({navigation}) {
            // setWarning('Bilgiler sisteme ekleniyor')
             setTimeout(() => {  
               storeUserInfo(res.id,res.first_name,res.last_name,res.email)
-            }, 300);
+            }, 500);
           })
           .catch(err => {
             console.log(err)
@@ -197,28 +192,11 @@ export default function AccountScreen({navigation}) {
             setWarning('Bilgiler sisteme kaydedildi')
             setTimeout(() => {
               navigation.navigate('Anasayfa')
-            }, 400);
+            }, 500);
         } catch (e) {
           throw new Error(e)
         }
       }
-    
-
-
-      const signOut = async () => {
-        try {
-          await GoogleSignin.revokeAccess()
-            .then(() => GoogleSignin.signOut())
-            .then(() => {
-                setGoogleUserInfo(null)
-            })
-            .done()
-          setGoogleUserInfo(null) // Remember to remove the user from your app's state as well
-        } catch (error) {
-          console.error(error);
-        }
-      };
-
 
     const Token = async() =>{
         try {
@@ -234,14 +212,19 @@ export default function AccountScreen({navigation}) {
       }
 
     if(token){
-        return(
-            <View style={styles.activatorContainer} >
-                <Text style={styles.activatorText}>Profil bilgileri getiriliyor.</Text>
-            </View>
-        )
+      return(
+        <View style={styles.activatorContainer} >
+            <Text style={styles.activatorText}>Profil bilgileri getiriliyor.</Text>
+        </View>
+      )
     }
     return (
         <View style={styles.container} >
+           {warning
+            ? <View style={styles.activityContainer} >
+                <BeingIndicator title={warning} />
+              </View>
+            : undefined} 
             <SafeAreaView backgroundColor={'#1d3557'} />
             <StatusBar barStyle={'light-content'}  backgroundColor={'#1d3557'} />
             <AccountLayout/>
@@ -257,30 +240,27 @@ export default function AccountScreen({navigation}) {
                   <WelcomeLogoLayout/>               
                 </View>
                 <View style={styles.buttonContainer} >
-                <UsersWelcome warning={warning} 
-                    //text={'Birbirinden eşsiz kitapları okumak için kayıt olun!'}
-                    infoColor={infoColor} setWarning={()=>setWarning('null')}/>
-
-              
                 <TouchableOpacity onPress={()=>signInGoogle()} style={{ 
                     marginVertical:5,
-                    backgroundColor:'#f1f1f1',
+                    backgroundColor:'#D64836', 
                     borderRadius:7,
                     borderColor:'#ccc',
                     width:Dimensions.get('screen').width*0.75,
-                    flexDirection:'row', justifyContent:'space-between', alignItems:'center' }} >
-                        
+                    flexDirection:'row', 
+                    justifyContent:'space-between', 
+                    alignItems:'center' 
+                  }}>
                     <View style={{width:Dimensions.get('screen').width*0.13,height:50, backgroundColor:'#D64836',  justifyContent:'center', alignItems:'center', borderRightWidth:0.5, borderColor:'#D64836',  borderTopLeftRadius:7, borderBottomLeftRadius:7 }} >
                         <Icon name="logo-google" size={30} color={"#fff"}/> 
                     </View>
-                    <View style={{ width: Dimensions.get('screen').width*0.62, height:50,flexDirection:'row', justifyContent:'center', alignItems:'center', borderWidth:1, borderColor:'#ccc', borderTopRightRadius:7,borderBottomRightRadius:7, borderLeftWidth:0,   }} >
-                      <Text style={{fontFamily:'GoogleSans-Regular'}} >Google ile oturum aç</Text>
+                    <View style={{ width: Dimensions.get('screen').width*0.62, height:50,flexDirection:'row', justifyContent:'center', alignItems:'center', borderWidth:1, borderColor:'#D64836', borderTopRightRadius:7,borderBottomRightRadius:7, borderLeftWidth:0,   }} >
+                      <Text style={{fontFamily:'GoogleSans-Medium', color:'#fff'}} >Google ile oturum aç</Text>
                     </View>
                 </TouchableOpacity>
              
                 <TouchableOpacity onPress={()=>signInGoogle()} style={{ 
                     marginVertical:5,
-                    backgroundColor:'#f1f1f1',
+                    backgroundColor:'#1B9DEF',
                     borderRadius:7,
                     borderColor:'#ccc',
                     width:Dimensions.get('screen').width*0.75,
@@ -289,39 +269,15 @@ export default function AccountScreen({navigation}) {
                     <View style={{width:Dimensions.get('screen').width*0.13,height:50, backgroundColor:'#1B9DEF',  justifyContent:'center', alignItems:'center', borderRightWidth:0.5, borderColor:'#1B9DEF',  borderTopLeftRadius:7, borderBottomLeftRadius:7 }} >
                     <Icon name="logo-apple-appstore" size={30} color={"#fff"}/> 
                     </View>
-                    <View style={{ width: Dimensions.get('screen').width*0.62, height:50,flexDirection:'row', justifyContent:'center', alignItems:'center', borderWidth:1, borderColor:'#ccc', borderTopRightRadius:7,borderBottomRightRadius:7, borderLeftWidth:0,   }} >
-                    <Text style={{fontFamily:'GoogleSans-Regular'}}>Apple ID ile oturum aç</Text>
+                    <View style={{ width: Dimensions.get('screen').width*0.62, height:50,flexDirection:'row', justifyContent:'center', alignItems:'center', borderWidth:1, borderColor:'#1B9DEF', borderTopRightRadius:7,borderBottomRightRadius:7, borderLeftWidth:0,   }} >
+                    <Text style={{fontFamily:'GoogleSans-Medium', color:'#fff'}}>Apple ID ile oturum aç</Text>
                     </View>
                 </TouchableOpacity>
-
-
-                <Text> 1155 </Text>
                 <TextButton
                 questions={'Yardıma ihtiyacınız mı var?'}
                 redirectText={'Nasıl kullanacağınızı öğrenin'}
                 buttonPress={null}
                 />
-
-                
-                {  //  <SubmitButton butonPress={()=>navigation.navigate('LogIn')} />
-                }
-                {
-                     /*
-                <>
-               
-                <TextButton
-                questions={'Henüz hesap oluşturmadınız mı?'}
-                redirectText={'Hesap Oluşturun'}
-                buttonPress={()=>signOut()}
-                />
-                <Text> xName:{googleUserInfo?.user?.name} </Text>
-                <Text> xEmail:{googleUserInfo?.user?.email} </Text>
-                <Text> xEmail:{googleUserInfo?.user?.id} </Text>
-                <Text> xEmail:{googleUserInfo?.user?.photo} </Text>
-                </>
-                */
-                }
-                  
                 </View>
             </View>
             <SafeAreaView/>
@@ -367,5 +323,13 @@ const styles = StyleSheet.create({
         justifyContent:'center', 
         alignItems:'center'
     },
+    activityContainer:{
+      zIndex:1, 
+      width:Dimensions.get('screen').width, 
+      height:Dimensions.get('screen').height, 
+      position:'absolute', 
+      justifyContent:'center',
+     alignContent:'center'
+   },
 })
 

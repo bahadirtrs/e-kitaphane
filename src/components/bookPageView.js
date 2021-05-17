@@ -1,21 +1,15 @@
-// Copy of Exponent snack example
-// https://snack.expo.io/HJcgiI8kb
+/*  
+|------*--------*-------------*------------*-------*------|
+| developer:Bahadır Tıraş                                 |
+| email:bahadirtiras@gmail.com                            |
+| github:wwww.github.com/bahadirtrs                       |
+| webSite:www.bahadirtiras.com.tr                         |
+|------*----------*----------*-------------*--------*-----|
+*/
 import React, { Component } from 'react';
 import { Text, View, FlatList, Dimensions, Button, StyleSheet } from 'react-native';
-
 const { width } = Dimensions.get('window');
-const style = {
-  justifyContent: 'center',
-  alignItems: 'center',
-  width: width,
-  height: 50,
-  flex: 1,
-  borderWidth: 1,
-};
-
 const COLORS = ['deepskyblue','fuchsia', 'lightblue '];
-
-
 export default class BookPageView extends Component {
   
   getItemLayout = (data, index) => (
@@ -72,3 +66,11 @@ const styles = StyleSheet.create({
   }
 });
 
+const style = {
+  justifyContent: 'center',
+  alignItems: 'center',
+  width: width,
+  height: 50,
+  flex: 1,
+  borderWidth: 1,
+};

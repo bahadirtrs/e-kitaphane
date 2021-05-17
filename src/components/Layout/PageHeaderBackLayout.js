@@ -12,7 +12,7 @@ export default function PageHeaderBackLayout({butonPress,butonColor,title,textCo
                 <Text numberOfLines={1} style={[styles.buttonText, {color:butonColor}]}>{title}</Text>
             </View>
         { type=='pdf'? 
-            <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center', paddingRight:0}}>
+            <View style={styles.buttonContainer}>
                {pageHorizontal 
                ?<TouchableOpacity activeOpacity={0.9} style={styles.saveButton} onPress={setPageHorizontalTrue} >
                     <Icon name="tablet-landscape-outline" size={22} color={butonColor?butonColor:"#fff" }/> 
@@ -43,6 +43,12 @@ const styles = StyleSheet.create({
         paddingHorizontal:15, 
         paddingVertical:10,
         margin:0
+    },
+    buttonContainer:{
+        flexDirection:'row', 
+        alignItems:'center', 
+        justifyContent:'center', 
+        paddingRight:0
     },
     buttonStyle:{ 
         flexDirection:'row', 

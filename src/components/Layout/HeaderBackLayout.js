@@ -10,7 +10,10 @@ export default function HeaderBackLayout({butonPress,butonPressRight,butonColor,
         </TouchableOpacity>
         <Text style={[styles.pageNameStyle,{color:butonColor?butonColor:"#fff", }]}>{pageName?pageName:''}</Text>
         <TouchableOpacity activeOpacity={0.9}style={styles.buttonStyle} onPress={butonPressRight?butonPressRight:null} >
-         {butonPressRight?<Icon name="help-circle-outline" size={30} color={butonColor?butonColor:"#fff" }/> :null}
+         { butonPressRight
+            ? <Icon name="help-circle-outline" size={30} color={butonColor?butonColor:"#fff" }/> 
+            : undefined
+         }
         </TouchableOpacity>
     </View>
     )

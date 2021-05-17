@@ -3,8 +3,7 @@ import { Dimensions } from "react-native"
 import { ActivityIndicator } from "react-native"
 import { FlatList, StyleSheet, Text, View } from "react-native"
 import RequestManager from "../utils/requestManager"
-import BooksItem, { BooksItemPlaceholder } from "./booksItem"
-import CategorysItem, { CategorysItemPlaceholder } from "./categorysItem"
+import BooksItem from "./booksItem"
 
 function BooksList({ sharedKey, title = "", onPress, request, categoryID, columnType }) {
   const [fetching, setFetching] = useState(false)
@@ -16,7 +15,7 @@ function BooksList({ sharedKey, title = "", onPress, request, categoryID, column
     getProducts
       .then(res => {
         setProducts(res.data)
-          setFetching(false)
+        setFetching(false)
       })
       .catch(err => {
         setFetching(true)

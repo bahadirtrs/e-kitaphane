@@ -32,7 +32,7 @@ export default function BookDetailScreen({ navigation, route }) {
         </View>
       </ScrollView>
       <View style={styles.readBuyButtonArea}>
-        <BuyButton onPress={() => {}} text="Hemen sdatın al" price={numberFormat(product?.price) + " TL"} />
+        <BuyButton onPress={() => {}} text="Hemen satın al" price={numberFormat(product?.price) + " TL"} />
       </View>
     </SafeAreaView>
   )

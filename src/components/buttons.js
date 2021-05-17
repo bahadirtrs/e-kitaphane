@@ -44,13 +44,29 @@ const ReadButton = (data) => {
           <View style={styles.buttonContent}>
             <View style={styles.buttonTextAndIcon}>
               <Icon name="book" size={24} color="#FFF" />
-              <Text style={styles.readButtonText}> {data?.pageAll>0? data?.pageAll===data?.page ? 'Kitabı Tekrar Oku' :'Okumaya Devam Et': 'Okumaya Başla'} </Text>
+              <Text style={styles.readButtonText}> 
+                {data?.pageAll>0
+                  ? data?.pageAll===data?.page 
+                    ? 'Kitabı Tekrar Oku' 
+                    :'Okumaya Devam Et'
+                  : 'Okumaya Başla'
+                } 
+              </Text>
             </View>
             <View style={styles.readButtonCompleteView}>
-              <Text style={styles.readButtonCompletePercent}>{data.pageAll>0 ? data.page+'/'+data.pageAll:' ' } </Text>
+              <Text style={styles.readButtonCompletePercent}>
+                {data.pageAll>0 
+                  ? data.page+'/'+data.pageAll
+                  :' ' 
+                } 
+              </Text>
             </View>
           </View>
-          <View style={[styles.completePercentView, { width: Number(data?.page)!==1 && Number(data?.pageAll)!==1 ? completePercent+5 + "%":0   }]} />
+          <View style={[styles.completePercentView, { 
+            width: Number(data?.page)!==1 && Number(data?.pageAll)!==1 
+              ? completePercent+5 + "%"
+              : 0   
+            }]} />
         </View>
       </TouchableOpacity>
     )

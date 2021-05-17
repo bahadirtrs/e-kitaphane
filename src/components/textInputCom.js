@@ -4,13 +4,12 @@ import Icon from "react-native-vector-icons/Ionicons"
 
 export default function textInputCom({type,value,onChangeText,placeholder,passwordHide,setPasswordHide}) {
   const [passHide, setPassHide] = useState(true)
-useEffect(() => {
-  type=='password'
-    ?setPassHide(true)
-    :setPassHide(false)
 
-  
-}, [])
+  useEffect(() => {
+    type=='password'
+      ?setPassHide(true)
+      :setPassHide(false)
+  }, [])
     return (
       <View style={styles.container} >
       <TextInput
@@ -24,15 +23,14 @@ useEffect(() => {
          secureTextEntry={passHide? true:false}
          autoCapitalize={'none'}
        />
-        { setPasswordHide ?
-        passHide ?
-        <TouchableOpacity activeOpacity={0.9} onPress={()=>setPassHide(false)} style={{ flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
-          <Icon  name="eye-off-outline" size={20} color="#1d3557" /> 
-        </TouchableOpacity>
-        :
-        <TouchableOpacity activeOpacity={0.9} onPress={()=>setPassHide(true)} style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
-          <Icon name="eye-outline" size={20} color="#1d3557" /> 
-       </TouchableOpacity>
+        { setPasswordHide 
+        ?passHide 
+          ? <TouchableOpacity activeOpacity={0.9} onPress={()=>setPassHide(false)} style={styles.textButton}>
+              <Icon  name="eye-off-outline" size={20} color="#1d3557" /> 
+            </TouchableOpacity>
+          : <TouchableOpacity activeOpacity={0.9} onPress={()=>setPassHide(true)}  style={styles.textButton} >
+              <Icon name="eye-outline" size={20} color="#1d3557" /> 
+            </TouchableOpacity>
        :null
        }
      </View>
@@ -58,6 +56,11 @@ const styles = StyleSheet.create({
     paddingHorizontal:0, 
     color:'#000',
     fontFamily:'GoogleSans-Regular',
+},
+textButton:{ 
+  flexDirection:'row', 
+  justifyContent:'center', 
+  alignItems:'center'
 },
 })
 

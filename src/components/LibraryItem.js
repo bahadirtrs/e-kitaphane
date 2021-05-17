@@ -41,15 +41,19 @@ export default function LibraryItem({ item, sharedKey }) {
   return (
     // () => push("Reader", {id: item?.id, type: "preview", preview: 'pdfUrl', title: item?.title });
     // () => push("BookDetail", { sharedKey: sharedKey, item: item , image:item?.cover_image })
-    <TouchableOpacity activeOpacity={0.9} style={styles.container} onPress={() => push("Reader", {id: item?.id, type: "preview", preview: 'pdfUrl', title: item?.title })}>
+    <TouchableOpacity activeOpacity={0.9} style={styles.container} 
+      onPress={() => push("Reader", {id: item?.id, type: "preview", preview: 'pdfUrl', title: item?.title })}
+    >
       <View style={styles.bookImage}>
-        <View style={{ width:'100%',  zIndex:1, position:'absolute', flexDirection:'row', justifyContent:'flex-end', alignItems:'flex-end', padding:5}} >
-          <TouchableOpacity style={{ flexDirection:'row', backgroundColor:'#ffffff', padding:6, borderRadius:20, justifyContent:'center', alignItems:'center'}} onPress={() => push("BookDetail", { sharedKey: sharedKey, item: item , image:item?.cover_image })} >
+        <View style={styles.bookImageContainer} >
+          <TouchableOpacity style={styles.bookDetailButton} 
+            onPress={() => push("BookDetail", {sharedKey: sharedKey, item: item , image:item?.cover_image})} 
+          >
               <Icon name="book-outline" size={14} color="#000" />
           </TouchableOpacity>
         </View>
-        <View style={{ width:'100%',zIndex:1,bottom:0,position:'absolute', flexDirection:'row', justifyContent:'center', alignItems:'center', padding:5}} >
-           <Text style={{fontFamily:'GoogleSans-Regular', fontSize:11, color:'#fff',  backgroundColor:'#00000099', borderRadius:5, paddingVertical:2, paddingHorizontal:10}} > {pageNumber}/{allPageNumber} </Text>
+        <View style={styles.pageNumberContainer}>
+           <Text style={styles.pageNumberText}>{pageNumber}/{allPageNumber}</Text>
         </View>
         <View style={{zIndex:0}} >
           <FastImage
@@ -67,24 +71,35 @@ export default function LibraryItem({ item, sharedKey }) {
       <View style={{width:'95%'}} >
         <View style={{paddingVertical:10, paddingHorizontal:3}}>
           <Text style={styles.title} numberOfLines={3}>
-            {item?.title} <Text style={{fontFamily:'GoogleSans-Regular', fontSize:9}} >-{item?.summary}</Text>
+            {item?.title} 
+            <Text style={styles.pageSummary}>-{item?.summary}</Text>
           </Text>
         </View>
-        <View style={{flexDirection:'row', justifyContent:'center',alignItems:'center', paddingHorizontal:3}} >
-          <View style={{width:'70%', backgroundColor:'#e1e1e1', height:3, marginVertical:10, borderRadius:3}} >
-           <View style={{borderRadius:3, maxWidth:'100%',
+        <View style={styles.pageProgramsBar} >
+          <View style={styles.pageProgramsBarContainer} >
+           <View style={{
+              borderRadius:3, 
+              maxWidth:'100%',
+              backgroundColor:'#118ab2', 
+              height:3,
               width:(
                   (allPageNumber>1
-                    ? (pageNumber>1?pageNumber:1)/(allPageNumber>1?allPageNumber:0)
+                    ? (pageNumber>1
+                        ? pageNumber
+                        : 1
+                      )/(
+                        allPageNumber>1
+                          ? allPageNumber
+                          : 0
+                      )
                     : pageNumber==1 && allPageNumber==1 
                       ? 1
                       : 1
                   ) 
-              )*100 +'%'
-              ,backgroundColor:'#118ab2', height:3}} />
+              )*100 +'%'}} />
           </View>
           <View style={{width:'30%'}} >
-             <Text style={{fontSize:11, fontFamily:'GoogleSans-Regular', paddingLeft:8, textAlign:'right'}} >
+             <Text style={styles.pageOran} >
                %{Math.ceil(
                  ((allPageNumber>1
                   ? (pageNumber>1?pageNumber:1)/(allPageNumber>1?allPageNumber:0)
@@ -174,13 +189,70 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 4,
   },
+  bookImageContainer:{ 
+    width:'100%',  
+    zIndex:1, 
+    position:'absolute', 
+    flexDirection:'row', 
+    justifyContent:'flex-end', 
+    alignItems:'flex-end', padding:5
+  },
+  bookDetailButton:{ 
+    flexDirection:'row', 
+    backgroundColor:'#ffffff', 
+    padding:6, 
+    borderRadius:20, 
+    justifyContent:'center', 
+    alignItems:'center'
+  },
+  pageNumberContainer:{ 
+    width:'100%',
+    zIndex:1,
+    bottom:0,
+    position:'absolute', 
+    flexDirection:'row', 
+    justifyContent:'center', 
+    alignItems:'center', 
+    padding:5
+  },
+  pageNumberText:{
+    fontFamily:'GoogleSans-Regular', 
+    fontSize:11, 
+    color:'#fff',  
+    backgroundColor:'#00000099', 
+    borderRadius:5, 
+    paddingVertical:2, 
+    paddingHorizontal:10
+  },
+  pageSummary:{
+    fontFamily:'GoogleSans-Regular', 
+    fontSize:9
+  },
+  pageProgramsBar:{
+    flexDirection:'row', 
+    justifyContent:'center',
+    alignItems:'center', 
+    paddingHorizontal:3
+  },
+  pageProgramsBarContainer:{
+    width:'70%', 
+    backgroundColor:'#e1e1e1', 
+    height:3, 
+    marginVertical:10, 
+    borderRadius:3
+  },
+  pageOran:{
+    fontSize:11, 
+    fontFamily:'GoogleSans-Regular', 
+    paddingLeft:8, 
+    textAlign:'right'
+  },
   bookCoverImage: {
       width:width,
       height:height,
       borderRadius:5,
       borderBottomLeftRadius: 0,
       borderBottomRightRadius: 0
-    
   },
 })
 

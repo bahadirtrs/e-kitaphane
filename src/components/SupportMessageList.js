@@ -7,13 +7,9 @@ moment.locale('tr')
 
 export default function SupportMessageList({item, onPress}) {
   return (
-    <View style={{
-        width:Dimensions.get('screen').width, justifyContent:'center', alignItems:'center',
-        borderBottomColor:'#ccc',
-        borderBottomWidth:0,
-        }} >
-            <TouchableOpacity activeOpacity={0.7} style={styles.container} onPress={onPress} >
-             <View style={{flexDirection:'row', width:'80%', justifyContent:'flex-start', alignItems:'center'}} >
+    <View style={styles.container}>
+            <TouchableOpacity activeOpacity={0.7} style={styles.containerHard} onPress={onPress} >
+             <View style={styles.containerHardExp} >
                 <View style={{ 
                          backgroundColor:
                          item.status==='ANSWERED'
@@ -22,29 +18,39 @@ export default function SupportMessageList({item, onPress}) {
                              ?'#ffb703'
                              :'#e63946', borderTopLeftRadius:5, borderBottomLeftRadius:5}}>
                         {item.status==='ANSWERED'
-                        ?<View style={{width:80, height:80, justifyContent:'center', alignItems:'center' }}>
+
+                        ?<View style={styles.imageContainer}>
                             <Icon name="headset" size={40} color={"#fff"}/> 
-                            <Text style={styles.statusTitle} numberOfLines={1}><Text style={{fontFamily:'GoogleSans-Medium', color:'#fff', textAlign:'center'}}>{item.readable_status}</Text> </Text>
-                         </View>
+                            <Text style={styles.statusTitle} numberOfLines={1}>
+                                <Text style={styles.statusText}>{item.readable_status}</Text>
+                            </Text>
+                        </View>
                         : item.status==='PENDING'
-                            ?<View style={{width:80, height:80, justifyContent:'center', alignItems:'center' }}>
+                            ?<View style={styles.imageContainer}>
                                 <Icon name="headset" size={35} color={"#fff"}/> 
-                                <Text style={styles.statusTitle} numberOfLines={1}><Text style={{fontFamily:'GoogleSans-Medium', color:'#fff', textAlign:'center'}}>{item.readable_status}</Text> </Text>
-                             </View>
-                            :<View style={{width:80, height:80, justifyContent:'center', alignItems:'center' }}>
-                           <Icon name="headset" size={35} color={"#fff"}/> 
-                                <Text style={styles.statusTitle} numberOfLines={1}><Text style={{fontFamily:'GoogleSans-Medium', color:'#fff', textAlign:'center'}}>{item.readable_status}</Text> </Text>
-                              </View>
+                                <Text style={styles.statusTitle} numberOfLines={1}>
+                                    <Text style={styles.statusText}>{item.readable_status}</Text> 
+                                </Text>
+                            </View>
+                            :<View style={styles.imageContainer}>
+                                <Icon name="headset" size={35} color={"#fff"}/> 
+                                <Text style={styles.statusTitle} numberOfLines={1}>
+                                    <Text style={styles.statusText}>{item.readable_status}</Text> 
+                                </Text>
+                            </View>
                         }
                     </View>
                     <View style={{maxWidth:'100%', paddingLeft:10}} >
                         <Text style={styles.title} numberOfLines={1}>{item.subject}</Text>
-                        <Text style={styles.date}> 
-                            {moment(item.created_at).format('LLL')},
-                            {' '}
-                            {moment(item.created_at).format('dddd')}
+                            <Text style={styles.date}> 
+                                {moment(item.created_at).format('LLL')},
+                                {' '}
+                                {moment(item.created_at).format('dddd')}
+                            </Text>
+                            <Text style={styles.date} numberOfLines={1}>
+                                Kayıt Numarası:
+                            <Text style={{fontFamily:'GoogleSans-Medium'}}>#{item.record_number}</Text> 
                         </Text>
-                        <Text style={styles.date} numberOfLines={1}>Ref Numarası:  <Text style={{fontFamily:'GoogleSans-Medium'}}>#{item.record_number}</Text> </Text>
 
                     </View>
                 </View>
@@ -57,19 +63,19 @@ export default function SupportMessageList({item, onPress}) {
                             :'#e63946', 
                     paddingVertical:10, borderRadius:5, paddingHorizontal:5 }} >
                 </View>
-             
-              
-              
-             {// <Text>{item.status}</Text>
-             }
-              {//<Text>{item.record_number}</Text>
-              }
             </TouchableOpacity>
         </View>
     )
 }
 const styles = StyleSheet.create({
     container:{
+        width:Dimensions.get('screen').width, 
+        justifyContent:'center', 
+        alignItems:'center',
+        borderBottomColor:'#ccc',
+        borderBottomWidth:0,
+    },
+    containerHard:{
         elevation:1,
         backgroundColor:'#fff',
         flexDirection:'row',
@@ -90,6 +96,12 @@ const styles = StyleSheet.create({
             elevation: 2,
      
     },
+
+    containerHardExp:{flexDirection:'row', width:'80%', justifyContent:'flex-start', alignItems:'center'},
+    imageContainer:{width:80, height:80, justifyContent:'center', alignItems:'center' },
+    statusText:{fontFamily:'GoogleSans-Medium', color:'#fff', textAlign:'center'},
+
+
     title:{
         fontFamily:'GoogleSans-Medium',
         fontSize:15,

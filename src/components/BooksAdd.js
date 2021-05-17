@@ -1,6 +1,14 @@
+/*  
+|------*--------*-------------*------------*-------*------|
+| developer:Bahadır Tıraş                                 |
+| email:bahadirtiras@gmail.com                            |
+| github:wwww.github.com/bahadirtrs                       |
+| webSite:www.bahadirtiras.com.tr                         |
+|------*----------*----------*-------------*--------*-----|
+*/
 import React, { useState } from "react";
-import { Alert, Modal, StyleSheet, Text, Pressable, View } from "react-native";
-
+import {Modal, StyleSheet, Text, Pressable, View } from "react-native";
+//devredisi
 const BooksAdd = ({visible, setVisible}) => {
   const [modalVisible, setModalVisible] = useState(false);
   return (

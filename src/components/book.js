@@ -1,3 +1,11 @@
+/*  
+|------*--------*-------------*------------*-------*------|
+| developer:Bahadır Tıraş                                 |
+| email:bahadirtiras@gmail.com                            |
+| github:wwww.github.com/bahadirtrs                       |
+| website:www.bahadirtiras.com.tr                         |
+|------*----------*----------*-------------*--------*-----|
+*/
 import React from "react";
 import { Pressable, StyleSheet, Text, View,Dimensions } from "react-native"
 import FastImage from "react-native-fast-image"

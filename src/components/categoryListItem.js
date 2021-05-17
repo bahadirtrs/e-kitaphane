@@ -8,8 +8,10 @@ export default function CategoryListItem({ item }) {
   const { push } = useNavigation()
   const childrenCategories = item?.children_categories
   return (
-    <TouchableOpacity style={styles.container} 
-      onPress={()=>push("BookCategories",{item: item, title:item.title })}  activeOpacity={0.9}
+    <TouchableOpacity 
+      style={styles.container} 
+      onPress={()=>push("BookCategories",{item: item, title:item.title })}  
+      activeOpacity={0.9}
     >
       <View style={styles.categoryTitleView}>
         <Text style={styles.categoryTitle} numberOfLines={1}>

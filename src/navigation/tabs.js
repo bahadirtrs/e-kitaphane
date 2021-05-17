@@ -35,8 +35,8 @@ const Tabs = () => {
                             return (<Icon  name={'apps-outline'} size={25} color={tintColor}/>)
                         case "Arama":
                             return (<Icon  name={'search-outline'} size={25} color={tintColor}/>)
-                        case "Bildirimler":
-                            return (<Icon  name={'notifications-outline'} size={25} color={tintColor}/>)
+                        case "Yardım":
+                            return (<Icon  name={'help-circle-outline'} size={25} color={tintColor}/>)
                         case "Destek":
                             return (<Icon  name={'mail-outline'} size={25} color={tintColor}/>)
                         case "Kütüphane":
@@ -49,8 +49,8 @@ const Tabs = () => {
             <Tab.Screen name="Anasayfa" component={Home}/>
             <Tab.Screen name="Arama" component={SearchScreen}/>
             <Tab.Screen name="Kütüphane" component={MyLibrary}/>
-            <Tab.Screen name="Bildirimler" component={Notification}/>
             <Tab.Screen name="Destek" component={Support}/>
+            <Tab.Screen name="Yardım" component={Notification}/>
         </Tab.Navigator>
         <SafeAreaView backgroundColor='#fff' />
         </>

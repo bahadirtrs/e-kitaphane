@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Dimensions } from "react-native";
-import { Alert, Modal, StyleSheet, Text, Pressable, View } from "react-native";
+import {Modal, StyleSheet, Text, Pressable, View } from "react-native";
 
 const HelpModal = ({visible, setVisible}) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -10,10 +9,6 @@ const HelpModal = ({visible, setVisible}) => {
         animationType="slide"
         transparent={true}
         visible={visible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          setModalVisible(!modalVisible);
-        }}
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
@@ -27,7 +22,6 @@ const HelpModal = ({visible, setVisible}) => {
           </View>
         </View>
       </Modal>
-     
     </View>
   );
 };

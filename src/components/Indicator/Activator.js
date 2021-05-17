@@ -43,20 +43,21 @@ export default class ActivatorActivator extends Component {
                 })
               }
             ],
-            height: 130,
-            width: 130,
+            height: 100,
+            width: 100,
             margin: 5,
             borderWidth: 2,
             borderColor: "#bbb",
-            borderColor: "#1d3557",
-            borderRadius: 40,
+            borderColor: "#fff",
+            borderRadius: 35,
             justifyContent: "center",
             position:'absolute',
           }}
         />
-          <Image style={{width:50, height:50}}  source={require('../../../assets/books-logo-cover.png')} />
+          <Image style={{width:35, height:35}}  source={require('../../../assets/books-logo.png')} />
         <Animated.View />
       </View>
+      
       </>
     );
   }
@@ -67,7 +68,8 @@ const styles = StyleSheet.create({
   container: {
     flex:1,
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    backgroundColor:'#1d3557'
   },
   item: {},
   btn: {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Dimensions,StyleSheet,ActivityIndicator,Text } from 'react-native'
+import { View,StyleSheet,ActivityIndicator,Text } from 'react-native'
 
 export default function BeingIndicator({title=''}) {
     return (
@@ -13,11 +13,12 @@ export default function BeingIndicator({title=''}) {
 }
 const styles = StyleSheet.create({
     activityStyle:{ 
-        padding:30,
+        padding:10,
         backgroundColor:'#00000090', 
         justifyContent:'center',
         alignItems:'center', 
-        width:150, 
+        width:140, 
+        height:120,
         borderRadius:8,
         shadowColor: "#000",
       shadowOffset: {
@@ -30,7 +31,7 @@ const styles = StyleSheet.create({
     },
     title:{
         textAlign:'center',
-        paddingTop:5,
+        paddingTop:10,
         fontSize:12,
         fontFamily:'GoogleSans-Regular',
         color:'#fff'
