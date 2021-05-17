@@ -131,7 +131,7 @@ const setBookStore = async () =>{
       if(sonuc){
         tokenControlRedirect()
       }else{
-        alert("Ürün satın alınırken bir hata oluştu...")
+        alert("Ürün satın alınırken bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.")
       }
     }else{
       setlogInVisible(true)
