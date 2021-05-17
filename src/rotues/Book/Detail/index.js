@@ -31,22 +31,13 @@ export default function BookDetailScreen({ navigation, route }) {
   const [fetching, setFetching] = useState(false)
   const [closed, setClosed] = useState(false)
   
+  let id='product'+route.params.item.id; 
   let itemSkus = Platform.select({
     ios: [],
-    android: [
-      'product1',
-      'product2',
-      'product3',
-      'product5',
-      'product6',
-      'product7',
-      'product8',
-    ]
+    android:[id]
   });
-
-  let id='product'+route.params.item.id; 
   const [products, setProducts] = useState([])
-  const [user, setUser] = useState({name:'Osman',subscription:undefined})
+  const [user, setUser] = useState({name:'Jhon',subscription:undefined})
   const [showads, setShowads] = useState(true);
   
   useFocusEffect(
@@ -134,11 +125,17 @@ export default function BookDetailScreen({ navigation, route }) {
 
 const setBookStore = async () =>{
   try {
-    const sonuc= await RNIap.requestSubscription(id)
-      alert("Sonuç: "+JSON.stringify(sonuc))
-    if(sonuc){
-      tokenControlRedirect()
-    }else{alert("Ürün satın alınırken bir hata oluştu...")}
+    if(token!==null){
+      const sonuc= await RNIap.requestSubscription(id)
+        //alert("Response: "+JSON.stringify(sonuc))
+      if(sonuc){
+        tokenControlRedirect()
+      }else{
+        alert("Ürün satın alınırken bir hata oluştu...")
+      }
+    }else{
+      setlogInVisible(true)
+    }
   }catch (error) {
     alert(error)
   }
@@ -159,7 +156,12 @@ const setBookStore = async () =>{
         setBuyButtonText("Kitabı Oku")
         setBuyStatus(true)
         setClosed(false)
-        navigation.navigate("Reader", {id: product?.id, type: "preview", preview: pdfUrl, title: product?.title });
+        navigation.navigate("Reader",{
+          id: product?.id, 
+          type: "preview", 
+          preview: pdfUrl, 
+          title: product?.title 
+        });
       }
       }, 5000);
     }else{
@@ -169,7 +171,7 @@ const setBookStore = async () =>{
   }
   const closeLogInModal = ()=>{
     setlogInVisible(false)
-    navigation.push('LogIn')
+    navigation.push('Account')
   }
   return (
     <View style={styles.container}>
@@ -201,8 +203,8 @@ const setBookStore = async () =>{
             title={product?.title}
             page_count={product?.page_count}
           />
+        <Text>{id}</Text>
         </View>
-        <Text>{route.params.item.id}--yeni-----{id}</Text>
         <View style={styles.bookDetails}>
           <BookInfo
             pdfUrl={pdfUrl}
