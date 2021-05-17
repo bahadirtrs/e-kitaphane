@@ -57,7 +57,7 @@ android {
         pickFirst '**/*.so'
     }
     defaultConfig {
-        applicationId "com.books"
+        applicationId "com.ekitaphane"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -114,6 +114,8 @@ dependencies {
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
         implementation project(':react-native-splash-screen')
+        implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
+        implementation(project(":react-native-google-signin"))
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.appcompat:appcompat:1.1.0'

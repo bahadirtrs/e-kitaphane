@@ -11,6 +11,7 @@ import ReaderScreen from "./rotues/Book/Reader"
 import Support from "./rotues/Support"
 import SupportMessageDetail from './rotues/Support/SupportMessageDetail'
 import Splashscreen from './rotues/Splashscreen'
+import Notification from './rotues/Notification'
 import { createSharedElementStackNavigator } from "react-navigation-shared-element"
 import SearchScreen from "./rotues/Search"
 import { createStackNavigator, TransitionPresets } from "@react-navigation/stack"
@@ -68,6 +69,7 @@ function MainStackScreen() {
       <MainStack.Screen name="Reader" component={ReaderScreen} />
       <MainStack.Screen name="Search" component={SearchScreen} />
       <MainStack.Screen name="DestekDetay" options={{headerShown: false}}  component={SupportMessageDetail} />
+      <MainStack.Screen name="Notification" options={{headerShown: false}}  component={Notification} />
       <MainStack.Screen name="Destek" options={{headerShown: false}} component={Support} />
     </MainStack.Navigator>
   )

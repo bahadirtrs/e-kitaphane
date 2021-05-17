@@ -168,11 +168,11 @@ export default function LogIn({navigation}) {
         />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.inner}>
-          <View style={{justifyContent:'center', alignItems:'center'}} >
+          <View style={styles.welcomeConatiner} >
           <UsersWelcome warning={warning} 
             infoColor={infoColor} setWarning={()=>setWarning('null')}
             text={'Birbirinden eşsiz kitapları okumak için oturum açın'}
-            />
+          />
           <TextInputCom
             placeholder={"Mail Adresi"} value={email}
             onChangeText={(text)=>setemail(text)} type={'email'}
@@ -183,13 +183,12 @@ export default function LogIn({navigation}) {
             passwordHide={passwordHide} setPasswordHide={()=>setPasswordHide(!passwordHide)}
           />
           <TouchableOpacity style={{justifyContent:'flex-end'}} >
-            <View style={{justifyContent:'flex-end', alignItems:'flex-end',  width:Dimensions.get('screen').width*0.85, padding:10}} >
-              <Text style={{fontFamily:'GoogleSans-Medium', color:'#555'}} >Şifremi unuttum</Text>
+            <View style={styles.lostPassword} >
+              <Text style={styles.lostPasswordText} >Şifremi unuttum</Text>
             </View>
           </TouchableOpacity>
-
           <ActiveButton
-          text={'Oturum Aç      '}
+            text={'Oturum Aç'}
             isLogInFormControl={()=>isLogInFormControl()}
             buttonClick={buttonClick}
           />
@@ -215,6 +214,18 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "space-around"
   },
-  
-
+  welcomeConatiner:{
+    justifyContent:'center',
+    alignItems:'center'
+  },
+  lostPassword:{
+    width:Dimensions.get('screen').width*0.85, 
+    justifyContent:'flex-end', 
+    alignItems:'flex-end', 
+    padding:10
+  },
+  lostPasswordText:{
+    fontFamily:'GoogleSans-Medium', 
+    color:'#555'
+  },
 });

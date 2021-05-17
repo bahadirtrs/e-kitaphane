@@ -37,6 +37,7 @@ export default function ReaderScreen({ navigation, route }) {
     const [previewBook, setPreviewBook] = useState(false)
     const [containuePage, setContainuePage] = useState(0)
     const [statusBarColor, setStatusBarColor] = useState('#1d3557')
+    const [pageHorizontal, setPageHorizontal] = useState(true)
     const SlideInLeft = useRef(new Animated.Value(0)).current;
     //const source = { uri: BASE_URL +"api/show-preview/" + route.params.id, cache: true }
     const source = { uri: BASE_URL +pdfUrl, cache: true }
@@ -276,7 +277,6 @@ export default function ReaderScreen({ navigation, route }) {
   return (
   <>
     <View style={styles.container}> 
-     
       {isPageControllerHide ?
         <SafeAreaView style={{ zIndex:1, position:'absolute', backgroundColor:'#1d3557', paddingBottom:0, paddingTop:5}}>
           <StatusBar barStyle="light-content" backgroundColor={statusBarColor}/>
@@ -289,6 +289,8 @@ export default function ReaderScreen({ navigation, route }) {
             backgrounColor={'#1d3557'}
             pageSave={()=>PageSave()}
             deleteNumber={()=>StrongeNumberDelete()}
+            setPageHorizontalTrue={()=>setPageHorizontal(!pageHorizontal)}
+            pageHorizontal={pageHorizontal}
             />  
         </SafeAreaView>
     :null}
@@ -302,7 +304,7 @@ export default function ReaderScreen({ navigation, route }) {
     <Pdf
       source={source}
       page={containuePage}
-      horizontal={true}
+      horizontal={pageHorizontal}
       enablePaging={true}
       fitWidth={true}
       cache={true}

@@ -5,7 +5,7 @@ import { BASE_URL} from "../../utils/constants"
 import { SafeAreaView } from 'react-native'
 import { Dimensions } from 'react-native'
 import  Icon  from "react-native-vector-icons/Ionicons"
-import  FontAwesome from "react-native-vector-icons/FontAwesome5"
+import FontAwesome from "react-native-vector-icons/FontAwesome5"
 import SupportCreateModal from '../../components/SupportCreateModal'
 import SupportMessageList from '../../components/SupportMessageList'
 import BeingIndicator from '../../components/Indicator/BeingIndicator';
@@ -19,7 +19,7 @@ export default function SupportScreen({navigation,route}) {
     const [supportCreateModal, setSupportCreateModal] = useState(false)
     const [response, setResponse] = useState(true)
     const [permisson, setPermisson] = useState(true)
-
+    const [pendingCount, setPendingCount] = useState(0)
     useFocusEffect(
       React.useCallback(() => {
         SupportCreate()
@@ -62,6 +62,7 @@ export default function SupportScreen({navigation,route}) {
         }else{
           setPermisson(true)
         }
+        setPendingCount(count);
       }
 
     return (
@@ -96,8 +97,11 @@ export default function SupportScreen({navigation,route}) {
                 shadowOpacity: 0.2,
                 shadowRadius: 3,
                 elevation: 2,
-                }}>
-                  <Text style={{fontFamily:'GoogleSans-Regular', color:'#333'}}>Toplam {supportData.length}  {permisson? 'true':'false'} destek talebiniz bulunmaktadır</Text> 
+                }}>{pendingCount>0
+                  ?<Text style={{fontFamily:'GoogleSans-Regular', color:'#333'}}>Yanıt bekleyen {pendingCount?pendingCount:0} destek talebiniz bulunmaktadır</Text> 
+                  :<Text style={{fontFamily:'GoogleSans-Regular', color:'#333'}}>Yanıt bekleyen destek talebiniz bulunmamaktadır</Text> 
+                }
+                  
                 </View>
             </View>
             <FlatList
@@ -105,13 +109,15 @@ export default function SupportScreen({navigation,route}) {
               keyExtractor={(item, index) => "search-result-item-" + index}
               scrollEnabled={true}
               horizontal={false}
-              style={{minHeight:Dimensions.get('screen').height-100,}}
+              inverted={true}
+              style={{minHeight:Dimensions.get('screen').height-280}}
               showsHorizontalScrollIndicator={false}
               showsVerticalScrollIndicator={false}
+              justifyContent={'flex-end'}
               data={supportData}
               renderItem={({ item,index }) => {
                 return(
-                  <SupportMessageList item={item}  onPress={()=>navigation.push('DestekDetay', {'record_number':item.record_number, 'subject':item.subject})} />
+                  <SupportMessageList item={item}  onPress={()=>navigation.push('DestekDetay', {'record_number':item.record_number, 'subject':item.subject, 'item':item})} />
                 )
               }}
             />

@@ -95,7 +95,7 @@ const SupportCreateModal = ({visible, setVisible, permisson}) => {
                   <Text style={styles.title}>Destek Mesajı Oluştur</Text>
                   <Text style={styles.description}>Lütfen destek almak istediğiniz konuyu açıkla yazınız.</Text>
                 </View>
-              : <View style={{height:10}} />
+              : null
              }
             <View>
           {!permisson 
@@ -112,7 +112,7 @@ const SupportCreateModal = ({visible, setVisible, permisson}) => {
                 value={subject}
                 onChangeText={(text)=>setSubject(text)}
                 textAlignVertical='auto'
-                keyboardType={'email-address'}
+                keyboardType={'default'}
                 autoCapitalize={'none'}
               />
               <TextInput
@@ -121,16 +121,18 @@ const SupportCreateModal = ({visible, setVisible, permisson}) => {
                 placeholderTextColor={'#555'}
                 value={message}
                 onChangeText={(text)=>setMessage(text)}
-                textAlignVertical='auto'
-                keyboardType={'email-address'}
-                secureTextEntry={true}
+                textAlignVertical='top'
+                textAlign='left'
+                keyboardType={'default'}
                 autoCapitalize={'none'}
-                  multiline={true}
-                numberOfLines={5}
+                multiline={true}
+                numberOfLines={10}
                 maxLength={500}
               /> 
-            <Text style={styles.description}>İsim Soyisim: {userInfo.first_name} {userInfo.last_name} </Text>
-            <Text style={styles.description}>Mail adresi: {userInfo.email} </Text>
+              <View style={{paddingHorizontal:10, paddingTop:5,}} >
+                <Text style={styles.description}>İsim Soyisim: {userInfo.first_name} {userInfo.last_name} </Text>
+                <Text style={styles.description}>Mail adresi: {userInfo.email} </Text>
+              </View>
             </View>
               }
             </View>
@@ -164,13 +166,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22,
+    marginTop: 0,
   },
   modalView: {
     margin: 0,
     backgroundColor: "white",
     borderRadius: 10,
-    padding: 5,
+    padding: 6,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
@@ -184,7 +186,7 @@ const styles = StyleSheet.create({
   closeButton:{
     position:'absolute',
     zIndex:1,
-    width:Dimensions.get('screen').width*0.8, 
+    width:Dimensions.get('screen').width*0.82, 
     justifyContent:'flex-end',
     alignItems:'flex-end',
     top:10,
@@ -193,15 +195,16 @@ const styles = StyleSheet.create({
     width:Dimensions.get('screen').width*0.8, 
     justifyContent:'flex-start', 
     alignItems:'flex-start',
-    borderBottomWidth:1,
+    borderBottomWidth:0,
     borderBottomColor:'#ddd',
-    marginVertical:10,
+    marginVertical:5,
   },
   textInput:{ 
     width:Dimensions.get('screen').width*0.8, 
+    fontFamily:'GoogleSans-Regular',
     borderWidth:1, 
     borderColor:'#ddd',
-    borderRadius:7, 
+    borderRadius:3, 
     fontSize:14, 
     height:150,
     margin:5,
@@ -209,9 +212,11 @@ const styles = StyleSheet.create({
   },
   textInputSubject:{ 
     width:Dimensions.get('screen').width*0.8, 
+    height:40,
+    fontFamily:'GoogleSans-Regular',
     borderWidth:1, 
     borderColor:'#ddd',
-    borderRadius:7, 
+    borderRadius:3, 
     fontSize:14, 
     margin:5,
     padding:10,
@@ -221,13 +226,13 @@ const styles = StyleSheet.create({
     fontSize:20,
     paddingTop:10,
     paddingBottom:3,
-    paddingHorizontal:10,
+    paddingHorizontal:0,
   },
   description:{
     fontFamily:'GoogleSans-Regular',
     fontSize:12,
     paddingBottom:5,
-    paddingHorizontal:10,
+    paddingHorizontal:0,
     color:'#555'
   }, 
   buttonContainer:{

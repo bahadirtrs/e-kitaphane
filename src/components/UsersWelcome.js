@@ -5,10 +5,17 @@ import Icon from "react-native-vector-icons/Ionicons"
 export default function UsersWelcome({warning, infoColor, setWarning, text}) {
     return (
         <View style={styles.container} >
-          <Image  style={styles.imageStyle} source={require('../../assets/logom-sm.png')} />
-          <Text style={[styles.welcomeTextDescription]}>
-            {text}
-          </Text>  
+          { text
+            ? <View style={{justifyContent:'center', alignItems:'center'}} >
+            <Image  style={styles.imageStyle} source={require('../../assets/logom-sm.png')} />
+            <Text style={[styles.welcomeTextDescription]}>
+              {text}
+            </Text>  
+          </View>
+          :null
+
+          }
+         
           { warning!='null' ?
           <View style={[styles.infoStyle,{backgroundColor:infoColor}]}> 
             <Text style={styles.warningTextStyle}>{warning}</Text>

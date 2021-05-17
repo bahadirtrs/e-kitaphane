@@ -10,7 +10,8 @@ export default function logo() {
 }
 const styles = StyleSheet.create({
     logoText:{
-        fontFamily:'GoogleSans-Bold',
+        color:'#fff',
+        fontFamily:'GoogleSans-Medium',
         fontSize:22
         
     }

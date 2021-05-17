@@ -1,33 +1,33 @@
 import React, {useEffect, useState, useMemo } from "react"
-import { View, Text,StyleSheet } from 'react-native'
+import {View, Text,StyleSheet,Dimensions, SafeAreaView, FlatList,StatusBar, Image  } from 'react-native'
 import RequestManager from "../../utils/requestManager"
-import { endpoints } from "../../utils/constants"
-import RNSecureStorage, { ACCESSIBLE } from "rn-secure-storage"
-import { TouchableOpacity } from "react-native-gesture-handler"
-import UserBooksItem, { BooksItemPlaceholder } from "../../components/UserBookItem"
+import {endpoints } from "../../utils/constants"
+import RNSecureStorage from "rn-secure-storage"
+import {TouchableOpacity } from "react-native-gesture-handler"
+import UserBooksItem from "../../components/UserBookItem"
 import ChangePassword from '../../components/ChangePassword'
 import {logout} from "../../utils/requestManager"
 import AsyncStorage from '@react-native-community/async-storage';
-import  Icon  from "react-native-vector-icons/Ionicons"
-import { Dimensions } from "react-native"
-import { SafeAreaView, FlatList } from "react-native"
-import { StatusBar } from "react-native"
+import Icon  from "react-native-vector-icons/Ionicons"
+
 import moment from 'moment'
 import 'moment/locale/tr'
 import { ScrollView } from "react-native"
 moment.locale('tr')
+let user_image=null;
+
 export default function UserInfo({navigation}) {
+    const [userInfo, setUserInfo] = useState([])
+    const [fetching, setFetching] = useState(false)
+    const [ownedBooks, setOwnedBooks] = useState("")
+    const [changePasswordModal, setChangePasswordModal] = useState(false)
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
     })
-}, [navigation])
+  }, [navigation])
 
-    const [userInfo, setUserInfo] = useState([])
-    const [fetching, setFetching] = useState(false)
-    const [ownedBooks, setOwnedBooks] = useState("")
-    const [changePasswordModal, setChangePasswordModal] = useState(false)
     const getCategories = useMemo(async() =>
       RequestManager({
         method: endpoints.user.method,
@@ -61,6 +61,7 @@ export default function UserInfo({navigation}) {
       }
 
       const getProduct = async()=>{
+        user_image = await RNSecureStorage.get("photo")
         setFetching(true)
         RequestManager({
           method: endpoints.ownedProducts.method,
@@ -87,7 +88,6 @@ export default function UserInfo({navigation}) {
       <SafeAreaView  backgroundColor={'#1d3557'}  />
       <StatusBar backgroundColor={'#1d3557'} barStyle={'light-content'} />
       <View style={styles.container}>
-      
         <View style={styles.headerBackButtonContainer} >
             <TouchableOpacity style={{padding:10}} onPress={()=>navigation.goBack()} >
               <Icon name="chevron-back-outline" size={25} color={"#fff"}/> 
@@ -100,7 +100,9 @@ export default function UserInfo({navigation}) {
           <ScrollView>
         <View style={styles.headerContainer} >
           <View>
-            <Icon name={'person-circle-outline'} size={100} color={'#fff'} />
+            <Image source={{uri: user_image}} style={{width:100, height:100, borderRadius:50}}  />
+           { //<Icon name={'person-circle-outline'} size={100} color={'#fff'} />
+           }
           </View>
           <Text style={styles.headerName}>
             {userInfo.first_name} 
@@ -124,7 +126,7 @@ export default function UserInfo({navigation}) {
           <View  style={styles.itemArc}>
             <Text style={styles.itemOne}>Parola:  </Text>
             <TouchableOpacity activeOpacity={0.4} onPress={()=>setChangePasswordModal(!changePasswordModal)} >
-             <Text style={[styles.itemTwo, {fontFamily:'GoogleSans-Medium'}]}>Parolayı güncelle</Text>
+             <Text style={[styles.itemTwo,{fontFamily:'GoogleSans-Medium'}]}>Parolayı güncelle</Text>
             </TouchableOpacity>
           </View>
 
@@ -135,10 +137,6 @@ export default function UserInfo({navigation}) {
               {' '}
               {moment(userInfo.created_at).format('dddd')}</Text>
           </View>
-         
-
-         
-
         </View>
         <View style={styles.itemTitle}>
           <Text style={styles.itemTitleText}>Satın Alınan Kitaplar</Text>
@@ -158,7 +156,7 @@ export default function UserInfo({navigation}) {
                 renderItem={({ item,index }) => {
                     return (
                       index==0 
-                      ? <View style={{paddingLeft:20,}}>
+                      ? <View style={{paddingLeft:20}}>
                           <UserBooksItem sharedKey={"Kitaplar"} item={item}/>
                         </View> 
                       : <UserBooksItem sharedKey={"Kitaplar"} item={item}/>
@@ -167,16 +165,20 @@ export default function UserInfo({navigation}) {
                 }}
             />
           :
-          <View style={{width:Dimensions.get('screen').width, flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
+          <View style={styles.noBookContainer} >
             <Icon name="information-circle-outline" size={25} color={"#333"}/> 
-            <Text style={{fontFamily:'GoogleSans-Regular', color:'#333'}}> Şuana kadar hiç kitap satın alınmamış</Text>
+            <Text style={styles.noBookText}>
+              {'Şuana kadar hiç kitap satın alınmamış.'}
+            </Text>
           </View>
           }
         </View>
-        <View style={{width:Dimensions.get('screen').width, justifyContent:'center', alignItems:'center', marginVertical:20}} >
-        <TouchableOpacity style={styles.logoutButton}  activeOpacity={0.9} onPress={()=>isLogoutUser()} >
-          <Text style={styles.buttonText}>Çıkış Yap</Text>
-        </TouchableOpacity>
+        <View style={styles.logoutButtonContainer} >
+          <TouchableOpacity style={styles.logoutButton}  activeOpacity={0.9} onPress={()=>isLogoutUser()} >
+            <Text style={styles.buttonText}>
+              {'Çıkış Yap'}
+            </Text>
+          </TouchableOpacity>
         </View>
         <ChangePassword
           first_name={userInfo.first_name}
@@ -275,6 +277,22 @@ const styles = StyleSheet.create({
     buttonText:{
       color:'#fff', 
       fontFamily:'GoogleSans-Regular'
-    }
+    },
+    noBookContainer:{
+      width:Dimensions.get('screen').width, 
+      flexDirection:'row', 
+      justifyContent:'center', 
+      alignItems:'center'
+    },
+    noBookText:{
+      fontFamily:'GoogleSans-Regular', 
+      color:'#333'
+    },
+    logoutButtonContainer:{
+      width:Dimensions.get('screen').width, 
+      justifyContent:'center', 
+      alignItems:'center', 
+      marginVertical:20
+    },
   })
 

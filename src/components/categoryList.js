@@ -47,15 +47,17 @@ function CategoryList({ sharedKey, title, onPress, request, categoryID, columnTy
           title={title+" kategorisinde ara"}
         />
       </View>
-      {products.length>0
-        ?<CategoryItems 
-          categoryID={categoryID} 
-          fetching={false} 
-          products={term?.length > 1 ?filterData:products} 
-          sharedKey={sharedKey}
-        />
-        :<Loading/>
-      }  
+      <View style={{justifyContent:'flex-start', alignItems:'flex-start'}} >
+        {products.length>0
+          ?<CategoryItems 
+            categoryID={categoryID} 
+            fetching={false} 
+            products={term?.length > 1 ?filterData:products} 
+            sharedKey={sharedKey}
+          />
+          :<Loading/>
+        }  
+      </View>
     </View>
   )
 }
@@ -126,9 +128,10 @@ const styles = StyleSheet.create({
   },
   itemContainer:{ 
     width:Dimensions.get('screen').width, 
-    justifyContent:'center', 
-    alignItems:'center', 
-    paddingBottom:80
+    justifyContent:'flex-start', 
+    alignItems:'flex-start', 
+    paddingBottom:80,
+    paddingLeft:Dimensions.get('screen').width*0.03,
   },
   cardTitle: {
     fontFamily:'GoogleSans-Bold',

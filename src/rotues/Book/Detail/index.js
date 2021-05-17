@@ -15,6 +15,7 @@ import { endpoints,BASE_URL } from "../../../utils/constants"
 import { useFocusEffect } from '@react-navigation/native';
 import Icon from "react-native-vector-icons/Ionicons"
 import { TouchableOpacity } from "react-native"
+import * as RNIap from 'react-native-iap';
 
 export default function BookDetailScreen({ navigation, route }) {
   const product = route.params.item
@@ -28,7 +29,26 @@ export default function BookDetailScreen({ navigation, route }) {
   const [pdfUrl, setPdfUrl] = useState([])
   const [buyStatus, setBuyStatus] = useState(false)
   const [fetching, setFetching] = useState(false)
+  const [closed, setClosed] = useState(false)
+  
+  let itemSkus = Platform.select({
+    ios: [],
+    android: [
+      'product1',
+      'product2',
+      'product3',
+      'product5',
+      'product6',
+      'product7',
+      'product8',
+    ]
+  });
 
+  let id='product'+route.params.item.id; 
+  const [products, setProducts] = useState([])
+  const [user, setUser] = useState({name:'Osman',subscription:undefined})
+  const [showads, setShowads] = useState(true);
+  
   useFocusEffect(
     React.useCallback(() => {
       PageNumber()
@@ -84,7 +104,48 @@ export default function BookDetailScreen({ navigation, route }) {
       }
     })
   }
+
+  useEffect(() => {
+    initIAp()
+  }, [])
+
+  const initIAp = async () => {
+    try {
+        const products = await RNIap.getProducts(itemSkus);
+        console.log(JSON.stringify(products))
+       // alert(JSON.stringify(products))
+        setProducts(products)
+        console.log(JSON.stringify(products))
+    } catch (err) {
+        alert(err)
+        console.warn(err); 
+    }
+    const purcaseUpdateScription = RNIap.purchaseUpdatedListener((purchase)=>{
+      const receipt= purchase.transactionReceipt;
+        if(receipt){
+          RNIap.finishTransaction(purchase);
+          setUser((prev)=>({...prev,subscription:purchase.productId}));
+        }
+    })
+    return() =>{
+      purcaseUpdateScription.remove();
+    }
+}
+
+const setBookStore = async () =>{
+  try {
+    const sonuc= await RNIap.requestSubscription(id)
+      alert("Sonuç: "+JSON.stringify(sonuc))
+    if(sonuc){
+      tokenControlRedirect()
+    }else{alert("Ürün satın alınırken bir hata oluştu...")}
+  }catch (error) {
+    alert(error)
+  }
+}
+
   const tokenControlRedirect = async ()=>{
+    setClosed(true)
     if(token!==null){
       const resultMessage= await BuyProduct(1,product.id,'PURCHASED', 'GOOGLE_PAY')
       setLoading(true)
@@ -97,11 +158,13 @@ export default function BookDetailScreen({ navigation, route }) {
         if(resultMessage.statusMsg){
         setBuyButtonText("Kitabı Oku")
         setBuyStatus(true)
+        setClosed(false)
         navigation.navigate("Reader", {id: product?.id, type: "preview", preview: pdfUrl, title: product?.title });
       }
       }, 5000);
     }else{
       setlogInVisible(true)
+      setClosed(false)
     }
   }
   const closeLogInModal = ()=>{
@@ -127,7 +190,6 @@ export default function BookDetailScreen({ navigation, route }) {
         source={{uri: BASE_URL + "products/cover/" + product?.cover_image}} 
       />
         <View style={styles.bookCoverArea}>
-          
           <BookCover 
             sharedKey={sharedKey} 
             id={product.id} 
@@ -140,6 +202,7 @@ export default function BookDetailScreen({ navigation, route }) {
             page_count={product?.page_count}
           />
         </View>
+        <Text>{route.params.item.id}--yeni-----{id}</Text>
         <View style={styles.bookDetails}>
           <BookInfo
             pdfUrl={pdfUrl}
@@ -155,6 +218,7 @@ export default function BookDetailScreen({ navigation, route }) {
             pdfData={product?.preview_pdf}
           />
         </View>
+       
         <BottomLogInModal 
           visible={islogInModalVisible}  
           setVisible={()=> setlogInVisible(false)}
@@ -163,13 +227,14 @@ export default function BookDetailScreen({ navigation, route }) {
       </ScrollView>
       <View style={styles.readBuyButtonArea}>
         <ReadButton 
+          closed={closed}
           allPageNumber={allPageNumber}
           buyStatus={buyStatus}
           page={isPageNumber}
           pageAll={allPageNumber}
           id={product?.id}
           loading={loading}
-          onPress={() => tokenControlRedirect()} 
+          onPress={() => setBookStore()} 
           text={isBuyButtonText}
           price={numberFormat(product?.price) + " TL"} 
           bookViewPress={

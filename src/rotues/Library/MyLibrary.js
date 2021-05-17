@@ -53,7 +53,7 @@ export default function UserInfo({navigation}) {
       },
     })
     .then(res => {
-      dateToASC(res)
+      dateToASC(res) 
       setFetching(false)
     })
     .catch(err => {
@@ -63,7 +63,7 @@ export default function UserInfo({navigation}) {
     })
   }
 
-  const dateToASC = (res)  =>{
+  const dateToASC = async (res)  =>{
     var ownedBooks= [];
     for (let index =0; index < res.length; index++) {
       ownedBooks.push(res[(res.length-index)-1]);

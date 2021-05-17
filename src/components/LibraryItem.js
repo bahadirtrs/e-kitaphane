@@ -7,7 +7,6 @@ import SkeletonPlaceholder from "react-native-skeleton-placeholder"
 import AsyncStorage from '@react-native-community/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import Icon from "react-native-vector-icons/Ionicons"
-
 import moment from 'moment'
 import 'moment/locale/tr'
 moment.locale('tr')
@@ -17,10 +16,11 @@ const height=(Dimensions.get('screen').width-20)/2.5 * bookCoverRatio;
 export default function LibraryItem({ item, sharedKey }) {
   const [pageNumber, setPageNumber] = useState(0)
   const [allPageNumber, setAllPageNumber] = useState(0)
+  
     useFocusEffect(
       React.useCallback(() => {
         PageNumber()
-      }, [])
+      },[])
     );
 
     const PageNumber = async() =>{

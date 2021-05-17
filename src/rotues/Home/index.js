@@ -71,16 +71,16 @@ export default function HomeScreen({ navigation }){
     return <Activator title={'Uygulama başlatılıyor...'} />
   }else{
     return (
-      <><SafeAreaView backgroundColor='#f1f1f1' />
-        <StatusBar backgroundColor='#f1f1f1'  barStyle="dark-content" />
-          <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingTop:0}} >
+      <><SafeAreaView backgroundColor='#1d3557' />
+        <StatusBar backgroundColor='#1d3557'  barStyle="light-content" />
+          <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingVertical:5, marginBottom:5, backgroundColor:'#1d3557'}} >
             <TouchableOpacity activeOpacity={0.9} style={{ paddingHorizontal: 12 }} onPress={null}>
-              <Icon name="menu-outline" size={32} color="#333" />
+              <Icon name="menu-outline" size={32} color="#fff" />
             </TouchableOpacity>
             <Logom/>
 
             <TouchableOpacity activeOpacity={0.9}  style={{ paddingHorizontal: 12 }} onPress={() => navigation.push("Account")}>
-              <Icon name="person-circle-outline" size={36} color="#555" />
+              <Icon name="person-circle-outline" size={32} color="#fff" />
             </TouchableOpacity>
            
           </View>
@@ -117,13 +117,11 @@ export default function HomeScreen({ navigation }){
                 }}
             />
           </View>
-     
-         
          <BooksList
             categoryID={'1'}
             sharedKey={'Öne Çıkanlar'}
             title={'Öne Çıkanlar'}
-            onPress={() => navigation.push("BookCategories",{sharedKey: 'Öne Çıkanlar',item:categories[1], pageName:'Anasayfa'})}               
+            onPress={() => navigation.push("BookCategories",{sharedKey: 'Öne Çıkanlar',item:categories[1], title:categories[1].title})}               
             request={{
               method: endpoints.products.method,
               url: endpoints.productsByCategory.path + "/" + 2,
@@ -141,7 +139,7 @@ export default function HomeScreen({ navigation }){
             categoryID={'4'}
             sharedKey={'edebiyat'}
             title={'Edebiyat'}
-            onPress={() => navigation.push("BookCategories",{sharedKey:'Edebiyat',item:categories[2], pageName:'Anasayfa'})}               
+            onPress={() => navigation.push("BookCategories",{sharedKey:'Edebiyat',item:categories[2], title:categories[2].title})}               
             request={{
               method: endpoints.products.method,
               url: endpoints.productsByCategory.path + "/" + 4,
@@ -180,3 +178,4 @@ const styles = StyleSheet.create({
     elevation: 2,
   }
 })
+

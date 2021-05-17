@@ -34,7 +34,7 @@ export default function SingIn({navigation}) {
   const [email, setemail] = useState("")
   const [password, setpassword] = useState("")
   const [passwordRepeat, setpasswordRepeat] = useState("")
-  const [checkbox, setCheckbox] = useState(true)
+  const [checkbox, setCheckbox] = useState(false)
   const [buttonClick, setButtonClick] = useState(false)
   const [warning, setWarning] = useState("null")
   const [infoColor, setInfoColor] = useState('#e63946')
@@ -55,13 +55,7 @@ useEffect(() => {
     setButtonClick(false)
   }
 }, [email,name,lastName,password,passwordRepeat,checkbox])
-  const WarningStatus= ()=>{
-    setInfoColor('#e63946')
-    setWarning('Lütfen gerekli tüm alanları doldurunuz.')
-    setTimeout(() => {
-      //setWarning('null')
-    }, 6000);
-  }
+
   const EmailControl = ()=>{
     var n = email?.indexOf("@");
     var m = email?.indexOf(".");
@@ -70,6 +64,7 @@ useEffect(() => {
     else
       return false
   }
+
   const CreateAccountControl = ()=>{
     if(name?.length>2 && lastName?.length>2){
       if(EmailControl()){
@@ -101,7 +96,7 @@ useEffect(() => {
         }, 400);
     } catch (error) {
         setActivity(false),setInfoColor('#e63946')
-        setWarning(error.message )
+        setWarning(error.message)
     }
   }
 
@@ -123,7 +118,6 @@ useEffect(() => {
             setActivity(false)
             saveToken(response.data);
           }, 500); 
-         
         });
     } catch (error) {
       if(error){
@@ -141,11 +135,11 @@ useEffect(() => {
       }
         AsyncStorage.setItem('token', access_token);
     });
-        setWarning('Başarıyla oturum açıldı.')
-        setTimeout(() => {
-          getUserInfo()
-          setInfoColor('#43aa8b')
-        }, 500);
+      setWarning('Başarıyla oturum açıldı.')
+      setTimeout(() => {
+        getUserInfo()
+        setInfoColor('#43aa8b')
+      },500);
   }
 
   const getUserInfo = async () =>{
@@ -200,7 +194,7 @@ useEffect(() => {
   return (
     <>
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
-      <SafeAreaView backgroundColor={'#f1f1f1'} />
+      <SafeAreaView backgroundColor={'#f1f1f1'} style={{zIndex:1}} />
       <StatusBar barStyle={'dark-content'}  backgroundColor={'#f1f1f1'} />
       <HeaderBackLayout 
             butonColor={'#1d3557'} 
@@ -234,28 +228,27 @@ useEffect(() => {
             passwordHide={passwordHide} setPasswordHide={()=>setPasswordHide(!passwordHide)}
         />
 
-        <View style={{width:'82%',justifyContent:'flex-start', alignItems:'flex-start', paddingTop:10}} >
-            <View style={{flexDirection:'row', justifyContent:'flex-start', alignItems:'center', paddingTop:5}} >
+        <View style={styles.termOfUseContainer} >
+            <View style={styles.checkBoxContainer} >
               { checkbox 
               ?<TouchableOpacity activeOpacity={0.9} onPress={()=>setCheckbox(!checkbox)} >
-                <Icon name="checkmark-circle-outline" size={30} color="#1d3557" />
+                <Icon name="checkmark-circle-outline" size={28} color="#4098f6" />
               </TouchableOpacity>
               :
               <TouchableOpacity activeOpacity={0.9} onPress={()=>setCheckbox(!checkbox)} >
-                <Icon name="ellipse-outline" size={30} color="#333" />
+                <Icon name="ellipse-outline" size={28} color="#333" />
               </TouchableOpacity>
-
               }
               <View>
-                <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
+                <View style={styles.privacyPolicyContainer} >
                   <TouchableOpacity activeOpacity={0.9} onPress={()=>setTermsOfUseVisible(true)}>
-                    <Text  style={{ fontSize:12, fontFamily:'GoogleSans-Medium', color:'#333'}}> Kullanıcı Sözleşmesi  <Text style={{fontFamily:'GoogleSans-Regular'}} >ve</Text> </Text>  
+                    <Text style={styles.privacyPolicyText}> Kullanıcı Sözleşmesi <Text style={{fontFamily:'GoogleSans-Regular'}}>ve</Text> </Text>  
                   </TouchableOpacity>
                   <TouchableOpacity activeOpacity={0.9} onPress={()=>setPrivacyPolicyVisible(true)}>
-                    <Text style={{fontSize:12,fontFamily:'GoogleSans-Medium', color:'#333'}}>Gizlilik Politikasını </Text>  
+                    <Text style={styles.privacyPolicyText}>Gizlilik Politikasını </Text>  
                   </TouchableOpacity>
                 </View>
-                  <Text style={{fontSize:12,fontFamily:'GoogleSans-Regular', color:'#333'}}> okudum ve kabul ediyorum</Text>
+                  <Text style={styles.hidePolicy}> okudum ve kabul ediyorum</Text>
               </View>
                
             </View>
@@ -372,6 +365,33 @@ const styles = StyleSheet.create({
     storeLoginLogo:{
       paddingVertical:0,
       paddingHorizontal:10
-    }
+    },
+    termOfUseContainer:{
+      width:'82%',
+      justifyContent:'flex-start', 
+      alignItems:'flex-start', 
+      paddingTop:10
+    },
+    checkBoxContainer:{
+      flexDirection:'row', 
+      justifyContent:'flex-start', 
+      alignItems:'center', 
+      paddingTop:5
+    },
+    privacyPolicyContainer:{
+      flexDirection:'row', 
+      justifyContent:'center', 
+      alignItems:'center'
+    },
+    privacyPolicyText:{ 
+      fontSize:12, 
+      fontFamily:'GoogleSans-Medium', 
+      color:'#333'
+    },
+    hidePolicy:{
+      fontSize:12,
+      fontFamily:'GoogleSans-Regular', 
+      color:'#333'
+    },
 })
 

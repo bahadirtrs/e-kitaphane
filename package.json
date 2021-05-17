@@ -18,6 +18,7 @@
     "@react-native-community/progress-bar-android": "^1.0.4",
     "@react-native-community/progress-view": "^1.2.4",
     "@react-navigation/bottom-tabs": "^5.11.8",
+    "@react-native-google-signin/google-signin": "^6.0.0",
     "@react-navigation/native": "^5.9.3",
     "@react-navigation/native-stack": "^5.0.5",
     "@react-navigation/stack": "^5.14.3",

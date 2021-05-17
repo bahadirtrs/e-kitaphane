@@ -39,24 +39,24 @@ const ReadButton = (data) => {
   
   if(userInfo){
     return (
-      <TouchableOpacity activeOpacity={0.9} style={({ pressed }) => (pressed ? { opacity: 0.9 } : { opacity: 1 })} onPress={data.bookViewPress}>
+      <TouchableOpacity activeOpacity={0.9} style={({ pressed }) => (pressed ? { opacity: 0.9 } : { opacity: 1 })} onPress={data?.bookViewPress}>
         <View style={[styles.buttonContainer, { backgroundColor: "#2b4768" }]}>
           <View style={styles.buttonContent}>
             <View style={styles.buttonTextAndIcon}>
               <Icon name="book" size={24} color="#FFF" />
-              <Text style={styles.readButtonText}> {data.pageAll>0 ?  data.pageAll===data.page ? 'Kitabı Tekrar Oku' :'Okumaya Devam Et': 'Okumaya Başla'} </Text>
+              <Text style={styles.readButtonText}> {data?.pageAll>0? data?.pageAll===data?.page ? 'Kitabı Tekrar Oku' :'Okumaya Devam Et': 'Okumaya Başla'} </Text>
             </View>
             <View style={styles.readButtonCompleteView}>
-              <Text style={styles.readButtonCompletePercent}> {data.pageAll>0 ? data.page+'/'+data.pageAll:' ' } </Text>
+              <Text style={styles.readButtonCompletePercent}>{data.pageAll>0 ? data.page+'/'+data.pageAll:' ' } </Text>
             </View>
           </View>
-          <View style={[styles.completePercentView, { width: Number(data.page)!==1 && Number(data.pageAll)!==1 ? completePercent+5 + "%":0   }]} />
+          <View style={[styles.completePercentView, { width: Number(data?.page)!==1 && Number(data?.pageAll)!==1 ? completePercent+5 + "%":0   }]} />
         </View>
       </TouchableOpacity>
     )
   }else{
     return (
-      <TouchableOpacity activeOpacity={0.9} style={({ pressed }) => (pressed ? { opacity: 0.9 } : { opacity: 1 })} onPress={ data?.buyStatus? data.bookViewPress :data.onPress}>
+      <TouchableOpacity activeOpacity={0.9} style={({ pressed }) => (pressed ? { opacity: 0.9 } : { opacity: 1 })} onPress={  data?.closed?null : data?.buyStatus? data?.bookViewPress :data?.onPress}>
         <View style={[styles.buttonContainer, { backgroundColor: "#2b4768" }]}>
           <View style={styles.buttonContent}>
             <View style={styles.buttonTextAndIcon}>

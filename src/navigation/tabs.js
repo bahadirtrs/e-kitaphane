@@ -6,6 +6,7 @@ import Home from '../rotues/Home'
 import Support from '../rotues/Support'
 import SearchScreen from "../rotues/Search"
 import MyLibrary from '../rotues/Library/MyLibrary'
+import Notification from '../rotues/Notification'
 
 const Tab = createBottomTabNavigator();
 const tabOptions = {
@@ -47,8 +48,8 @@ const Tabs = () => {
         >
             <Tab.Screen name="Anasayfa" component={Home}/>
             <Tab.Screen name="Arama" component={SearchScreen}/>
-            <Tab.Screen name="Bildirimler" component={Home}/>
             <Tab.Screen name="Kütüphane" component={MyLibrary}/>
+            <Tab.Screen name="Bildirimler" component={Notification}/>
             <Tab.Screen name="Destek" component={Support}/>
         </Tab.Navigator>
         <SafeAreaView backgroundColor='#fff' />

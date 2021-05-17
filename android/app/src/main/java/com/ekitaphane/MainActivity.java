@@ -1,4 +1,4 @@
-package com.books;
+package com.ekitaphane;
 
 import com.facebook.react.ReactActivity;
 import org.devio.rn.splashscreen.SplashScreen; // here

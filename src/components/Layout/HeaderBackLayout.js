@@ -4,7 +4,7 @@ import { View, Dimensions, TouchableOpacity,StyleSheet } from 'react-native'
 import Icon from "react-native-vector-icons/Ionicons"
 export default function HeaderBackLayout({butonPress,butonPressRight,butonColor,pageName,bgColor}) {
     return (
-    <View style={[styles.container, {backgroundColor:bgColor?bgColor:'#f1f1f1'}]} >
+    <View style={[styles.container]} >
         <TouchableOpacity activeOpacity={0.9} style={styles.buttonStyle} onPress={butonPress} >
             <Icon name="chevron-back-outline" size={30} color={butonColor?butonColor:"#fff" }/> 
         </TouchableOpacity>
@@ -17,7 +17,6 @@ export default function HeaderBackLayout({butonPress,butonPressRight,butonColor,
 }
 const styles = StyleSheet.create({
     container:{ 
-        backgroundColor:'#1d3557',
         zIndex:1, 
         width:Dimensions.get('screen').width, 
         flexDirection:'row', 

@@ -3,6 +3,7 @@ import RNSecureStorage from "rn-secure-storage"
 import { BASE_URL} from "../utils/constants"
 import { View, Text,StyleSheet,Platform } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage';
+import * as RNIap from 'react-native-iap';
 
   const BuyProduct = async(user_idx,product_id,status,payment_type)=>{
     const date=new Date().toJSON().slice(0, 19).replace('T', ' ')

@@ -1,17 +1,20 @@
 import React, {useState, useEffect} from 'react'
-import { View, Text, FlatList,StatusBar,StyleSheet,TouchableOpacity } from 'react-native'
+import { View, Text, FlatList,StatusBar,StyleSheet,TouchableOpacity,TextInput,Keyboard,TouchableWithoutFeedback } from 'react-native'
 import { useFocusEffect } from "@react-navigation/native"
-import { BASE_URL} from "../../utils/constants"
+import { BASE_URL, CLIENT_ID, CLIENT_SECRET} from "../../utils/constants"
 import { SafeAreaView } from 'react-native'
 import { Dimensions } from 'react-native'
 import SupportMessageItem from '../../components/SupportMessageItem'
 import Icon from "react-native-vector-icons/Ionicons"
 import axios from "axios"
+import { KeyboardAvoidingView } from 'react-native'
 
 export default function SupportMessageDetail({navigation, route}) {
     const record_number= route.params.record_number
     const subject= route.params.subject
+    const item= route.params.item
     const [message, setMessage] = useState([])
+    const [messageTerm, setMessageTerm] = useState("")
     
     useFocusEffect(
       React.useCallback(() => {
@@ -31,59 +34,182 @@ export default function SupportMessageDetail({navigation, route}) {
         console.log(error)
       }
     }
+
+    const SendMessage = async()=>{
+      try {
+        let data= { 
+          client_id:CLIENT_ID,
+          record_number:record_number,
+          message:messageTerm,
+        };
+        await axios.post(`${BASE_URL+'api/send-message'}`, data)
+        .then(response =>{
+          let record_number=response.data.recordNumber
+          getMessageDetail()
+          push("DestekDetay", {'record_number':record_number, 'subject':subject}) 
+          }
+        );
+      } catch (error) {
+        console.log(error)
+      }
+    }
     
     return (
-      <View>
-        <SafeAreaView  backgroundColor={'#1d3557'}  />
-        <StatusBar backgroundColor={'#1d3557'} barStyle={'light-content'} />
-        <View style={styles.headerBackButtonContainer} >
-          <TouchableOpacity style={{padding:0}} onPress={()=>navigation.goBack()} >
-            <Icon name="chevron-back-outline" size={25} color={"#fff"}/> 
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Destek mesajları</Text>
-          <TouchableOpacity style={{padding:10}} onPress={null} >
-            <Icon name="ellipsis-horizontal-outline" size={25} color={"#fff"}/> 
-          </TouchableOpacity>
-        </View>
-        <View style={{width:Dimensions.get('screen').width, justifyContent:'center', alignItems:'center', padding:10, backgroundColor:'#bbb'}} >
-          <Text style={{fontFamily:'GoogleSans-Medium',textAlign:'center', color:'#1d3557'}} >{subject}</Text>
-        </View>
-        <View style={{paddingTop:20 }} >
-          <FlatList
-            keyboardDismissMode="on-drag"
-            keyExtractor={(item, index) => "search-result-item-" + index}
-            scrollEnabled={true}
-            horizontal={false}
-            style={{minHeight:Dimensions.get('screen').height-100,}}
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
-            data={message.messages}
-            renderItem={({ item,index }) => {
-              return (
-                <SupportMessageItem item={item} name={message.full_name} />
-              )
-            }}
-          />
-        </View>
-      </View>
-    )
-}
-const styles = StyleSheet.create({
-  headerBackButtonContainer:{
-    width:Dimensions.get('window').width,
-    backgroundColor:'#1d3557',
-    flexDirection:'row',
-    justifyContent:'space-between', 
-    alignItems:'center', 
-    paddingHorizontal:10 
-  },
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
+        <SafeAreaView backgroundColor={'#1d3557'} />
+        <View style={styles.inner}>
+          <View style={{paddingBottom:0}} >
+            <View style={styles.headerBackButtonContainer} >
+              <TouchableOpacity style={{padding:0}} onPress={()=>navigation.goBack()} >
+                <Icon name="chevron-back-outline" size={25} color={"#fff"}/> 
+              </TouchableOpacity>
+              <Text style={styles.headerTitle}>Destek mesajları</Text>
+              <TouchableOpacity style={{padding:10}} onPress={null} >
+                <Icon name="ellipsis-horizontal-outline" size={25} color={"#fff"}/> 
+              </TouchableOpacity>
+            </View>
+            <View style={{width:Dimensions.get('screen').width, justifyContent:'center', alignItems:'center', padding:5, backgroundColor:'#ddd'}} >
+              <Text style={{fontFamily:'GoogleSans-Medium',textAlign:'center', color:'#1d3557'}} >{subject}</Text>
+            </View>
+          </View>
 
-  headerTitle:{
-    fontSize:14, 
-    fontFamily:'GoogleSans-Medium', 
-    color:'#fff'
-  },
-})
+            <View style={{paddingTop:0, flex:10}} >
+              <FlatList
+                keyboardDismissMode="on-drag"
+                keyExtractor={(item, index) => "search-result-item-" + index}
+                scrollEnabled={true}
+                horizontal={false}
+                style={{paddingTop:10}}
+                data={message.messages}
+                renderItem={({ item,index }) => {
+                  return (
+                    <SupportMessageItem item={item} name={message.full_name} />
+                  )
+                }}
+              />
+            </View>
+         <View style={{flex:1.2, paddingTop:10}} >
+          {message.status!=='ANSWERED'
+          ? <View style={[styles.footerContainer, {paddingBottom:Platform.OS === "ios" ? 5 :25}]} >
+              <View style={styles.footerContainerExp}>
+                {message.status==='CLOSED'
+                  ? <Text style={styles.pendingFooterText} >Bu destek kaydı kapatılmıştır. Hala sorun yaşıyorsanız lütfen yeni bir destek kaydı oluşturunuz.</Text>
+                  : <Text style={styles.pendingFooterText} >Müşteri Temsilcisi destek kaydınızı cevaplayana kadar, tekrardan mesaj gönderemezsiniz.</Text> 
+                }
+              </View>
+            </View>
+          : <View style={[styles.footerContainer, {paddingBottom:Platform.OS === "ios" ? 5 :30}]} >
+              <TextInput
+                  style={styles.textInputSubject}
+                  placeholder={"Mesaj Yaz"}
+                  placeholderTextColor={'#555'}
+                  value={messageTerm}
+                  onChangeText={(text)=>setMessageTerm(text)}
+                  textAlignVertical='auto'
+                  keyboardType={'default'}
+                  autoCapitalize={'none'}
+                  multiline={true}
+                />
+                <TouchableOpacity onPress={()=>SendMessage()} style={styles.submitButtonContainer} >
+                  <Icon name="arrow-up-outline" size={22} color={"#fff"}/> 
+                </TouchableOpacity>
+              </View>
+          }
+          </View>
+        </View>      
+        <SafeAreaView backgroundColor={'#f8f8f8'} />
+      </KeyboardAvoidingView>
+    );
+  };
+    
+    const styles = StyleSheet.create({
+      container: {
+        flex: 1,
+        backgroundColor:'#f8f8f8'
+      },
+      inner: {
+        flex: 1,
+        justifyContent: "space-between"
+      },
+      header: {
+        fontSize: 36,
+        marginBottom: 48
+      },
+    
+      btnContainer: {
+        backgroundColor: "white",
+        marginTop: 12
+      },
+      headerBackButtonContainer:{
+        width:Dimensions.get('window').width,
+        backgroundColor:'#1d3557',
+        flexDirection:'row',
+        justifyContent:'space-between', 
+        alignItems:'center', 
+        paddingHorizontal:10 
+      },
+    
+      headerTitle:{
+        fontSize:14, 
+        fontFamily:'GoogleSans-Medium', 
+        color:'#fff'
+      },
+    
+      textInputSubject:{ 
+        width:Dimensions.get('screen').width*0.8, 
+        fontFamily:'GoogleSans-Regular',
+        borderWidth:1, 
+        borderColor:'#ccc',
+        borderRadius:7, 
+        fontSize:14, 
+        margin:5,
+        padding:10,
+      },
+      footerContainer:{
+        backgroundColor:'#f8f8f8',
+        position:'absolute',
+        flexDirection:'row',
+        width:Dimensions.get('screen').width, 
+        justifyContent:'center',
+        alignItems:'center',
+        bottom:0,
+        paddingTop:0,
+      }, 
+      footerContainerExp:{
+        backgroundColor:'#fff',
+        position:'absolute',
+        flexDirection:'row',
+        width:Dimensions.get('screen').width*0.85, 
+        borderRadius:10,
+        justifyContent:'center',
+        alignItems:'center',
+        bottom:15,
+        paddingTop:5,
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.15,
+        shadowRadius: 4,
+        elevation: 2
+      }, 
+      pendingFooterText:{
+        textAlign:'center',
+        fontFamily:'GoogleSans-Regular',
+        color:'#555',
+        padding:5,
+      },
+      submitButtonContainer:{
+        justifyContent:'center',
+        alignItems:'center',
+        height:34,
+        width:34,
+        backgroundColor:'#40916c',
+        borderRadius:20,
+      }
+    });
+
 
 
 {

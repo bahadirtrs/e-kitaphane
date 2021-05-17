@@ -1,5 +1,5 @@
-package com.books;
-
+package com.ekitaphane;
+import co.apptailor.googlesignin.RNGoogleSigninPackage;
 import com.microsoft.codepush.react.CodePush;
 import android.app.Application;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
