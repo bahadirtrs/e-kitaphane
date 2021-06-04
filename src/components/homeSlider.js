@@ -6,8 +6,11 @@ import SkeletonPlaceholder from "react-native-skeleton-placeholder"
 import { useNavigation } from "@react-navigation/native"
 import Carousel from "react-native-snap-carousel"
 import { BASE_URL } from "../utils/constants"
+import { COLORS } from "../constants/theme";
+import { useTheme } from "@react-navigation/native"
 
 const HomeSlider = ({ request }) => {
+  const {colors}=useTheme()
   const [fetching, setFetching] = useState(false)
   const [sliders, setSliders] = useState([])
   const sliderRef = useRef()
@@ -43,7 +46,7 @@ const HomeSlider = ({ request }) => {
             itemHeight={Dimensions.get("window").width / 2}
             enableMomentum={true}
             sliderHeight={Dimensions.get("window").width / 2}
-            slideStyle={{ padding: 12, borderRadius: 6 }}
+            slideStyle={{ padding: 12, borderRadius: 0, backgroundColor:colors.background }}
             itemStyle={{ borderRadius: 6 }}
             itemWidth={Dimensions.get("window").width}
             renderItem={({ item }) => {
@@ -52,7 +55,7 @@ const HomeSlider = ({ request }) => {
                   onPress={() =>
                     item?.product ? push("BookDetail", { sharedKey: "slider", item: item?.product }) : undefined
                   }>
-                  <View style={styles.sliderImageView}>
+                  <View style={[styles.sliderImageView,{backgroundColor:colors.background}]}>
                     <FastImage
                       style={styles.sliderImage}
                       source={{
@@ -85,7 +88,7 @@ const HomeSlider = ({ request }) => {
 const styles = StyleSheet.create({
   sliderImageView: {
     height: Dimensions.get("window").width / 2,
-    shadowColor: "#000",
+    shadowColor:COLORS.shadow,
     shadowOffset: {
       width: 3,
       height: 3,

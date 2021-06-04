@@ -7,36 +7,40 @@ import Support from '../rotues/Support'
 import SearchScreen from "../rotues/Search"
 import MyLibrary from '../rotues/Library/MyLibrary'
 import Notification from '../rotues/Notification'
+import { COLORS } from "../constants/theme";
+import { useTheme } from "@react-navigation/native"
+
 
 const Tab = createBottomTabNavigator();
 const tabOptions = {
     showLabel: true,
-    labelStyle:{fontFamily:'GoogleSans-Regular' },
+    labelStyle:{fontFamily:'GoogleSans-Regular',},
     style: {
-        backgroundColor: '#fff',
+       
         justifyContent:'center',
         alignItems:'center',
         paddingBottom:5,
         height:60,
+        
     },
-   
 }
 
 const Tabs = () => {
+    const {colors}=useTheme()
     return (
         <>
         <Tab.Navigator
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ focused }) => {
-                    const tintColor = focused ? '#1d3557' : '#333';
+                    const tintColor = focused ? '#118ab2' :colors.text;
 
                     switch (route.name) {
                         case "Anasayfa":
                             return (<Icon  name={'apps-outline'} size={25} color={tintColor}/>)
                         case "Arama":
                             return (<Icon  name={'search-outline'} size={25} color={tintColor}/>)
-                        case "Yardım":
-                            return (<Icon  name={'help-circle-outline'} size={25} color={tintColor}/>)
+                        case "Son Eklenenler":
+                            return (<Icon  name={'newspaper-outline'} size={25} color={tintColor}/>)
                         case "Destek":
                             return (<Icon  name={'mail-outline'} size={25} color={tintColor}/>)
                         case "Kütüphane":
@@ -50,9 +54,9 @@ const Tabs = () => {
             <Tab.Screen name="Arama" component={SearchScreen}/>
             <Tab.Screen name="Kütüphane" component={MyLibrary}/>
             <Tab.Screen name="Destek" component={Support}/>
-            <Tab.Screen name="Yardım" component={Notification}/>
+            <Tab.Screen name="Son Eklenenler" component={Notification}/>
         </Tab.Navigator>
-        <SafeAreaView backgroundColor='#fff' />
+        <SafeAreaView backgroundColor={colors.card} />
         </>
     )
 }

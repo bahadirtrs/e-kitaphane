@@ -1,15 +1,16 @@
 import React from 'react'
 import { TouchableOpacity } from 'react-native'
 import { Text,StyleSheet  } from 'react-native'
-
+import { useTheme } from "@react-navigation/native"
 export default function TextButton({questions,redirectText, buttonPress}) {
+    const {colors}=useTheme()
     return (
         <TouchableOpacity 
             activeOpacity={0.9} 
             onPress={buttonPress} 
             style={styles.container}>
-                <Text style={styles.questionText}>{questions}</Text>
-                <Text style={styles.redirectText}>{redirectText}</Text>
+                <Text style={[styles.questionText,{color:colors.text}]}>{questions}</Text>
+                <Text style={[styles.redirectText,{color:colors.text}]}>{redirectText}</Text>
         </TouchableOpacity>
     )
 }
@@ -21,7 +22,7 @@ const styles = StyleSheet.create({
         marginTop:30
     },
     questionText:{
-        color:'#555',
+        color:'#888',
         fontFamily:'GoogleSans-Regular',
         fontSize:14,
         textAlign:'center',

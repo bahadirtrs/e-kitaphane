@@ -7,16 +7,19 @@ import SkeletonPlaceholder from "react-native-skeleton-placeholder"
 import { SharedElement } from "react-navigation-shared-element"
 import { bookCoverRatio, BASE_URL } from "../utils/constants"
 import { TouchableOpacity } from "react-native"
-
+import { COLORS } from "../constants/theme";
+import { useTheme } from "@react-navigation/native"
+import { color } from "react-native-reanimated"
 export default function BooksListItem({ item, sharedKey }) {
+  const {colors}= useTheme()
   const { push } = useNavigation()
   return (
-    <TouchableOpacity activeOpacity={0.9} style={styles.container} 
+    <TouchableOpacity activeOpacity={0.9} style={[styles.container,{borderBottomColor:colors.border}]} 
       onPress={() => push("BookDetail", { sharedKey: sharedKey, item: item })}
     >
       <View>
         <FastImage
-          style={styles.bookCoverImage}
+          style={[styles.bookCoverImage,{borderColor:colors.border, shadowColor:colors.shadow,}]}
           source={{
             uri: BASE_URL + "products/cover/" + item?.cover_image,
             priority: FastImage.priority.normal,
@@ -27,16 +30,16 @@ export default function BooksListItem({ item, sharedKey }) {
       </View>
       <View style={styles.infoContainer}>
         <View >
-          <Text style={styles.author} numberOfLines={1}>
+          <Text style={[styles.author,{color:colors.text}]} numberOfLines={1}>
             {item?.author}
           </Text>
         </View>
         <View>
-          <Text style={styles.title} numberOfLines={2}>
+          <Text style={[styles.title,{color:colors.text}]}  numberOfLines={2}>
             {item?.title}
           </Text>
         </View>
-        <Text style={styles.price} numberOfLines={1}>
+        <Text style={[styles.price,{color:colors.text}]}  numberOfLines={1}>
           {numberFormat(item?.price)} TL
         </Text>
       </View>
@@ -69,7 +72,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#f1f1f1",
   },
   infoContainer: {
     flexDirection: "column",
@@ -81,26 +83,26 @@ const styles = StyleSheet.create({
     fontFamily:'GoogleSans-Bold',
     fontSize: 14,
     lineHeight: 20,
-    color: "#1F2937",
+    color:COLORS.textColor,
     paddingBottom: 6,
   },
   author: {
     fontFamily:'GoogleSans-Medium',
     fontSize: 16,
-    color: "#4B5563",
+    color:COLORS.textColor,
   },
   price: {
     textAlign: "left",
     fontFamily:'GoogleSans-Medium',
     fontSize: 16,
-    color: "#4B5563",
+    color:COLORS.textColor,
   },
   bookCoverImage: {
     borderWidth: 1,
-    borderColor: "#8d8d96",
+    borderColor:COLORS.border,
     width: 60,
     height: 60 * bookCoverRatio,
-    shadowColor: "#000",
+    shadowColor:COLORS.shadow,
     shadowOffset: {
       width: 0,
       height: 2,

@@ -12,6 +12,10 @@ import BeingIndicator from '../../components/Indicator/BeingIndicator';
 import RNSecureStorage from "rn-secure-storage"
 import axios from "axios"
 import { TouchableOpacity } from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage';
+import { Switch } from 'react-native'
+import { useTheme } from "@react-navigation/native"
+import { EventRegister } from 'react-native-event-listeners'
 
 export default function SupportScreen({navigation,route}) {
     const [supportData, setSupportData] = useState([])
@@ -20,6 +24,8 @@ export default function SupportScreen({navigation,route}) {
     const [response, setResponse] = useState(true)
     const [permisson, setPermisson] = useState(true)
     const [pendingCount, setPendingCount] = useState(0)
+    const [darkMode, setDarkMode] = useState(false)
+    const {colors}=useTheme()
     useFocusEffect(
       React.useCallback(() => {
         SupportCreate()
@@ -64,32 +70,45 @@ export default function SupportScreen({navigation,route}) {
         }
         setPendingCount(count);
       }
+     
+      useEffect(() => {
+        AsyncStorage.getItem("useTheme").then(item =>{
+          if(item==="true"){
+            setDarkMode(true)
+          }else{
+            setDarkMode(false)
+          }
+        })
+        return () => {
+          true
+        }
+      }, [])
 
     return (
-        <View style={{backgroundColor:'#f1f1f1', height:1000}}>
+        <View style={{backgroundColor:colors.background, height:1000}}>
           {fetching 
         ? <View style={{ zIndex:1, height:Dimensions.get('screen').height, width:Dimensions.get('screen').width, justifyContent:'center',alignItems:'center', position:'absolute'}} >
             <BeingIndicator title={'Yenileniyor'} />
           </View>
         :null
       }
-          <SafeAreaView  backgroundColor={'#1d3557'}  />
-          <StatusBar backgroundColor={'#1d3557'} barStyle={'light-content'} />
-            <View style={{width:Dimensions.get('screen').width, flexDirection:'row', justifyContent:'space-between', alignItems:'center', backgroundColor:'#1d3557', paddingVertical:20, paddingHorizontal:15}} >
+          <SafeAreaView  backgroundColor={colors.primary}  />
+          <StatusBar backgroundColor={colors.primary} barStyle={'light-content'} />
+            <View style={{width:Dimensions.get('screen').width, flexDirection:'row', justifyContent:'space-between', alignItems:'center', backgroundColor:colors.primary, paddingVertical:20, paddingHorizontal:15}} >
               <TouchableOpacity onPress={()=>setSupportCreateModal(!supportCreateModal)} >
-                <Icon name="duplicate-outline" size={25} color={"#1d3557"}/>                 
+                <Icon name="duplicate-outline" size={25} color={colors.primary}/>                 
               </TouchableOpacity>
-              <Text style={{fontFamily:'GoogleSans-Medium', fontSize:18, color:'#fff'}} >Destek Mesajları</Text>
+              <Text style={{fontFamily:'GoogleSans-Medium', fontSize:18, color:colors.textColorLight}}>Destek Mesajları</Text>
               <TouchableOpacity onPress={()=>setSupportCreateModal(!supportCreateModal)} >
-                <Icon name="duplicate-outline" size={25} color={"#fff"}/>                 
+                <Icon name="duplicate-outline" size={25} color={colors.textColorLight}/>                 
               </TouchableOpacity>
             </View>
             {supportData.length>0
             ?<View>
               <View style={{width:Dimensions.get('screen').width, justifyContent:'center', alignItems:'center'}} >
                <View style={{
-                width:Dimensions.get('screen').width-20, backgroundColor:'#fff', flexDirection:'row', justifyContent:'flex-start', alignItems:'center', margin:10, padding:10, borderRadius:8,
-                shadowColor: "#000",
+                width:Dimensions.get('screen').width-20, backgroundColor:colors.card, flexDirection:'row', justifyContent:'flex-start', alignItems:'center', margin:10, padding:10, borderRadius:8,
+                shadowColor:colors.shadow,
                 shadowOffset: {
                 width: 2,
                 height: 2,
@@ -98,8 +117,8 @@ export default function SupportScreen({navigation,route}) {
                 shadowRadius: 3,
                 elevation: 2,
                 }}>{pendingCount>0
-                  ?<Text style={{fontFamily:'GoogleSans-Regular', color:'#333'}}>Yanıt bekleyen {pendingCount?pendingCount:0} destek talebiniz bulunmaktadır</Text> 
-                  :<Text style={{fontFamily:'GoogleSans-Regular', color:'#333'}}>Yanıt bekleyen destek talebiniz bulunmamaktadır</Text> 
+                  ?<Text style={{fontFamily:'GoogleSans-Regular', color:colors.text}}>Yanıt bekleyen {pendingCount?pendingCount:0} destek talebiniz bulunmaktadır</Text> 
+                  :<Text style={{fontFamily:'GoogleSans-Regular', color:colors.text}}>Yanıt bekleyen destek talebiniz bulunmamaktadır</Text> 
                 }
                   
                 </View>
@@ -123,12 +142,13 @@ export default function SupportScreen({navigation,route}) {
             />
           </View>
           :
-          <View style={{width:Dimensions.get('screen').width, height:Dimensions.get('screen').height*0.7,justifyContent:'center',alignItems:'center'}} >
-            <View style={{width:Dimensions.get('screen').width-100, alignItems:'center'}} >
+          <View style={{ backgroundColor:colors.background, width:Dimensions.get('screen').width, height:Dimensions.get('screen').height*0.7,justifyContent:'center',alignItems:'center'}} >
+            <View style={{width:Dimensions.get('screen').width-100, alignItems:'center', paddingBottom:50}} >
               <FontAwesome name="headset" size={60} color={"#118ab2"}/> 
               <Text style={{fontFamily:'GoogleSans-Medium', textAlign:'center', fontSize:20, paddingVertical:10, color:'#333'}} >Destek Oluştur</Text>
               <Text style={{fontFamily:'GoogleSans-Regular', textAlign:'center', color:'#555', fontSize:12}}>Uygulama veya satın alma ile ilgili herhangi bir problem yaşamanız durumunda bizimle iletişime geçebilirsiniz.</Text>
             </View>
+          
           </View>
         }
         <SupportCreateModal
@@ -139,6 +159,7 @@ export default function SupportScreen({navigation,route}) {
           permisson={permisson}
         
         />
+        <SafeAreaView backgroundColor={colors.background} />
         </View>
     )
 }

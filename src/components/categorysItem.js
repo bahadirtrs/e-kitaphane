@@ -5,11 +5,14 @@ import { useNavigation } from "@react-navigation/native"
 import { BASE_URL, bookCoverRatio } from "../utils/constants"
 import { numberFormat } from "../utils/utils"
 import SkeletonPlaceholder from "react-native-skeleton-placeholder"
-import { SharedElement } from "react-navigation-shared-element"
+import { COLORS } from "../constants/theme";
+import { useTheme } from "@react-navigation/native"
+import { color } from "react-native-reanimated"
 const width=(Dimensions.get('screen').width-20)/3.2;
 const height=(Dimensions.get('screen').width-20)/3.2 * bookCoverRatio;
 
 export default function CategorysItem({ item, sharedKey }) {
+  const {colors}=useTheme()
   const { push } = useNavigation()
   return (
     <TouchableOpacity activeOpacity={0.9} style={styles.container} 
@@ -18,7 +21,7 @@ export default function CategorysItem({ item, sharedKey }) {
       <View style={styles.bookImage}>
         <View>
           <FastImage
-            style={styles.bookCoverImage}
+            style={[styles.bookCoverImage, {borderColor:colors.border}]}
             source={{
               uri: BASE_URL + "products/cover/" + item?.cover_image,
               priority: FastImage.priority.normal,
@@ -30,16 +33,16 @@ export default function CategorysItem({ item, sharedKey }) {
       </View>
       <View>
         <View>
-          <Text style={styles.title} numberOfLines={2}>
+          <Text style={[styles.title,{color:colors.text}]} numberOfLines={2}>
             {item?.title}
           </Text>
         </View>
         <View>
-          <Text style={styles.author} numberOfLines={1}>
+          <Text style={[styles.author,{color:colors.text}]}numberOfLines={1}>
             {item?.author}
           </Text>
         </View>
-          <Text style={styles.price} numberOfLines={1}>
+          <Text  style={[styles.price,{color:colors.text}]} numberOfLines={1}>
             {''} {numberFormat(item?.price)} ₺
           </Text>
       </View>
@@ -63,7 +66,7 @@ const styles = StyleSheet.create({
   container: {
     width:(Dimensions.get('screen').width-20)/3,
     justifyContent:'center',
-    alignItems:'flex-start',
+    alignItems:'center',
     marginVertical:10
   
   },
@@ -71,14 +74,14 @@ const styles = StyleSheet.create({
     fontFamily:'GoogleSans-Medium',
     fontSize: 14,
     lineHeight: 20,
-    height:25,
-    color: "#1F2937",
+    height:45,
+    color:COLORS.textColor,
     paddingTop: 5,
   },
   author: {
     fontFamily:'GoogleSans-Regular',
     fontSize: 13,
-    color: "#4B5563",
+    color:COLORS.textColor,
     paddingTop:2
   },
   price: {
@@ -86,7 +89,7 @@ const styles = StyleSheet.create({
     textAlign: "left",
     fontFamily:'GoogleSans-Bold',
     fontSize: 18,
-    color: "#4B5563",
+    color:COLORS.textColor,
   },
   bookImage: {
     shadowColor: "#000",
@@ -100,7 +103,7 @@ const styles = StyleSheet.create({
   },
   bookCoverImage: {
       borderWidth: 0.5,
-      borderColor: "#8d8d96",
+      borderColor:COLORS.border,
       width:width,
       height:height,
       borderRadius: 4,

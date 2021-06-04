@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, TextInput,StyleSheet,Dimensions,TouchableOpacity } from 'react-native'
 import Icon from "react-native-vector-icons/Ionicons"
+import { COLORS } from '../constants/theme'
 
 export default function TwoInputText({value,onChangeText,placeholder,valueTwo,onChangeTextTwo,placeholderTwo}) {
     return (
@@ -8,7 +9,7 @@ export default function TwoInputText({value,onChangeText,placeholder,valueTwo,on
           <TextInput
             style={[styles.textInput, {fontSize:13, width:'46%', borderTopLeftRadius:8}]}
             placeholder={placeholder}
-            placeholderTextColor={'#555'}
+            placeholderTextColor={COLORS.textColor}
             value={value}
             onChangeText={onChangeText}
             textAlignVertical='auto'
@@ -18,7 +19,7 @@ export default function TwoInputText({value,onChangeText,placeholder,valueTwo,on
           <TextInput
             style={[styles.textInput, {fontSize:13,width:'47%', borderTopRightRadius:8}]}
             placeholder={placeholderTwo}
-            placeholderTextColor={'#555'}
+            placeholderTextColor={COLORS.textColor}
             value={valueTwo}
             onChangeText={onChangeTextTwo}
             textAlignVertical='auto'
@@ -32,9 +33,9 @@ const styles = StyleSheet.create({
     textInput:{
         margin:2,
         paddingHorizontal:15, 
-        backgroundColor:'#fff',
+        backgroundColor:COLORS.backgroundColor,
         fontSize:12,
-        color:'#000',
+        color:COLORS.textColor,
         marginRight:2,
         fontFamily:'GoogleSans-Regular',
         borderColor:'#ddd',

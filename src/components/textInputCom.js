@@ -1,21 +1,22 @@
 import React, {useState, useEffect} from 'react'
 import { View, TextInput,StyleSheet,Dimensions,TouchableOpacity } from 'react-native'
 import Icon from "react-native-vector-icons/Ionicons"
-
+import { COLORS } from '../constants/theme'
+import { useTheme } from "@react-navigation/native"
 export default function textInputCom({type,value,onChangeText,placeholder,passwordHide,setPasswordHide}) {
   const [passHide, setPassHide] = useState(true)
-
+  const {colors}=useTheme()
   useEffect(() => {
     type=='password'
       ?setPassHide(true)
       :setPassHide(false)
   }, [])
     return (
-      <View style={styles.container} >
+      <View style={[styles.container,{backgroundColor:colors.background, borderColor:colors.border}]} >
       <TextInput
-         style={[styles.textInput, {fontSize:14, width:'90%'}]}
+         style={[styles.textInput, {fontSize:14, width:'90%', backgroundColor:colors.background, color:colors.text}]}
          placeholder={placeholder}
-         placeholderTextColor={'#555'}
+         placeholderTextColor={colors.text}
          value={value}
          onChangeText={onChangeText}
          textAlignVertical='auto'
@@ -43,18 +44,16 @@ const styles = StyleSheet.create({
     flexDirection:'row', 
     justifyContent:'space-between', 
     alignItems:'center', 
-    backgroundColor:'#fff',
+  
     paddingHorizontal:10,
     borderRadius:8,
     margin:5,
-    borderColor:'#ddd',
     borderWidth:1,
     height:40,
 
   },
   textInput:{
     paddingHorizontal:0, 
-    color:'#000',
     fontFamily:'GoogleSans-Regular',
 },
 textButton:{ 

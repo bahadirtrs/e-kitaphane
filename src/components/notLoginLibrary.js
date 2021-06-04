@@ -4,6 +4,7 @@ import {Text,Dimensions,SafeAreaView,StyleSheet } from 'react-native'
 import Icon from "react-native-vector-icons/Ionicons";
 import SubmitButton from '../components/Button/SubmitButton'
 import {useNavigation} from '@react-navigation/native'
+import { COLORS } from "../constants/theme"
 const width=Dimensions.get('screen').width;
 const height=Dimensions.get('screen').height;
 
@@ -11,7 +12,7 @@ export default function notLoginLibrary() {
     const navigation=useNavigation();
     return (
         <SafeAreaView style={styles.container} >
-          <Icon name="information-circle-outline" size={100} color="#555" />
+          <Icon name="information-circle-outline" size={100} color={COLORS.textColor} />
           <Text style={styles.text}>Kütüphane özelliğini kullanabilmeniz için kayıt olmanız gerekmektedir.</Text>
           <SubmitButton butonPress={()=>navigation.push('LogIn')} />
       </SafeAreaView>
@@ -27,7 +28,7 @@ const styles = StyleSheet.create({
         alignItems:'center',
     },
     text:{
-        color:'#333',
+        color:COLORS.textColor,
         fontFamily:'GoogleSans-Regular', 
         textAlign:'center', 
         fontSize:16, 

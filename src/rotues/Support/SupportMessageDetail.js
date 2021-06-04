@@ -1,15 +1,17 @@
 import React, {useState, useEffect} from 'react'
-import { View, Text, FlatList,StatusBar,StyleSheet,TouchableOpacity,TextInput,Keyboard,TouchableWithoutFeedback } from 'react-native'
+import { View, Text, FlatList,StatusBar,StyleSheet,TouchableOpacity,TextInput } from 'react-native'
 import { useFocusEffect } from "@react-navigation/native"
-import { BASE_URL, CLIENT_ID, CLIENT_SECRET} from "../../utils/constants"
+import { BASE_URL, CLIENT_ID} from "../../utils/constants"
 import { SafeAreaView } from 'react-native'
 import { Dimensions } from 'react-native'
 import SupportMessageItem from '../../components/SupportMessageItem'
 import Icon from "react-native-vector-icons/Ionicons"
 import axios from "axios"
 import { KeyboardAvoidingView } from 'react-native'
+import { useTheme } from "@react-navigation/native"
 
 export default function SupportMessageDetail({navigation, route}) {
+    const {colors}=useTheme()
     const record_number= route.params.record_number
     const subject= route.params.subject
     const item= route.params.item
@@ -55,21 +57,21 @@ export default function SupportMessageDetail({navigation, route}) {
     }
     
     return (
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={[styles.container, {backgroundColor:colors.background}]}>
         <SafeAreaView backgroundColor={'#1d3557'} />
         <View style={styles.inner}>
           <View style={{paddingBottom:0}} >
             <View style={styles.headerBackButtonContainer} >
               <TouchableOpacity style={{padding:0}} onPress={()=>navigation.goBack()} >
-                <Icon name="chevron-back-outline" size={25} color={"#fff"}/> 
+                <Icon name="chevron-back-outline" size={25} color={colors.textColorLight}/> 
               </TouchableOpacity>
-              <Text style={styles.headerTitle}>Destek mesajları</Text>
+              <Text style={[styles.headerTitle,{color:colors.textColorLight}]}>Destek mesajları</Text>
               <TouchableOpacity style={{padding:10}} onPress={null} >
-                <Icon name="ellipsis-horizontal-outline" size={25} color={"#fff"}/> 
+                <Icon name="ellipsis-horizontal-outline" size={25} color={colors.textColorLight}/> 
               </TouchableOpacity>
             </View>
-            <View style={{width:Dimensions.get('screen').width, justifyContent:'center', alignItems:'center', padding:5, backgroundColor:'#ddd'}} >
-              <Text style={{fontFamily:'GoogleSans-Medium',textAlign:'center', color:'#1d3557'}} >{subject}</Text>
+            <View style={{width:Dimensions.get('screen').width, justifyContent:'center', alignItems:'center', padding:5, backgroundColor:colors.card}} >
+              <Text style={{fontFamily:'GoogleSans-Medium',textAlign:'center', color:colors.text}} >{subject}</Text>
             </View>
           </View>
 
@@ -79,7 +81,7 @@ export default function SupportMessageDetail({navigation, route}) {
                 keyExtractor={(item, index) => "search-result-item-" + index}
                 scrollEnabled={true}
                 horizontal={false}
-                style={{paddingTop:10}}
+                style={{padding:10}}
                 data={message.messages}
                 renderItem={({ item,index }) => {
                   return (
@@ -90,19 +92,19 @@ export default function SupportMessageDetail({navigation, route}) {
             </View>
          <View style={{flex:1.2, paddingTop:10}} >
           {message.status!=='ANSWERED'
-          ? <View style={[styles.footerContainer, {paddingBottom:Platform.OS === "ios" ? 5 :25}]} >
-              <View style={styles.footerContainerExp}>
+          ? <View style={[styles.footerContainer, {paddingBottom:Platform.OS === "ios" ? 5 :25, backgroundColor:colors.background}]} >
+              <View style={[styles.footerContainerExp,{backgroundColor:colors.card}]}>
                 {message.status==='CLOSED'
-                  ? <Text style={styles.pendingFooterText} >Bu destek kaydı kapatılmıştır. Hala sorun yaşıyorsanız lütfen yeni bir destek kaydı oluşturunuz.</Text>
-                  : <Text style={styles.pendingFooterText} >Müşteri Temsilcisi destek kaydınızı cevaplayana kadar, tekrardan mesaj gönderemezsiniz.</Text> 
+                  ? <Text style={[styles.pendingFooterText,{color:colors.text}]}>Bu destek kaydı kapatılmıştır. Hala sorun yaşıyorsanız lütfen yeni bir destek kaydı oluşturunuz.</Text>
+                  : <Text style={[styles.pendingFooterText,{color:colors.text}]}>Müşteri Temsilcisi destek kaydınızı cevaplayana kadar, tekrardan mesaj gönderemezsiniz.</Text> 
                 }
               </View>
             </View>
-          : <View style={[styles.footerContainer, {paddingBottom:Platform.OS === "ios" ? 5 :30}]} >
+          : <View style={[styles.footerContainer, {paddingBottom:Platform.OS === "ios" ? 5 :30, backgroundColor:colors.background}]} >
               <TextInput
-                  style={styles.textInputSubject}
+                  style={[styles.textInputSubject,{color:colors.text, borderColor:colors.border}]}
                   placeholder={"Mesaj Yaz"}
-                  placeholderTextColor={'#555'}
+                  placeholderTextColor={colors.text}
                   value={messageTerm}
                   onChangeText={(text)=>setMessageTerm(text)}
                   textAlignVertical='auto'
@@ -117,7 +119,7 @@ export default function SupportMessageDetail({navigation, route}) {
           }
           </View>
         </View>      
-        <SafeAreaView backgroundColor={'#f8f8f8'} />
+        <SafeAreaView backgroundColor={colors.background} />
       </KeyboardAvoidingView>
     );
   };
@@ -159,8 +161,7 @@ export default function SupportMessageDetail({navigation, route}) {
         width:Dimensions.get('screen').width*0.8, 
         fontFamily:'GoogleSans-Regular',
         borderWidth:1, 
-        borderColor:'#ccc',
-        borderRadius:7, 
+        borderRadius:0, 
         fontSize:14, 
         margin:5,
         padding:10,

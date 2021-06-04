@@ -13,14 +13,21 @@ import BeingIndicator from '../../components/Indicator/BeingIndicator'
 import moment from 'moment'
 import 'moment/locale/tr'
 import { ScrollView } from "react-native"
+import { COLORS } from "../../constants/theme"
+import { Switch } from "react-native"
+import { EventRegister } from 'react-native-event-listeners'
+import { useTheme } from "@react-navigation/native"
+import { useFocusEffect } from "@react-navigation/native"
 moment.locale('tr')
 let user_image=null;
 
 export default function UserInfo({navigation}) {
+    const {colors}=useTheme()
     const [userInfo, setUserInfo] = useState([])
     const [fetching, setFetching] = useState(false)
     const [ownedBooks, setOwnedBooks] = useState("")
     const [changePasswordModal, setChangePasswordModal] = useState(false)
+    const [darkMode, setDarkMode] = useState(false)
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -83,32 +90,50 @@ export default function UserInfo({navigation}) {
         })
       }
 
+    
+  useFocusEffect(
+    React.useCallback(() => {
+      AsyncStorage.getItem("useTheme").then(item =>{
+        if(item==="true"){
+          setDarkMode(true)
+        }else{
+          setDarkMode(false)
+        }
+      })
+      return () => {
+        true
+      }
+    }, [])
+  );
+
+
     return (
       <>
       {fetching
       ?<View style={styles.activityContainer} >
-          <BeingIndicator title={'Bilgiler yükleniyor...'} />
+          <BeingIndicator title={'Bilgiler alınıyor...'} />
        </View>
       :null
       }
-      <SafeAreaView  backgroundColor={'#1d3557'}  />
-      <StatusBar backgroundColor={'#1d3557'} barStyle={'light-content'} />
-      <View style={styles.container}>
+      <SafeAreaView  backgroundColor={colors.primary}  />
+      <StatusBar backgroundColor={colors.primary} barStyle={'light-content'} />
+      <View style={[styles.container,{backgroundColor:colors.background}]}>
         <View style={styles.headerBackButtonContainer} >
             <TouchableOpacity style={{padding:10}} onPress={()=>navigation.goBack()} >
-              <Icon name="chevron-back-outline" size={25} color={"#fff"}/> 
+              <Icon name="chevron-back-outline" size={25} color={colors.textColorLight}/> 
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>Kullanıcı Bilgileri</Text>
+            <Text style={[styles.headerTitle,{color:colors.textColorLight}]}>Kullanıcı Bilgileri</Text>
             <TouchableOpacity style={{padding:10}} onPress={null} >
-              <Icon name="ellipsis-horizontal-outline" size={25} color={"#fff"}/> 
+              <Icon name="ellipsis-horizontal-outline" size={25} color={COLORS.textColorLight}/> 
             </TouchableOpacity>
           </View>
           <ScrollView>
         <View style={styles.headerContainer} >
           <View>
-            <Image source={{uri: user_image}} style={{width:100, height:100, borderRadius:50}}  />
-           { //<Icon name={'person-circle-outline'} size={100} color={'#fff'} />
-           }
+            {user_image
+            ? <Image source={{uri: user_image}} style={{width:100, height:100, borderRadius:50}}  />
+            : <Icon name={'person-circle-outline'} size={100} color={'#fff'}/>
+            }
           </View>
           <Text style={styles.headerName}>
             {userInfo.first_name} 
@@ -116,38 +141,38 @@ export default function UserInfo({navigation}) {
             {userInfo.last_name}</Text>
         </View>
         <Text></Text>
-        <View style={styles.itemTitle} >
-          <Text style={styles.itemTitleText}>Kullanıcı Bilgileri</Text>
+        <View style={[styles.itemTitle,{borderBottomColor:colors.border}]} >
+          <Text style={[styles.itemTitleText,{color:colors.text}]}>Kullanıcı Bilgileri</Text>
         </View>
         <View style={styles.itemContainer} >
         <View style={styles.itemArc}>
-            <Text style={styles.itemOne}>İsim soyisim: </Text>
-            <Text style={styles.itemTwo}>{userInfo.first_name} {userInfo.last_name} </Text>
+            <Text style={[styles.itemOne,{color:colors.text}]}>İsim soyisim: </Text>
+            <Text style={[styles.itemTwo,{color:colors.text}]}>{userInfo.first_name} {userInfo.last_name} </Text>
           </View>
           <View  style={styles.itemArc}>
-            <Text style={styles.itemOne}>Mail adresi: </Text>
-            <Text style={styles.itemTwo} >{userInfo.email}</Text>
+            <Text style={[styles.itemOne,{color:colors.text}]}>Mail adresi: </Text>
+            <Text style={[styles.itemTwo,{color:colors.text}]}>{userInfo.email}</Text>
           </View>
 {
-/*
+
           <View  style={styles.itemArc}>
-            <Text style={styles.itemOne}>Parola:  </Text>
+            <Text style={[styles.itemOne,{color:colors.text}]}>Parola:</Text>
             <TouchableOpacity activeOpacity={0.4} onPress={()=>setChangePasswordModal(!changePasswordModal)} >
-             <Text style={[styles.itemTwo,{fontFamily:'GoogleSans-Medium'}]}>Parolayı güncelle</Text>
+             <Text style={[styles.itemTwo,{fontFamily:'GoogleSans-Medium',color:colors.text}]}>Parolayı güncelle</Text>
             </TouchableOpacity>
           </View>
-*/
+
 }
           <View  style={styles.itemArc}>
-            <Text style={styles.itemOne}>Kayıt Tarihi: </Text>
-            <Text style={styles.itemTwo}>
+            <Text style={[styles.itemOne,{color:colors.text}]}>Kayıt Tarihi: </Text>
+            <Text style={[styles.itemTwo,{color:colors.text}]}>
               {moment(userInfo.created_at).format('LLL')},
               {' '}
               {moment(userInfo.created_at).format('dddd')}</Text>
           </View>
         </View>
-        <View style={styles.itemTitle}>
-          <Text style={styles.itemTitleText}>Satın Alınan Kitaplar</Text>
+        <View style={[styles.itemTitle,{borderBottomColor:colors.border}]} >
+          <Text style={[styles.itemTitleText,{color:colors.text}]}>Satın Alınan Kitaplar</Text>
         </View>
         <View style={styles.listContainer} >
           {ownedBooks.length>0
@@ -174,13 +199,14 @@ export default function UserInfo({navigation}) {
             />
           :
           <View style={styles.noBookContainer} >
-            <Icon name="information-circle-outline" size={25} color={"#333"}/> 
-            <Text style={styles.noBookText}>
+            <Icon name="information-circle-outline" size={25} color={colors.text}/> 
+            <Text style={[styles.noBookText,{color:colors.text}]}>
               {'Şuana kadar hiç kitap satın alınmamış.'}
             </Text>
           </View>
           }
         </View>
+        
         <View style={styles.logoutButtonContainer} >
           <TouchableOpacity style={styles.logoutButton}  activeOpacity={0.9} onPress={()=>isLogoutUser()} >
             <Text style={styles.buttonText}>
@@ -188,6 +214,18 @@ export default function UserInfo({navigation}) {
             </Text>
           </TouchableOpacity>
         </View>
+
+        <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingHorizontal:30, paddingVertical:10}} >
+        <Text style={{fontFamily:'GoogleSans-Regular', fontSize:16, color:colors.text}} >Karanlık Mod {darkMode?'(Açık)': '(Kapalı)'} </Text> 
+        <Switch 
+          trackColor={{ false:colors.primary, true:'#40916c'}}
+          value={darkMode} onValueChange={(val)=>{
+              setDarkMode(!darkMode)
+              AsyncStorage.setItem("useTheme",String(val)); 
+              EventRegister.emit('useThemeDeg', val)
+            }}  />
+        </View>
+
         <ChangePassword
           first_name={userInfo.first_name}
           last_name={userInfo.last_name}
@@ -205,11 +243,11 @@ const styles = StyleSheet.create({
         flex:1,
         flexDirection:'column',
         justifyContent:'flex-start',
-        alignItems:'center'
+        alignItems:'center',
     },
     headerBackButtonContainer:{
       width:Dimensions.get('window').width,
-      backgroundColor:'#1d3557',
+      backgroundColor:COLORS.primary,
       flexDirection:'row',
       justifyContent:'space-between', 
       alignItems:'center', 
@@ -218,28 +256,26 @@ const styles = StyleSheet.create({
     headerTitle:{
       fontSize:14, 
       fontFamily:'GoogleSans-Medium', 
-      color:'#fff'
     },
     headerContainer:{
       justifyContent:'center', 
       alignItems:'center', 
-      backgroundColor:'#1d3557', 
+      backgroundColor:COLORS.primary,
       width:Dimensions.get('window').width, 
       paddingVertical:20 
     },
     headerName:{
       fontFamily:'GoogleSans-Medium', 
       fontSize:20, 
-      color:'#fff'
+      color:COLORS.textColorLight
     },
     itemTitle:{ 
       width:Dimensions.get('window').width, 
       alignItems:'flex-start', 
       justifyContent:'flex-start', 
       paddingHorizontal:30, 
-      paddingBottom:5, 
+      paddingBottom:10, 
       paddingTop:10, 
-      borderBottomColor:'#ccc', 
       borderBottomWidth:1
     },
     itemTitleText:{
@@ -277,13 +313,13 @@ const styles = StyleSheet.create({
       justifyContent:'center',
       alignItems:'center',
       width:300,
-      backgroundColor:'#1d3557', 
+      backgroundColor:COLORS.primary,
       paddingVertical:10, 
       paddingHorizontal:30, 
       borderRadius:10
     },
     buttonText:{
-      color:'#fff', 
+      color:COLORS.textColorLight,
       fontFamily:'GoogleSans-Regular'
     },
     noBookContainer:{
@@ -294,7 +330,7 @@ const styles = StyleSheet.create({
     },
     noBookText:{
       fontFamily:'GoogleSans-Regular', 
-      color:'#333'
+      color:COLORS.textColor
     },
     logoutButtonContainer:{
       width:Dimensions.get('screen').width, 

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Dimensions } from 'react-native'
 import { View, Text,StyleSheet } from 'react-native'
+import { COLORS } from "../constants/theme"
 import moment from 'moment'
 import 'moment/locale/tr'
 moment.locale('tr')
@@ -39,7 +40,8 @@ const styles = StyleSheet.create({
     width:Dimensions.get('screen').width, 
     justifyContent:'center', 
     alignItems:'center', 
-    marginBottom:15
+    marginBottom:15,
+    paddingLeft:10,
   },
 
   customerContainerExp:{
@@ -49,7 +51,7 @@ const styles = StyleSheet.create({
     marginVertical:5
   },
   customerContainerInner:{ 
-    backgroundColor:'#40916c', 
+    backgroundColor:COLORS.customSupportColor, 
     borderRadius:13, 
     maxWidth:'80%',
     paddingHorizontal:10,
@@ -59,14 +61,14 @@ const styles = StyleSheet.create({
     fontFamily:'GoogleSans-Medium', 
     paddingTop:10, 
     fontSize:16, 
-    color:'#fff', 
+    color:COLORS.textColorLight, 
     textAlign:'left'
   },
   customerMessageText:{ 
     fontFamily:'GoogleSans-Regular', 
     paddingBottom:10, 
     paddingTop:5, 
-    color:'#fff'
+    color:COLORS.textColorLight, 
   },
 
   systemMessageContainer:{
@@ -76,7 +78,7 @@ const styles = StyleSheet.create({
     marginVertical:5
   },
   systemMessageContainerExp:{ 
-    backgroundColor:'#919191', 
+    backgroundColor:COLORS.systemSupportColor, 
     borderRadius:13, 
     maxWidth:'80%',
     paddingHorizontal:10
@@ -85,14 +87,14 @@ const styles = StyleSheet.create({
     fontFamily:'GoogleSans-Medium', 
     paddingTop:10,  
     fontSize:16, 
-    color:'#fff', 
+    color:COLORS.textColorLight, 
     textAlign:'left'
   },
   systemMessageText:{
     fontFamily:'GoogleSans-Regular', 
     paddingBottom:10, 
     paddingTop:5, 
-    color:'#fff'
+    color:COLORS.textColorLight, 
   },
 
 })

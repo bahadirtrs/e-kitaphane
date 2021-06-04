@@ -13,9 +13,10 @@ import RNSecureStorage from "rn-secure-storage"
 import RequestManager from "../../utils/requestManager"
 import { ScrollView } from "react-native";
 import SubmitButton from '../../components/Button/SubmitButton'
-
+import { useTheme } from "@react-navigation/native"
 
 export default function UserInfo({navigation}) {
+  const {colors}=useTheme()
   const [userInfo, setUserInfo] = useState([])
   const [fetching, setFetching] = useState(false)
   const [term, setTerm] = useState("")
@@ -98,24 +99,24 @@ export default function UserInfo({navigation}) {
   const HeaderComponent = ()=>{
     return(
       <View style={{paddingHorizontal:13, paddingTop:15}} >
-        <Text style={{fontFamily:'GoogleSans-Medium', fontSize:20}}>Satın aldıklarınız</Text>
+        <Text style={{fontFamily:'GoogleSans-Medium', fontSize:20, color:colors.text}}>Satın aldıklarınız</Text>
       </View>
     )
   }
 
     return (
-    <ScrollView style={{ flex:1,padding:0}} >
+    <ScrollView style={{ flex:1,padding:0, backgroundColor:colors.background}} >
       {fetching
         ? <View style={{ zIndex:1, height:Dimensions.get('screen').height, width:Dimensions.get('screen').width, justifyContent:'center',alignItems:'center', position:'absolute'}} >
             <BeingIndicator title={'Yenileniyor'} />
           </View>
         :null
       }
-      <SafeAreaView  backgroundColor={'#1d3557'}  />
-      <StatusBar backgroundColor={'#1d3557'} barStyle={'light-content'} />
-      <View style={{ justifyContent:'center', alignItems:'center', paddingVertical:30,backgroundColor:'#1d3557'}}>
-        <Icon name="library-outline" size={70} color="#f8f8f8" />
-        <Text style={{color:'#fff', fontFamily:'GoogleSans-Medium', fontSize:24, paddingBottom:10}}> Kütüphanede Ara</Text>
+      <SafeAreaView  backgroundColor={colors.primary}  />
+      <StatusBar backgroundColor={colors.primary}  barStyle={'light-content'} />
+      <View style={{ justifyContent:'center', alignItems:'center', paddingVertical:30,backgroundColor:colors.primary }}>
+        <Icon name="library-outline" size={70} color={colors.textColorLight} />
+        <Text style={{color:colors.textColorLight, fontFamily:'GoogleSans-Medium', fontSize:24, paddingBottom:10}}> Kütüphanem</Text>
         <SearchBar
           value={term}
           setTermClick={()=>setTerm("")}
@@ -157,13 +158,14 @@ export default function UserInfo({navigation}) {
 }
 
 const NoItem = ({type,butonPress})=>{
+  const {colors}=useTheme()
   return(
     <View style={{ height:Dimensions.get('window').height*0.6, justifyContent:'center', alignItems:'center'}} >
       <Icon name="book-outline" size={70} color="#118ab2" />
-      <Text style={{fontFamily:'GoogleSans-Medium', textAlign:'center', fontSize:20, width:'80%', color:'#333', paddingBottom:5 }}>Burada hiç kitap yok!</Text>
+      <Text style={{fontFamily:'GoogleSans-Medium', textAlign:'center', fontSize:20, width:'80%', color:colors.text, paddingBottom:5 }}>Burada hiç kitap yok!</Text>
       {type=='account' 
-        ?<Text style={{fontFamily:'GoogleSans-Regular', textAlign:'center', fontSize:12, width:'70%', color:'#555' }}>Oturum açarak satın aldığınız kitaplara bu sayfadan kolayca erişebilirsiniz.</Text>
-        :<Text style={{fontFamily:'GoogleSans-Regular', textAlign:'center', fontSize:12, width:'70%', color:'#555' }}>Bir kitap satın aldığınızda burada görünür ve kolayca erişip okuyabilirsiniz.</Text>
+        ?<Text style={{fontFamily:'GoogleSans-Regular', textAlign:'center', fontSize:12, width:'70%', color:colors.text }}>Oturum açarak satın aldığınız kitaplara bu sayfadan kolayca erişebilirsiniz.</Text>
+        :<Text style={{fontFamily:'GoogleSans-Regular', textAlign:'center', fontSize:12, width:'70%', color:colors.text }}>Bir kitap satın aldığınızda burada görünür ve kolayca erişip okuyabilirsiniz.</Text>
       }
       <Text></Text>
       { type=='account'      
@@ -176,10 +178,11 @@ const NoItem = ({type,butonPress})=>{
 
 
 const SearchResults = ({ products, fetching }) => {
+  const {colors}=useTheme()
   const HeaderComponent = ()=>{
     return(
      <View style={{paddingHorizontal:13, paddingTop:15}} >
-       <Text style={{fontFamily:'GoogleSans-Medium', fontSize:22}} >Satın aldığınız Kitaplar</Text>
+       <Text style={{fontFamily:'GoogleSans-Medium', fontSize:22, color:colors.text}} >Arama Sonuçları</Text>
      </View>
     )
   }
@@ -209,7 +212,7 @@ const SearchResults = ({ products, fetching }) => {
     return (
       <View style={{flex:1, justifyContent:'flex-start', alignItems:'center', paddingTop:30}} >
         <Icon name="search-sharp" size={60} color="#ccc" />
-        <Text style={{fontFamily:'GoogleSans-Regular', fontSize:16, color:'#333'}} >Kitap veya yazar bulunamadı...</Text>
+        <Text style={{fontFamily:'GoogleSans-Regular', fontSize:16, color:colors.text}} >Kitap veya yazar bulunamadı...</Text>
       </View>
     )
   }

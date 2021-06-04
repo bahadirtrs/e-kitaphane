@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, Text,Image,TouchableOpacity,Dimensions,StyleSheet } from 'react-native'
 import Icon from "react-native-vector-icons/Ionicons"
+import { COLORS } from '../constants/theme'
 
 export default function UsersWelcome({warning, infoColor, setWarning, text}) {
     return (
@@ -20,7 +21,7 @@ export default function UsersWelcome({warning, infoColor, setWarning, text}) {
           <View style={[styles.infoStyle,{backgroundColor:infoColor}]}> 
             <Text style={styles.warningTextStyle}>{warning}</Text>
             <TouchableOpacity activeOpacity={0.9} onPress={setWarning} >
-                <Icon name="close-outline" size={25} color="#fff" />
+                <Icon name="close-outline" size={25} color={COLORS.textColorLight}/>
             </TouchableOpacity>
           </View> 
           :null}
@@ -48,19 +49,19 @@ const styles = StyleSheet.create({
     marginTop:10
   },
   warningTextStyle:{
-    color:'#fff', 
+    color:COLORS.textColorLight, 
     fontFamily:'GoogleSans-Regular'
   },
   welcomeText:{
       fontSize:30,
       fontFamily:'GoogleSans-Medium',
-      color:'#333',
+      color:COLORS.textColor,
       paddingTop:15,
     },
     welcomeTextDescription:{
       fontSize:20,
       fontFamily:'GoogleSans-Bold',
-      color:'#555',
+      color:COLORS.textColor,
       textAlign:'center',
       paddingTop:10
     },

@@ -5,6 +5,7 @@ import { Dimensions } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons"
 import { TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native";
+import { COLORS } from "../constants/theme"
 
 const PrivacyPolicy = ({visible, setVisible}) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -28,7 +29,7 @@ const PrivacyPolicy = ({visible, setVisible}) => {
       >
         <TouchableOpacity onPress={()=>setModalVisible('false')} style={styles.centeredView}>
           <View style={styles.modalView}>
-                <Icon name="information-circle-outline" size={40} color="#fff" />
+                <Icon name="information-circle-outline" size={40} color={COLORS.textColor} />
                 <View style={{padding:5}} >
                     <Text style={styles.modalText}>İnternet Bağlantısı yok</Text>
                     <Text style={styles.modalTextTwo}>Lütfen bir ağa bağlanın ve tekrar deneyin</Text>
@@ -50,12 +51,12 @@ const styles = StyleSheet.create({
   modalView: {
     width:Dimensions.get('screen').width,
     flexDirection:'row',
-    backgroundColor: "#e63946",
+    backgroundColor:COLORS.networkError,
     paddingHorizontal: 35,
     paddingVertical:23,
     
     alignItems:'center',
-    shadowColor: "#000",
+    shadowColor:COLORS.shadow,
     shadowOffset: {
       width: 0,
       height: 2
@@ -76,18 +77,18 @@ const styles = StyleSheet.create({
     backgroundColor: "#2196F3",
   },
   textStyle: {
-    color: "white",
+    color:COLORS.textColor,
     fontWeight: "bold",
     textAlign: "center"
   },
   modalText: {
-    color:'#f1f1f1',
+    color:COLORS.textColorLight,
     fontFamily:'GoogleSans-Medium',
     fontSize:16,
     textAlign: "left"
   },
   modalTextTwo: {
-    color:'#f1f1f1',
+    color:COLORS.textColorLight,
     fontFamily:'GoogleSans-Regular',
     fontSize:12,
     textAlign: "left"

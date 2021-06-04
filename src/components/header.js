@@ -2,6 +2,7 @@ import React from "react"
 import { Pressable, StyleSheet, Text, View } from "react-native"
 import Icon from "react-native-vector-icons/Ionicons"
 import { useNavigation } from "@react-navigation/native"
+import { COLORS } from "../constants/theme";
 
 function Header({ leftButtonOnPress, title }) {
   const { push } = useNavigation()
@@ -9,10 +10,10 @@ function Header({ leftButtonOnPress, title }) {
     <View style={styles.container}>
       <View style={styles.headerButtons}>
         <Pressable onPress={() => push("Search")}>
-          <Icon name="search-circle-outline" size={36} color="#333" />
+          <Icon name="search-circle-outline" size={36} color={COLORS.textColor} />
         </Pressable>
         <Pressable onPress={() => push("Account")}>
-          <Icon name="person-circle-outline" size={36} color="#333" />
+          <Icon name="person-circle-outline" size={36} color={COLORS.textColor} />
         </Pressable>
       </View>
       {title ? (

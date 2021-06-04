@@ -5,9 +5,10 @@ import { Alert, Modal, StyleSheet, Text, Pressable, View } from "react-native";
 import SubmitButton from '../Button/SubmitButton'
 import {useNavigation} from '@react-navigation/native'
 import Icon from "react-native-vector-icons/Ionicons"
-
+import { useTheme } from "@react-navigation/native"
 
 const BottomLogInModal = ({visible, setVisible, redirectButton}) => {
+  const {colors}=useTheme()
   const [modalVisible, setModalVisible] = useState(false);
   const navigation =useNavigation();
   return (
@@ -22,13 +23,13 @@ const BottomLogInModal = ({visible, setVisible, redirectButton}) => {
         }}
       >
         <View style={styles.centeredView}>
-          <View style={styles.modalView}>
+          <View style={[styles.modalView, {backgroundColor:colors.background}]}>
             <TouchableOpacity style={styles.closeButtonContainer} onPress={setVisible} >
-               <Icon name="close-outline" size={30} color="#1d3557" />
+               <Icon name="close-outline" size={30} color={colors.primary} />
             </TouchableOpacity>
             <View style={styles.bodyContainer} >
-               <Icon name="information-circle-outline" size={50} color="#1d3557" />
-               <Text style={styles.modalText}>Bu kitabı satın alabilmeniz için oturum açmanız gerekmektedir.</Text>
+               <Icon name="information-circle-outline" size={50} color={colors.primary} />
+               <Text style={[styles.modalText,{color:colors.text}]}>Bu kitabı satın alabilmeniz için oturum açmanız gerekmektedir.</Text>
             </View>
             <SubmitButton title='' butonPress={redirectButton} />
            
@@ -51,16 +52,15 @@ const styles = StyleSheet.create({
   modalView: {
     width:Dimensions.get('screen').width,
     margin: 20,
-    backgroundColor: "white",
     borderTopLeftRadius:10,
     borderTopRightRadius:10,
     padding: 35,
     paddingTop:0,
     alignItems: "center",
-    shadowColor: "#000",
+    shadowColor: "#ffffff60",
     shadowOffset: {
       width: 7,
-      height: 0
+      height: 2
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
@@ -69,7 +69,8 @@ const styles = StyleSheet.create({
   closeButtonContainer:{ 
     width:Dimensions.get('screen').width, 
     justifyContent:'flex-end', 
-    alignItems:'flex-end', padding:5
+    alignItems:'flex-end', 
+    padding:5
   },
   bodyContainer:{
     flexDirection:'row', 

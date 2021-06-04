@@ -4,6 +4,8 @@ import { endpoints } from "../../../utils/constants";
 import CategoryList from '../../../components/categoryList'
 import PageHeaderBackLayout from '../../../components/Layout/PageHeaderBackLayout'
 import { SafeAreaView } from "react-native";
+import { COLORS } from "../../../constants/theme";
+import { useTheme } from "@react-navigation/native"
 
 export default function BookCategories({ navigation, route }) {
   React.useLayoutEffect(() => {
@@ -18,20 +20,21 @@ export default function BookCategories({ navigation, route }) {
     })
   }, [navigation, route.params.item])
 
+  const {colors}=useTheme()
   const product = route.params.item
   const title = route.params.title
   return (
-    <View style={{flex: 1, backgroundColor: "#F3F4F6" }}>
-      <SafeAreaView backgroundColor={'#1d3557'} />
-      <StatusBar backgroundColor={'#1d3557'} barStyle='light-content' />
+    <View style={{flex: 1, backgroundColor:colors.backgroundColor}}>
+      <SafeAreaView backgroundColor={COLORS.primary} />
+      <StatusBar backgroundColor={COLORS.primary} barStyle='light-content' />
       <PageHeaderBackLayout 
-        butonColor={'#fff'} 
+        butonColor={COLORS.textColorLight} 
         butonPress={()=>navigation.goBack()}
         butonPressRight={null}
         title={route.params?.title}
-        backgrounColor={'#1d3557'}
+        backgrounColor={COLORS.primary}
         />
-        <View style={styles.bookDetails}>
+        <View style={[styles.bookDetails,{backgroundColor:colors.background}]}>
             <CategoryList
                 columnType='categorys'
                 sharedKey="featured"
@@ -54,14 +57,13 @@ export default function BookCategories({ navigation, route }) {
 }
 const styles = StyleSheet.create({
   scrollView: {
-    backgroundColor: "#FFF",
+    backgroundColor:COLORS.backgroundColor,
   },
   bookCoverArea: {
-    backgroundColor: "#F3F4F6",
+    backgroundColor:COLORS.backgroundColor,
   },
   bookDetails: {
-    backgroundColor: "#FFF",
-    paddingBottom: 10,
+    paddingBottom: 0,
     flex: 1,
   },
   readBuyButtonArea: {

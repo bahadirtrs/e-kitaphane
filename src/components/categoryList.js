@@ -6,8 +6,10 @@ import CategorysItem, { CategorysItemPlaceholder } from "./categorysItem"
 import SearchBar from '../components/searchBar'
 import Icon from "react-native-vector-icons/Ionicons"
 import { ActivityIndicator } from "react-native"
+import { useTheme } from "@react-navigation/native"
 
 function CategoryList({ sharedKey, title, onPress, request, categoryID, columnType }) {
+  const {colors}=useTheme()
   const [fetching, setFetching] = useState(false)
   const [products, setProducts] = useState([])
   const [term, setTerm] = useState("")
@@ -71,6 +73,7 @@ const Loading = () =>{
 }
 
 const CategoryItems = ({ products, fetching,categoryID,sharedKey})=>{
+  const {colors}=useTheme()
   if(products.length>0){
     return(
     <View style={styles.itemContainer} >
@@ -94,8 +97,8 @@ const CategoryItems = ({ products, fetching,categoryID,sharedKey})=>{
     return(
       <View style={styles.notResultStyleContainer} >
         <View style={{alignItems:'center'}} >
-          <Icon name="search-sharp" size={30} color="#ccc" />
-          <Text style={styles.notResultText}>Arama sonucunda kitap bulunamadı</Text>       
+          <Icon name="search-sharp" size={50} color={colors.text} />
+          <Text style={[styles.notResultText,{color:colors.text}]}>Arama sonucunda kitap bulunamadı</Text>       
         </View>
       </View>
     )
@@ -154,11 +157,21 @@ const styles = StyleSheet.create({
   notResultText:{
     fontFamily:'GoogleSans-Regular', 
     fontSize:16, 
+    color:'#333',
+    paddingVertical:10,
+  },
+  loadingContainer:{
+    width:Dimensions.get('screen').width, 
+    height:Dimensions.get('screen').height*0.7, 
+    justifyContent:'center', 
+    alignItems:'center', 
+    paddingVertical:20
+  },
+  loadingText:{
+    fontFamily:'GoogleSans-Regular', 
+    fontSize:16,
+    paddingVertical:5, 
     color:'#333'
   },
-  loadingContainer:{width:Dimensions.get('screen').width, height:Dimensions.get('screen').height*0.7, justifyContent:'center', alignItems:'center', paddingVertical:20},
-  loadingText:{fontFamily:'GoogleSans-Regular', fontSize:16,paddingVertical:5, color:'#333'},
-
-
 })
 export default CategoryList;

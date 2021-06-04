@@ -7,6 +7,8 @@ import SkeletonPlaceholder from "react-native-skeleton-placeholder"
 import AsyncStorage from '@react-native-community/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import Icon from "react-native-vector-icons/Ionicons"
+import { COLORS } from "../constants/theme"
+import { useTheme } from "@react-navigation/native"
 import moment from 'moment'
 import 'moment/locale/tr'
 moment.locale('tr')
@@ -14,6 +16,7 @@ const width=(Dimensions.get('screen').width-20)/2.3;
 const height=(Dimensions.get('screen').width-20)/2.5 * bookCoverRatio;
 
 export default function LibraryItem({ item, sharedKey }) {
+  const {colors}=useTheme()
   const [pageNumber, setPageNumber] = useState(0)
   const [allPageNumber, setAllPageNumber] = useState(0)
   
@@ -41,7 +44,7 @@ export default function LibraryItem({ item, sharedKey }) {
   return (
     // () => push("Reader", {id: item?.id, type: "preview", preview: 'pdfUrl', title: item?.title });
     // () => push("BookDetail", { sharedKey: sharedKey, item: item , image:item?.cover_image })
-    <TouchableOpacity activeOpacity={0.9} style={styles.container} 
+    <TouchableOpacity activeOpacity={0.9} style={[styles.container,{backgroundColor:colors.card}]} 
       onPress={() => push("Reader", {id: item?.id, type: "preview", preview: 'pdfUrl', title: item?.title })}
     >
       <View style={styles.bookImage}>
@@ -49,7 +52,7 @@ export default function LibraryItem({ item, sharedKey }) {
           <TouchableOpacity style={styles.bookDetailButton} 
             onPress={() => push("BookDetail", {sharedKey: sharedKey, item: item , image:item?.cover_image})} 
           >
-              <Icon name="book-outline" size={14} color="#000" />
+              <Icon name="book-outline" size={14} color={colors.color} />
           </TouchableOpacity>
         </View>
         <View style={styles.pageNumberContainer}>
@@ -70,9 +73,9 @@ export default function LibraryItem({ item, sharedKey }) {
      
       <View style={{width:'95%'}} >
         <View style={{paddingVertical:10, paddingHorizontal:3}}>
-          <Text style={styles.title} numberOfLines={3}>
+          <Text style={[styles.title, {color:colors.text}]} numberOfLines={3}>
             {item?.title} 
-            <Text style={styles.pageSummary}>-{item?.summary}</Text>
+            <Text style={[styles.pageSummary, {color:colors.text}]}>-{item?.summary}</Text>
           </Text>
         </View>
         <View style={styles.pageProgramsBar} >
@@ -80,7 +83,7 @@ export default function LibraryItem({ item, sharedKey }) {
            <View style={{
               borderRadius:3, 
               maxWidth:'100%',
-              backgroundColor:'#118ab2', 
+              backgroundColor:COLORS.programsBar, 
               height:3,
               width:(
                   (allPageNumber>1
@@ -99,7 +102,7 @@ export default function LibraryItem({ item, sharedKey }) {
               )*100 +'%'}} />
           </View>
           <View style={{width:'30%'}} >
-             <Text style={styles.pageOran} >
+             <Text style={[styles.pageOran,{color:colors.text}]} >
                %{Math.ceil(
                  ((allPageNumber>1
                   ? (pageNumber>1?pageNumber:1)/(allPageNumber>1?allPageNumber:0)
@@ -138,8 +141,8 @@ const styles = StyleSheet.create({
     marginHorizontal:15,
     paddingBottom:0,
     borderRadius: 5,
-    backgroundColor:'#fff',
-    shadowColor: "#000",
+    backgroundColor:'red',
+    shadowColor:COLORS.shadow,
     shadowOffset: {
       width: 4,
       height: 4,
@@ -152,35 +155,35 @@ const styles = StyleSheet.create({
     fontFamily:'GoogleSans-Medium',
     fontSize: 13,
     lineHeight: 14,
-    color: "#1F2937",
+    color:COLORS.textColor,
     paddingTop:0,
   },
   author: {
     fontFamily:'GoogleSans-Regular',
     fontSize: 13,
-    color: "#4B5563",
+    color:COLORS.textColor,
     paddingTop:2
   },
   readButton:{
     marginVertical:10,
     width:'90%',
-    backgroundColor:'#1d3557',
+    backgroundColor:COLORS.primary,
     paddingHorizontal:10,
     paddingVertical:5,
     borderRadius:5,
     borderWidth:0.3,
-    borderColor:'#55555599'
+    borderColor:COLORS.border,
   },
   read: {
     paddingTop: 2,
     textAlign: "center",
     fontFamily:'GoogleSans-Bold',
     fontSize: 12,
-    color: "#fff",
+    color:COLORS.textColor
   },
  
   bookImage: {
-    shadowColor: "#000",
+    shadowColor:COLORS.shadow,
     shadowOffset: {
       width: 4,
       height: 4,
@@ -199,7 +202,7 @@ const styles = StyleSheet.create({
   },
   bookDetailButton:{ 
     flexDirection:'row', 
-    backgroundColor:'#ffffff', 
+    backgroundColor:COLORS.backgroundColor,
     padding:6, 
     borderRadius:20, 
     justifyContent:'center', 
@@ -218,7 +221,7 @@ const styles = StyleSheet.create({
   pageNumberText:{
     fontFamily:'GoogleSans-Regular', 
     fontSize:11, 
-    color:'#fff',  
+    color:COLORS.backgroundColor, 
     backgroundColor:'#00000099', 
     borderRadius:5, 
     paddingVertical:2, 
@@ -245,7 +248,8 @@ const styles = StyleSheet.create({
     fontSize:11, 
     fontFamily:'GoogleSans-Regular', 
     paddingLeft:8, 
-    textAlign:'right'
+    textAlign:'right',
+    color:COLORS.textColor
   },
   bookCoverImage: {
       width:width,

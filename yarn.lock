@@ -6442,6 +6442,13 @@ react-native-device-info@^8.0.1:
   resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-8.0.2.tgz"
   integrity sha512-5X5sMO2N9WpnqA4BXHlby0ml0WKlHconLhgf8fCiXDELf7DIjOMX8z6iYZ7WDgmn0E/6Psubq9yb5D2Qdc30Wg==
 
+react-native-event-listeners@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/react-native-event-listeners/-/react-native-event-listeners-1.0.7.tgz#486d856dfebf295a7aeda97bc36d1cf81cee0623"
+  integrity sha512-yne2ldnqGtABnuN6VSPgs5afaHZZYIAGMoyBUJFn5O2t5t78eCbX9vNa3hvOIIwulKMkZVfqyRtYcSOrNMmMhg==
+  dependencies:
+    type-detect "^4.0.8"
+
 react-native-fast-image@^8.3.4:
   version "8.3.4"
   resolved "https://registry.yarnpkg.com/react-native-fast-image/-/react-native-fast-image-8.3.4.tgz"
@@ -7740,6 +7747,11 @@ type-check@~0.3.2:
   integrity sha1-WITKtRLPHTVeP7eE8wgEsrUg23I=
   dependencies:
     prelude-ls "~1.1.2"
+
+type-detect@^4.0.8:
+  version "4.0.8"
+  resolved "https://registry.yarnpkg.com/type-detect/-/type-detect-4.0.8.tgz#7646fb5f18871cfbb7749e69bd39a6388eb7450c"
+  integrity sha512-0fr/mIH1dlO+x7TlcMy+bIDqKPsw/70tVyeHW787goQjhmqaZe10uwLujubK9q9Lg6Fiho1KUKDYz0Z7k7g5/g==
 
 type-error@^1.0.3:
   version "1.0.3"

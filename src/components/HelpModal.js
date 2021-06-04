@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import {Modal, StyleSheet, Text, Pressable, View } from "react-native";
-
+import { COLORS } from "../constants/theme";
 const HelpModal = ({visible, setVisible}) => {
   const [modalVisible, setModalVisible] = useState(false);
   return (
@@ -35,11 +35,11 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: "white",
+    backgroundColor:COLORS.backgroundColor,
     borderRadius: 10,
     padding: 35,
     alignItems: "center",
-    shadowColor: "#000",
+    shadowColor:COLORS.shadow,
     shadowOffset: {
       width: 0,
       height: 2

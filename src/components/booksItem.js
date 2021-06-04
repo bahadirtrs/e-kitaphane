@@ -6,8 +6,12 @@ import { BASE_URL, bookCoverRatio } from "../utils/constants"
 import { numberFormat } from "../utils/utils"
 import SkeletonPlaceholder from "react-native-skeleton-placeholder"
 import { TouchableOpacity } from "react-native"
+import { COLORS } from "../constants/theme";
+import { useTheme } from "@react-navigation/native"
+
 
 export default function BooksItem({ item, sharedKey }) {
+  const {colors}=useTheme()
   const { push } = useNavigation()
   return (
     <TouchableOpacity activeOpacity={0.9} style={styles.container} 
@@ -16,7 +20,7 @@ export default function BooksItem({ item, sharedKey }) {
       <View style={styles.bookImage}>
         <View>
         <FastImage
-          style={styles.bookCoverImage}
+          style={[styles.bookCoverImage,{borderColor:colors.border}]}
           source={{
             uri: BASE_URL + "products/cover/" + item?.cover_image,
             priority: FastImage.priority.normal,
@@ -28,16 +32,16 @@ export default function BooksItem({ item, sharedKey }) {
       </View>
       <View>
         <View >
-          <Text style={styles.title} numberOfLines={2}>
+          <Text style={[styles.title,{color:colors.text}]} numberOfLines={2}>
             {item?.title}
           </Text>
         </View>
         <View >
-          <Text style={styles.author} numberOfLines={1}>
+          <Text style={[styles.author,{color:colors.text}]}numberOfLines={1}>
             {item?.author}
           </Text>
         </View>
-          <Text style={styles.price} numberOfLines={1}>
+          <Text style={[styles.price,{color:colors.text}]} numberOfLines={1}>
             {numberFormat(item?.price)} ₺
           </Text>
       </View>
@@ -66,16 +70,16 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily:'GoogleSans-Medium',
-    fontSize: 14,
+    fontSize: 15,
     lineHeight: 20,
-    height:25,
-    color: "#1F2937",
+    height:45,
+    color:COLORS.textColor,
     paddingTop: 5,
   },
   author: {
     fontFamily:'GoogleSans-Regular',
     fontSize: 13,
-    color: "#4B5563",
+    color:COLORS.textColor,
     paddingTop:2
   },
   price: {
@@ -83,10 +87,10 @@ const styles = StyleSheet.create({
     textAlign: "left",
     fontFamily:'GoogleSans-Bold',
     fontSize: 16,
-    color: "#4B5563",
+    color:COLORS.textColor,
   },
   bookImage: {
-    shadowColor: "#000",
+    shadowColor:COLORS.shadow,
     shadowOffset: {
       width: 4,
       height: 4,
@@ -96,11 +100,10 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   bookCoverImage: {
-      borderWidth: 0.5,
-      borderColor: "#8d8d96",
+      borderWidth: 1.5,
       width:Dimensions.get('screen').width/3,
       height:Dimensions.get('screen').width/3 * bookCoverRatio,
-      borderRadius: 8,
+      borderRadius: 6,
     
   },
 })

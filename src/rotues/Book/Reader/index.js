@@ -11,7 +11,8 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import { BASE_URL,endpoints } from "../../../utils/constants"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { Dimensions } from "react-native"
-
+import { COLORS } from "../../../constants/theme";
+import { useTheme } from "@react-navigation/native"
 let pageNumber=0;
 
 function getData(number) {
@@ -23,6 +24,7 @@ function getData(number) {
   return data;
 }
 export default function ReaderScreen({ navigation, route }) {
+  const {colors, dark}=useTheme()
   React.useLayoutEffect(() => {
     navigation.setOptions({headerShown: false})
   }, [navigation])
@@ -39,11 +41,16 @@ export default function ReaderScreen({ navigation, route }) {
     const [containuePage, setContainuePage] = useState(0)
     const [statusBarColor, setStatusBarColor] = useState('#1d3557')
     const [pageHorizontal, setPageHorizontal] = useState(true)
+    const [scale, setScale] = useState(1.5)
+    const [res, setRes] = useState('full')
     const SlideInLeft = useRef(new Animated.Value(0)).current;
-    //const source = { uri: BASE_URL +"api/show-preview/" + route.params.id, cache: true }
-    const source = { uri: BASE_URL +pdfUrl, cache: true }
+    // const source = { uri: BASE_URL +"api/show-preview/" + route.params.id, cache: true }
+    const source = {uri: dark
+      ? (BASE_URL +'products/'+res+'/dark-' + pdfUrl)
+      : (BASE_URL +'products/'+res+'/' + pdfUrl), 
+      cache:true }
    
-  const getShowPDF = useMemo(async() =>
+  const getShowPDF = useMemo(async()=>
   //PDF izin kontrolü
     RequestManager({
       method: endpoints.showPDF.method,
@@ -71,6 +78,7 @@ export default function ReaderScreen({ navigation, route }) {
       getShowPDF
         .then(res => {
           setPdfUrl(res)
+          setRes('full')
           setPreviewBook(true)
           setTimeout(() => {
             setFetching(false)
@@ -79,7 +87,8 @@ export default function ReaderScreen({ navigation, route }) {
         .catch(err => {
           setFetching(true)
           console.log(err)
-          setPdfUrl('api/show-preview/'+route.params.id)
+          setPdfUrl(route.params.pdfData)
+          setRes('preview')
           setPreviewBook(false)
         })
     }, [getShowPDF])
@@ -142,7 +151,7 @@ export default function ReaderScreen({ navigation, route }) {
     },[]) //neden
   
     const fadeIn = () => {
-      setStatusBarColor('#fff')
+      setStatusBarColor(colors.background)
       // Alt barın görünme animasyonu
       Animated.timing(SlideInLeft, {
         toValue: 1,
@@ -163,7 +172,7 @@ export default function ReaderScreen({ navigation, route }) {
 
   const getItemLayout = (data, index) => (
     // Alt bar sayfa gösteriminin kaydırma boyutu
-    {length: 85, offset: (85 * index)-Dimensions.get('screen').width/1.7, index }
+    {length: 65, offset: (65 * index)-Dimensions.get('screen').width/1.7, index }
   )
 
   const scrollToItem = (res) => {
@@ -279,15 +288,15 @@ export default function ReaderScreen({ navigation, route }) {
   <>
     <View style={styles.container}> 
       {isPageControllerHide ?
-        <SafeAreaView style={{ zIndex:1, position:'absolute', backgroundColor:'#1d3557', paddingBottom:0, paddingTop:5}}>
+        <SafeAreaView style={{ zIndex:1, position:'absolute', backgroundColor:colors.primary, paddingBottom:0, paddingTop:5}}>
           <StatusBar barStyle="light-content" backgroundColor={statusBarColor}/>
           <PageHeaderBackLayout 
             type={'pdf'}
-            butonColor={'#fff'} 
-            textColor={'#fff'}
+            butonColor={COLORS.textColor} 
+            textColor={COLORS.textColor}
             butonPress={()=>navigation.goBack()}
             title={route.params.title}
-            backgrounColor={'#1d3557'}
+            backgrounColor={COLORS.primary}
             pageSave={()=>PageSave()}
             deleteNumber={()=>StrongeNumberDelete()}
             setPageHorizontalTrue={()=>setPageHorizontal(!pageHorizontal)}
@@ -295,8 +304,8 @@ export default function ReaderScreen({ navigation, route }) {
             />  
         </SafeAreaView>
     :null}
-     <StatusBar barStyle="dark-content" backgroundColor={statusBarColor}/>
-     {fetching? 
+     <StatusBar barStyle={statusBarColor=='#f1f1f1'?"light-content" :"dark-content"} backgroundColor={statusBarColor}/>
+     {fetching==11? 
      <View style={{position:'absolute', zIndex:1, height:Dimensions.get('screen').height, width:Dimensions.get('screen').width, justifyContent:'center',alignItems:'center' }} >
       <Activator title='Kitap yükleniyor' />
      </View>
@@ -309,8 +318,19 @@ export default function ReaderScreen({ navigation, route }) {
       enablePaging={true}
       fitWidth={true}
       cache={true}
+      scale={1.1}
       onScaleChanged={(scale)=>ZoomActive(scale)}
-      style={styles.pdf}
+      style={[
+        styles.pdf,{
+        backgroundColor:colors.background,
+        
+        left:numberofPages>100
+          ?(-Dimensions.get('screen').width/5.8)
+          :0,
+        width:numberofPages>0
+          ?Dimensions.get('screen').width*1.7
+          :Dimensions.get('screen').width,
+      }]}
       onPageSingleTap={()=>ScreenClick()}
       onLoadComplete={(numberOfPages, filePath) => {
         setNumberofPages(numberOfPages)
@@ -338,22 +358,22 @@ export default function ReaderScreen({ navigation, route }) {
           }
         ],
         }]}>
-        <View style={{  position:'absolute', bottom:175,width:100, justifyContent:'center', alignItems:'center', backgroundColor:'#00000050', borderRadius:5}} >
+        <View style={{position:'absolute', bottom:175,width:100, justifyContent:'center', alignItems:'center', backgroundColor:colors.opacityBlack, borderRadius:5}} >
           <Text style={styles.numberCurrentText} > {numberCurrent}/{numberofPages} </Text>
         </View>
 
-        <View style={{width:Dimensions.get('screen').width, marginBottom:10, backgroundColor:'#eee', flexDirection:'row', justifyContent:'center',alignItems:'center', padding:5}} >
+        <View style={{width:Dimensions.get('screen').width, marginBottom:10, backgroundColor:colors.primary, flexDirection:'row', justifyContent:'center',alignItems:'center', padding:5}} >
           {isEnabled
           ? <TouchableOpacity onPress={()=>itemTrue()} >
-              <Icon name="checkbox-outline" size={20} color="#1d3557" />
+              <Icon name="checkbox-outline" size={20} color={colors.textColorLight} />
             </TouchableOpacity>
           : <TouchableOpacity onPress={()=>itemTrue()} >
-              <Icon name="square-outline" size={20} color="#555" />
+              <Icon name="square-outline" size={20} color={colors.textColorLight}/>
             </TouchableOpacity>
           }
-          <Text style={{fontFamily:'GoogleSans-Regular',color:'#555', fontSize:12}}>Kaldığım sayfayı otomatik olarak kaydet</Text>
+          <Text style={{fontFamily:'GoogleSans-Regular',color:colors.textColorLight, fontSize:12}}> Kaldığım sayfayı otomatik olarak kaydet</Text>
         </View>
-        <View style={{ width:Dimensions.get('screen').width, flexDirection:'column',justifyContent:'center', alignItems:'center'}} >
+        <View style={{backgroundColor:colors.primary, width:Dimensions.get('screen').width, flexDirection:'column',justifyContent:'center', alignItems:'center'}} >
           <FlatList
             style={{ width:'100%',}}
             horizontal={true}
@@ -364,11 +384,11 @@ export default function ReaderScreen({ navigation, route }) {
             data={getData(numberofPages)}
             renderItem={({ item, index}) => (
               item-1==numberofPages ? null:
-                <TouchableOpacity activeOpacity={0.9} onPress={()=>setContainuePage(Number(item))} style={{width:Dimensions.get('screen').width,  backgroundColor:'#fff', width:65, height:90, borderColor: item==numberCurrent?'#1d3557':'#ccc', borderWidth:item==numberCurrent?3:1, marginHorizontal:10, marginVertical:5, borderRadius:5, justifyContent:'center', alignItems:'center'}} >
-                <View style={{width:Dimensions.get('screen').width,  zIndex:1, width:65, height:90, backgroundColor:'#1d355701', position:'absolute', justifyContent:'center', alignItems:'center'}}>
-                  <Text style={{fontFamily:'GoogleSans-Regular', color:'#333', fontSize:14}}>{item}</Text>
+              <TouchableOpacity activeOpacity={0.9} onPress={()=>setContainuePage(Number(item))} style={{width:Dimensions.get('screen').width,  backgroundColor:colors.background, width:45, height:60, borderColor: item==numberCurrent?'#118ab2':colors.primary, borderWidth:item==numberCurrent?4:0, marginHorizontal:10, marginVertical:5, borderRadius:5, justifyContent:'center', alignItems:'center'}} >
+                <View style={{width:Dimensions.get('screen').width,  zIndex:1, width:40, height:50, position:'absolute', justifyContent:'center', alignItems:'center'}}>
+                  <Text style={{fontFamily:'GoogleSans-Regular', color:colors.text, fontSize:15}}>{item}</Text>
                 </View>
-              </TouchableOpacity> 
+              </TouchableOpacity>
             )}
           />
         </View>
@@ -411,20 +431,23 @@ const styles = StyleSheet.create({
     zIndex:4,
   },
   pdf: {
+
+    justifyContent:'center',
+    alignItems:'center',
+   
    flex:9,
-    backgroundColor: "#eee",
     padding: 0,
     margin: 0,
   },
   pdf2: {
     height:50,
-    backgroundColor: "#FFF",
+    backgroundColor:COLORS.backgroundColor,
     padding: 0,
     margin: 0,
   },
   numberCurrent:{
     width:Dimensions.get('screen').width , 
-    backgroundColor:'#eee',
+    backgroundColor:COLORS.primary,
     bottom:0,
     position:'absolute',
     minHeight:10,
@@ -433,7 +456,7 @@ const styles = StyleSheet.create({
     justifyContent:'space-around',
     alignItems:'center',
     marginBottom:0,
-    shadowColor: "#000",
+    shadowColor: COLORS.shadow,
     shadowOffset: {
       width: 2,
       height: 2,

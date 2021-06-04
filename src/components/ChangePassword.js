@@ -6,11 +6,12 @@ import TextInputCom from '../components/textInputCom'
 import RNSecureStorage from "rn-secure-storage"
 import { BASE_URL} from "../utils/constants"
 import  Icon  from "react-native-vector-icons/Ionicons"
-
+import { useTheme } from "@react-navigation/native"
 import axios from "axios"
-import AsyncStorage from '@react-native-community/async-storage';
+import { COLORS } from "../constants/theme";
 
 const ChangePassword = ({visible, setVisible, first_name, last_name, email}) => {
+  const {colors}=useTheme()
   const [modalVisible, setModalVisible] = useState(false);
   const [newPassword, setNewPassword] = useState("")
   const [newPasswordRepeat, setNewPasswordRepeat] = useState("")
@@ -55,10 +56,10 @@ const ChangePassword = ({visible, setVisible, first_name, last_name, email}) => 
     <View style={styles.centeredView}>
       <Modal animationType="fade" transparent={true} visible={visible}>
         <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <View style={styles.container}>
-              <Text style={styles.passChangeTitle}>Parola güncelle</Text>
-             <Text style={styles.passChangeDescription}>Lütfen mevcut parolanızı ve yeni parolanızı giriniz.</Text>
+          <View style={[styles.modalView, {backgroundColor:colors.background}]}>
+            <View style={[styles.container,{borderColor:colors.border}]}>
+              <Text style={[styles.passChangeTitle,{color:colors.text}]}>Parola güncelle</Text>
+             <Text  style={[styles.passChangeDescription,{color:colors.text}]}>Lütfen mevcut parolanızı ve yeni parolanızı giriniz.</Text>
             </View>
             {warning ?
               <View style={[styles.infoStyle,{backgroundColor:infoColor}]}> 
@@ -100,7 +101,7 @@ const ChangePassword = ({visible, setVisible, first_name, last_name, email}) => 
 
 const styles = StyleSheet.create({
   centeredView: {
-    backgroundColor:'#00000090',
+    backgroundColor:COLORS.opacityBlack,
     flex:1,
     justifyContent: "center",
     alignItems: "center",
@@ -108,11 +109,10 @@ const styles = StyleSheet.create({
   modalView: {
     width:Dimensions.get('window').width*0.9,
     margin: 0,
-    backgroundColor: "white",
     borderRadius: 10,
     padding: 0,
     alignItems:'center',
-    shadowColor: "#000",
+    shadowColor:COLORS.shadow,
     shadowOffset: {
       width: 0,
       height: 2
@@ -128,9 +128,8 @@ const styles = StyleSheet.create({
     paddingHorizontal:0, 
     marginVertical:10, 
     borderBottomWidth:1, 
-    borderBottomColor:'#ccc'
   },
-  passChange:{
+  passChangeTitle:{
     fontFamily:'GoogleSans-Medium', 
     fontSize:20
   },

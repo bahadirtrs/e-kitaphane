@@ -9,8 +9,11 @@ import Icon from "react-native-vector-icons/Ionicons"
 import { Dimensions } from "react-native";
 import { useNavigation } from "@react-navigation/native"
 import { useFocusEffect } from "@react-navigation/native"
+import { COLORS } from "../constants/theme"
+import { useTheme } from "@react-navigation/native"
 
 const SupportCreateModal = ({visible, setVisible, permisson}) => {
+  const {colors}=useTheme()
   const { push } = useNavigation()
   const [subject, setSubject] = useState("")
   const [message, setMessage] = useState("")
@@ -84,33 +87,33 @@ const SupportCreateModal = ({visible, setVisible, permisson}) => {
   return (
       <Modal animationType="slide" transparent={true} visible={visible}>
         <View style={styles.centeredView}>
-          <View style={styles.modalView}>
+          <View style={[styles.modalView, {backgroundColor:colors.card}]}>
             {response
             ?<>
               <TouchableOpacity style={styles.closeButton} onPress={setVisible} >
-                <Icon name="close-outline" size={30} color="#1d3557" />
+                <Icon name="close-outline" size={30} color={colors.primary} />
               </TouchableOpacity>
             {permisson 
               ? <View style={styles.headerContainer}>
-                  <Text style={styles.title}>Destek Mesajı Oluştur</Text>
-                  <Text style={styles.description}>Lütfen destek almak istediğiniz konuyu açıkla yazınız.</Text>
+                  <Text style={[styles.title,{color:colors.text}]}>Destek Mesajı Oluştur</Text>
+                  <Text style={[styles.description,{color:colors.text}]}>Lütfen destek almak istediğiniz konuyu açıkla yazınız.</Text>
                 </View>
               : null
              }
             <View>
           {!permisson 
-            ? <View style={styles.headerContainerErr} >
-                 <Icon name="alert-circle-outline" size={70} color="#118ab2" />
-                <Text style={styles.descriptionErr}>
+            ? <View style={[styles.headerContainerErr]} >
+                 <Icon name="alert-circle-outline" size={70} color={colors.iconColor} />
+                <Text style={[styles.descriptionErr,{color:colors.text}]}>
                   Çok fazla bekleyen destek kaydınız olduğu için yeni kayıt oluşturamazsınız. Lütfen Destek kayıtlarının cevaplanmasını bekleyiniz. 
                 </Text>
               </View>
             : 
              <View>
               <TextInput
-                style={styles.textInputSubject}
+                style={[styles.textInputSubject,{color:colors.text, borderColor:colors.border}]}
                 placeholder={"Konu"}
-                placeholderTextColor={'#555'}
+                placeholderTextColor={colors.text}
                 value={subject}
                 onChangeText={(text)=>setSubject(text)}
                 textAlignVertical='auto'
@@ -118,9 +121,9 @@ const SupportCreateModal = ({visible, setVisible, permisson}) => {
                 autoCapitalize={'none'}
               />
               <TextInput
-                style={styles.textInput}
+                style={[styles.textInput,{color:colors.text, borderColor:colors.border}]}
                 placeholder={"Mesajınız | max:500"}
-                placeholderTextColor={'#555'}
+                placeholderTextColor={colors.text}
                 value={message}
                 onChangeText={(text)=>setMessage(text)}
                 textAlignVertical='top'
@@ -131,9 +134,9 @@ const SupportCreateModal = ({visible, setVisible, permisson}) => {
                 numberOfLines={10}
                 maxLength={500}
               /> 
-              <View style={{paddingHorizontal:10, paddingTop:5,}} >
-                <Text style={styles.description}>İsim Soyisim: {userInfo.first_name} {userInfo.last_name} </Text>
-                <Text style={styles.description}>Mail adresi: {userInfo.email} </Text>
+              <View style={{justifyContent:'flex-start', alignItems:'flex-start', paddingHorizontal:10, paddingTop:5,}} >
+                <Text style={[styles.userInfo,{color:colors.text}]}>İsim Soyisim: {userInfo.first_name} {userInfo.last_name}</Text>
+                <Text style={[styles.userInfo,{color:colors.text}]}>Mail adresi: {userInfo.email} </Text>
               </View>
             </View>
               }
@@ -141,7 +144,7 @@ const SupportCreateModal = ({visible, setVisible, permisson}) => {
            {permisson ?
            <View style={styles.buttonContainer} >
            <TouchableOpacity onPress={()=>CreateSupport()} style={styles.button}>
-             <Text style={styles.buttonText}>Gönder</Text>
+             <Text style={[styles.buttonText, {color:colors.text}]}>Gönder</Text>
            </TouchableOpacity>
          </View>
          :null
@@ -149,9 +152,9 @@ const SupportCreateModal = ({visible, setVisible, permisson}) => {
             </>
             :
             <View style={[styles.headerContainer, {alignItems:'center', paddingVertical:20, borderBottomWidth:0}]} >
-              <Icon name="thumbs-up-outline" size={80} color="#118ab2" />
-              <Text style={[styles.title, {textAlign:'center'}]}>Kaydınız başarıyla oluşturuldu</Text>
-              <Text style={[styles.description, {textAlign:'center'}]}>İsteğinizi en kısa süre içerisinde inceleneğiz ve sizi bilgilendireceğiz.</Text>
+              <Icon name="thumbs-up-outline" size={80} color={'#118ab2'}/>
+              <Text style={[styles.title, {textAlign:'center', color:colors.text}]}>Kaydınız başarıyla oluşturuldu</Text>
+              <Text style={[styles.description, {textAlign:'center', color:colors.text}]}>İsteğinizi en kısa süre içerisinde inceleneğiz ve sizi bilgilendireceğiz.</Text>
               <TouchableOpacity onPress={setVisible} style={styles.buttonTwo}>
                 <Text style={styles.buttonText}>Kapat</Text>
               </TouchableOpacity>
@@ -172,11 +175,10 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 0,
-    backgroundColor: "white",
     borderRadius: 10,
     padding: 6,
     alignItems: "center",
-    shadowColor: "#000",
+    shadowColor:COLORS.shadow,
     shadowOffset: {
       width: 0,
       height: 2
@@ -203,20 +205,17 @@ const styles = StyleSheet.create({
   },
   headerContainerErr:{ 
     width:Dimensions.get('screen').width*0.8, 
-    justifyContent:'flex-start', 
-    alignItems:'flex-start',
+    justifyContent:'center', 
+    alignItems:'center',
     borderBottomWidth:0,
-    borderBottomColor:'#ddd',
+    borderBottomColor:COLORS.borderLine,
     marginVertical:5,
-    alignItems:'center', 
-    paddingVertical:0, 
-    borderBottomWidth:0
+  
   },
   textInput:{ 
     width:Dimensions.get('screen').width*0.8, 
     fontFamily:'GoogleSans-Regular',
     borderWidth:1, 
-    borderColor:'#ddd',
     borderRadius:3, 
     fontSize:14, 
     height:150,
@@ -228,7 +227,6 @@ const styles = StyleSheet.create({
     height:40,
     fontFamily:'GoogleSans-Regular',
     borderWidth:1, 
-    borderColor:'#ddd',
     borderRadius:3, 
     fontSize:14, 
     margin:5,
@@ -246,17 +244,25 @@ const styles = StyleSheet.create({
     fontSize:12,
     paddingBottom:5,
     paddingHorizontal:0,
-    color:'#555',
     textAlign:'center', 
     fontSize:14, 
     paddingTop:10
+  },
+  userInfo:{
+    fontFamily:'GoogleSans-Regular',
+    fontSize:12,
+    paddingHorizontal:0,
+    color:COLORS.textColor,
+    textAlign:'center', 
+    fontSize:14,
+    paddingVertical:3,
   }, 
   descriptionErr:{
     fontFamily:'GoogleSans-Regular',
     fontSize:12,
-    paddingBottom:5,
-    paddingHorizontal:0,
-    color:'#555'
+    paddingVertical:10,
+    paddingHorizontal:20,
+    textAlign:'center'
   }, 
   buttonContainer:{
     width:Dimensions.get('screen').width*0.8, 
@@ -266,7 +272,7 @@ const styles = StyleSheet.create({
   },
   button:{
     width:Dimensions.get('screen').width*0.8, 
-    backgroundColor:'#118ab2',
+    backgroundColor:COLORS.iconColor,
     paddingHorizontal:40,
     paddingVertical:8,
     borderRadius:6,
@@ -274,14 +280,14 @@ const styles = StyleSheet.create({
   },
   buttonTwo:{
     width:Dimensions.get('screen').width*0.6, 
-    backgroundColor:'#118ab2',
+    backgroundColor:COLORS.iconColor,
     paddingHorizontal:40,
     paddingVertical:8,
     borderRadius:12,
     marginVertical:10,
   },
   buttonText:{
-    color:'#fff',
+    color:COLORS.textColor,
     fontFamily:'GoogleSans-Medium',
     fontSize:16,
     textAlign:'center',

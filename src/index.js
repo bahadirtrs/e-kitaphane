@@ -1,7 +1,7 @@
-import React from "react"
+import React, {useState, useEffect} from "react"
 import "intl"
 import "intl/locale-data/jsonp/tr"
-import { NavigationContainer } from "@react-navigation/native"
+import { NavigationContainer, DarkTheme, DefaultTheme, useTheme } from "@react-navigation/native"
 import Provider from "./utils/store"
 import {LogIn,SingIn,AccountScreen,UserInfo} from './rotues/Account'
 import MyLibrary from './rotues/Library/MyLibrary'
@@ -17,9 +17,12 @@ import SearchScreen from "./rotues/Search"
 import { createStackNavigator, TransitionPresets } from "@react-navigation/stack"
 import { SafeAreaProvider } from "react-native-safe-area-context/src/SafeAreaContext"
 import Tab from './navigation/tabs'
-import { StatusBar } from "react-native"
+import { StatusBar, View, Text } from "react-native"
 import codePush from "react-native-code-push";
-
+import AsyncStorage from '@react-native-community/async-storage';
+import {COLORSLIGHT, COLORSDARK} from './constants/theme'
+import { EventRegister } from 'react-native-event-listeners'
+let codePushOptions = { checkFrequency: codePush.CheckFrequency.MANUAL};
 
 export const iosTransitionSpec = {
   animation: "spring",
@@ -75,11 +78,69 @@ function MainStackScreen() {
   )
 }
 const App = () => {
+  const [darkApp, setDarkApp] = useState(false)
+  const appTheme = darkApp ?  COLORSDARK: COLORSLIGHT;
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    codePush.checkForUpdate()
+    .then((update) => {
+        if (update) {
+          setLoading(true)
+          onButtonPress()
+        } 
+      });
+  },[])
+
+  const onButtonPress =() =>{
+    codePush.sync({
+        updateDialog: false,
+        installMode: codePush.InstallMode.IMMEDIATE
+    });
+    setTimeout(() => { setLoading(false)}, 1000);
+    
+}
+
+
+  useEffect(() => {
+    letlistener = EventRegister.addEventListener('useThemeDeg', (data) => {
+      if(data===true){
+        setDarkApp(true)
+      }else{
+        setDarkApp(false)
+      }
+  })
+    return () => {
+      true
+    }
+  }, [])
+
+  useEffect(() => {
+    AsyncStorage.getItem("useTheme").then(item =>{
+      if(item==="true"){
+        setDarkApp(true)
+      }else{
+        setDarkApp(false)
+      }
+    })
+    return () => {true}
+  }, [])
+
+  if(loading){
+    return(
+      <View style={{flex:1,backgroundColor:'#3c89ae', justifyContent:'center',alignItems:'center'}} >
+        <StatusBar backgroundColor={'#3c89ae'} />
+        <Text style={{fontFamily:'GoogleSans-Bold', color:'#fff', fontSize:18, paddingBottom:10}} >Lütfen birkaç saniye bekleyin.</Text>
+        <Text style={{fontFamily:'GoogleSans-Regular', color:'#fff', fontSize:16}} >Uygulama güncelleniyor...</Text>
+      </View>
+    )
+  }
+
   return (
     <Provider>
       <StatusBar backgroundColor="#FFF" />
       <SafeAreaProvider>
-        <NavigationContainer>
+        <NavigationContainer theme={appTheme} >
           <RootStack.Navigator initialRouteName="Main">
             <RootStack.Screen name="Main" options={{ headerShown: false }} component={MainStackScreen} />
           </RootStack.Navigator>

@@ -2,6 +2,7 @@ import React from "react"
 import { TouchableOpacity } from "react-native"
 import { Pressable, Text, StyleSheet } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
+import { COLORS } from "../constants/theme";
 
 const BottomButton = ({ onPress, title, containerStyle }) => {
   const insets = useSafeAreaInsets()
@@ -17,13 +18,13 @@ const BottomButton = ({ onPress, title, containerStyle }) => {
 const styles = StyleSheet.create({
   container: {
     paddingVertical: 15,
-    backgroundColor: "#1F2937",
+    backgroundColor:COLORS.primary,
     flexDirection: "row",
     alignItems: "center",
   },
   text: {
     fontFamily:'GoogleSans-Medium',
-    color: "#F3F4F6",
+    color:COLORS.textColor,
     textAlign: "center",
     alignItems: "center",
     flex: 1,

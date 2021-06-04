@@ -8,6 +8,8 @@
 */
 import React, { useState } from "react";
 import {Modal, StyleSheet, Text, Pressable, View } from "react-native";
+import { COLORS } from "../../constants/theme";
+
 //devredisi
 const BooksAdd = ({visible, setVisible}) => {
   const [modalVisible, setModalVisible] = useState(false);

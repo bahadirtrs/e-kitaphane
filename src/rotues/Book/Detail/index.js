@@ -16,8 +16,11 @@ import { useFocusEffect } from '@react-navigation/native';
 import Icon from "react-native-vector-icons/Ionicons"
 import { TouchableOpacity } from "react-native"
 import * as RNIap from 'react-native-iap';
+import { COLORS } from "../../../constants/theme";
+import { useTheme } from "@react-navigation/native"
 
 export default function BookDetailScreen({ navigation, route }) {
+  const {colors}=useTheme()
   const product = route.params.item
   const sharedKey = route.params.sharedKey
   const [token, setToken] = useState(null)
@@ -175,15 +178,15 @@ const setBookStore = async () =>{
   }
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={'#1d3557'}/>
-      <SafeAreaView/>
+      <StatusBar barStyle="light-content" backgroundColor={colors.primary}/>
+      <SafeAreaView backgroundColor={colors.primary} />
       <View style={styles.headerBackButtonContainer} >
             <TouchableOpacity style={{padding:10}} onPress={()=>navigation.goBack()} >
-              <Icon name="chevron-back-outline" size={25} color={"#fff"}/> 
+              <Icon name="chevron-back-outline" size={25} color={colors.textColorLight}/> 
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>Kitap Detayları</Text>
+            <Text style={[styles.headerTitle,{color:colors.textColorLight}]}>Kitap Detayları</Text>
             <TouchableOpacity style={{padding:10}} onPress={null} >
-              <Icon name="ellipsis-horizontal-outline" size={25} color={"#fff"}/> 
+              <Icon name="ellipsis-horizontal-outline" size={25} color={colors.textColorLight}/> 
             </TouchableOpacity>
           </View>
       <ScrollView >
@@ -191,7 +194,7 @@ const setBookStore = async () =>{
         style={styles.imageStyle} 
         source={{uri: BASE_URL + "products/cover/" + product?.cover_image}} 
       />
-        <View style={styles.bookCoverArea}>
+        <View style={[styles.bookCoverArea,{backgroundColor:colors.primary}]}>
           <BookCover 
             sharedKey={sharedKey} 
             id={product.id} 
@@ -203,9 +206,8 @@ const setBookStore = async () =>{
             title={product?.title}
             page_count={product?.page_count}
           />
-        <Text>{id}</Text>
         </View>
-        <View style={styles.bookDetails}>
+        <View style={[styles.bookDetails,{backgroundColor:colors.background}]}>
           <BookInfo
             pdfUrl={pdfUrl}
             pageNumber={isPageNumber}
@@ -255,7 +257,7 @@ const setBookStore = async () =>{
 const styles = StyleSheet.create({
   container:{
     flex: 1,  
-    backgroundColor: "#1d3557" 
+    backgroundColor:COLORS.backgroundDark,
   },
   headerBackButtonContainer:{
     flexDirection:'row',
@@ -274,12 +276,12 @@ const styles = StyleSheet.create({
   },
   bookCoverArea: {
     paddingTop:0,
-    backgroundColor: "#1d3557",
+    backgroundColor:COLORS.backgroundDark,
     opacity:0.85
   },
   bookDetails: {
-    backgroundColor: "#FFF",
-    paddingBottom: 96,
+    backgroundColor:COLORS.backgroundColor,
+    paddingBottom: 100,
     flex: 1,
   },
   readBuyButtonArea: {
@@ -294,6 +296,6 @@ const styles = StyleSheet.create({
     top:0, 
     width:Dimensions.get('screen').width, 
     height:'55%', 
-    backgroundColor:'#000' 
+    backgroundColor:COLORS.backgroundColor,
   },
 })

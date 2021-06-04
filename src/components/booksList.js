@@ -4,8 +4,11 @@ import { ActivityIndicator } from "react-native"
 import { FlatList, StyleSheet, Text, View } from "react-native"
 import RequestManager from "../utils/requestManager"
 import BooksItem from "./booksItem"
+import { COLORS } from "../constants/theme";
+import { useTheme } from "@react-navigation/native"
 
 function BooksList({ sharedKey, title = "", onPress, request, categoryID, columnType }) {
+  const {colors}=useTheme()
   const [fetching, setFetching] = useState(false)
   const [products, setProducts] = useState([])
   const getProducts = useMemo(() => RequestManager(request), [request])
@@ -23,11 +26,11 @@ function BooksList({ sharedKey, title = "", onPress, request, categoryID, column
   }, [getProducts])
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,{backgroundColor:colors.background, borderBottomColor:colors.border}]}>
       <View style={styles.cardTitleView}>
-        <Text style={styles.cardTitle}>{title}</Text>
+        <Text style={[styles.cardTitle, {color:colors.text}]}>{title}</Text>
         {onPress ? (
-          <Text onPress={onPress} style={styles.cardTitleButton}>
+          <Text onPress={onPress} style={[styles.cardTitleButton,{color:colors.text}]}>
             Tümü
           </Text>
         ) : undefined}
@@ -57,9 +60,9 @@ const styles = StyleSheet.create({
     justifyContent:'center',
     alignItems:'flex-start',
     paddingVertical: 5,
-    borderBottomColor:'#88888820',
+    borderBottomColor:COLORS.border,
     borderBottomWidth:1,
-    backgroundColor:'#f1f1f1'
+    backgroundColor:'red'
   },
   cardTitleView: {
     width: "100%",
@@ -69,6 +72,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   cardTitle: {
+    color:COLORS.textColor,
     fontFamily:'GoogleSans-Bold',
     fontSize: 20,
     paddingVertical: 10,
@@ -76,7 +80,7 @@ const styles = StyleSheet.create({
   cardTitleButton: {
     fontSize: 13,
     fontFamily:'GoogleSans-Bold',
-    color: "#555",
+    color:COLORS.textColor
   },
 })
 export default BooksList;

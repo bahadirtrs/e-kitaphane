@@ -5,6 +5,7 @@ import Icon from "react-native-vector-icons/Ionicons"
 import RequestManager from "../utils/requestManager"
 import RNSecureStorage from "rn-secure-storage"
 import {endpoints} from "../utils/constants"
+import { COLORS } from "../constants/theme";
 
 const ReadButton = (data) => {
   const [userInfo, setUserInfo] = useState(false)
@@ -40,16 +41,16 @@ const ReadButton = (data) => {
   if(userInfo){
     return (
       <TouchableOpacity activeOpacity={0.9} style={({ pressed }) => (pressed ? { opacity: 0.9 } : { opacity: 1 })} onPress={data?.bookViewPress}>
-        <View style={[styles.buttonContainer, { backgroundColor: "#2b4768" }]}>
+        <View style={[styles.buttonContainer, { backgroundColor:COLORS.primary }]}>
           <View style={styles.buttonContent}>
             <View style={styles.buttonTextAndIcon}>
-              <Icon name="book" size={24} color="#FFF" />
+              <Icon name="book" size={24} color={COLORS.textColorLight} />
               <Text style={styles.readButtonText}> 
                 {data?.pageAll>0
                   ? data?.pageAll===data?.page 
-                    ? 'Kitabı Tekrar Oku' 
+                    ?'Kitabı Tekrar Oku' 
                     :'Okumaya Devam Et'
-                  : 'Okumaya Başla'
+                  :  'Okumaya Başla'
                 } 
               </Text>
             </View>
@@ -73,12 +74,12 @@ const ReadButton = (data) => {
   }else{
     return (
       <TouchableOpacity activeOpacity={0.9} style={({ pressed }) => (pressed ? { opacity: 0.9 } : { opacity: 1 })} onPress={  data?.closed?null : data?.buyStatus? data?.bookViewPress :data?.onPress}>
-        <View style={[styles.buttonContainer, { backgroundColor: "#2b4768" }]}>
+        <View style={[styles.buttonContainer, { backgroundColor:COLORS.primary }]}>
           <View style={styles.buttonContent}>
             <View style={styles.buttonTextAndIcon}>
               {data.loading
-                ? <ActivityIndicator color='#fff' />
-                : <Icon name={data?.buyStatus?'book':"basket"} size={24} color="#FFF" />
+                ? <ActivityIndicator color={COLORS.textColorLight} />
+                : <Icon name={data?.buyStatus?'book':"basket"} size={24} color={COLORS.textColorLight} />
               }
               <Text style={styles.readButtonText}>{data.text}</Text>
             </View>
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "700",
     fontSize: 16,
-    color: "#ffffff",
+    color:COLORS.textColorLight,
     paddingLeft: 6,
   },
   buyButtonPrice: {
@@ -106,7 +107,7 @@ const styles = StyleSheet.create({
     fontFamily:'GoogleSans-Bold',
     padding: 14,
     fontSize: 18,
-    color: "#FFF",
+    color: COLORS.textColorLight
   },
 
   buttonContainer: {
@@ -114,7 +115,7 @@ const styles = StyleSheet.create({
     width: "100%",
     flex: 1,
     borderRadius: 10,
-    shadowColor: "#000",
+    shadowColor:COLORS.shadow,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -136,7 +137,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontFamily:'GoogleSans-Medium',
     fontSize: 14,
-    color: "#FFF",
+    color:COLORS.textColorLight,
     paddingLeft: 6,
   },
   readButtonCompleteView: {
@@ -150,13 +151,13 @@ const styles = StyleSheet.create({
     textAlign: "right",
     fontFamily:'GoogleSans-Medium',
     fontSize: 16,
-    color: "#FFF",
+    color:COLORS.textColorLight,
     paddingHorizontal:5,
   },
   readButtonCompleteTitle: {
     fontFamily:'GoogleSans-Regular',
     fontSize: 12,
-    color: "#FFF",
+    color:COLORS.textColorLight,
   },
 
   completePercentView: {

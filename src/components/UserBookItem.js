@@ -7,9 +7,12 @@ import { numberFormat } from "../utils/utils"
 import SkeletonPlaceholder from "react-native-skeleton-placeholder"
 import { SharedElement } from "react-navigation-shared-element"
 import { TouchableOpacity } from "react-native"
+import { COLORS } from "../constants/theme"
+import { useTheme } from "@react-navigation/native"
 
 export default function UserBooksItem({ item, sharedKey }) {
   const { push } = useNavigation()
+  const {colors}=useTheme()
   return (
     <TouchableOpacity 
       activeOpacity={0.9} 
@@ -29,18 +32,18 @@ export default function UserBooksItem({ item, sharedKey }) {
         </View>
       </View>
       <View>
-        <View >
-          <Text style={styles.title} numberOfLines={1}>
+        <View>
+          <Text style={[styles.title,{color:colors.text}]} numberOfLines={2}>
             {item?.title}
           </Text>
         </View>
-        <View >
-          <Text style={styles.author} numberOfLines={1}>
+        <View>
+          <Text style={[styles.author,{color:colors.text}]}numberOfLines={1}>
             {item?.author}
           </Text>
         </View>
-        <Text style={styles.price} numberOfLines={1}>
-            {numberFormat(item?.price)} ₺
+          <Text  style={[styles.price,{color:colors.text}]} numberOfLines={1}>
+            {''} {numberFormat(item?.price)} ₺
           </Text>
       </View>
     </TouchableOpacity>
@@ -70,14 +73,14 @@ const styles = StyleSheet.create({
     fontFamily:'GoogleSans-Medium',
     fontSize: 11,
     lineHeight: 13,
-    height:18,
-    color: "#1F2937",
+    height:24,
+    color: COLORS.textColor,
     paddingTop: 5,
   },
   author: {
     fontFamily:'GoogleSans-Regular',
     fontSize: 10,
-    color: "#4B5563",
+    color: COLORS.textColor,
     paddingTop:2
   },
   price: {
@@ -85,10 +88,10 @@ const styles = StyleSheet.create({
     textAlign: "left",
     fontFamily:'GoogleSans-Bold',
     fontSize: 14,
-    color: "#4B5563",
+    color: COLORS.textColor,
   },
   bookImage: {
-    shadowColor: "#000",
+    shadowColor:COLORS.shadow,
     shadowOffset: {
       width: 4,
       height: 4,
@@ -99,7 +102,7 @@ const styles = StyleSheet.create({
   },
   bookCoverImage: {
       borderWidth: 0.5,
-      borderColor: "#8d8d96",
+      borderColor: COLORS.borderColor,
       width:Dimensions.get('screen').width/5,
       height:Dimensions.get('screen').width/5 * bookCoverRatio,
       borderRadius: 8,

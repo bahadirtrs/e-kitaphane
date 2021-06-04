@@ -11,7 +11,8 @@ import Icon from "react-native-vector-icons/Ionicons"
 import { StatusBar } from "react-native"
 import { SafeAreaView } from "react-native"
 import HeaderBackLayout from '../../components/Layout/HeaderBackLayout'
-
+import { COLORS } from "../../constants/theme"
+import { useTheme } from "@react-navigation/native"
 
 export default function SearchScreen({ navigation }) {
   React.useLayoutEffect(() => {
@@ -19,6 +20,7 @@ export default function SearchScreen({ navigation }) {
       headerShown: false,
     })
   }, [navigation])
+  const {colors}=useTheme()
   const [term, setTerm] = useState("")
   const [productsFetching, setProductsFetching] = useState(false)
   const [categoriesFetching, setCategoriesFetching] = useState(false)
@@ -102,11 +104,11 @@ export default function SearchScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <SafeAreaView backgroundColor={'#1d3557'} />
-      <StatusBar backgroundColor='#1d3557' barStyle='light-content' />
-       <View style={{ justifyContent:'center', alignItems:'center', paddingVertical:30,backgroundColor:'#1d3557'}}>
-          <Icon name="search-outline" size={70} color="#ccc" />
-          <Text style={{color:'#fff', fontFamily:'GoogleSans-Medium', fontSize:24, paddingBottom:10}}> Kitap Ara</Text>
+      <SafeAreaView backgroundColor={colors.primary} />
+      <StatusBar backgroundColor={colors.primary}  barStyle='light-content' />
+       <View style={{ justifyContent:'center', alignItems:'center', paddingVertical:30,backgroundColor:COLORS.primary}}>
+          <Icon name="search-outline" size={70} color={colors.textColorLight}  />
+          <Text style={{color:colors.textColorLight, fontFamily:'GoogleSans-Medium', fontSize:24, paddingBottom:10}}> Kitap Ara</Text>
           <SearchBar
             value={term}
             setTermClick={()=>setTerm("")}
@@ -123,6 +125,7 @@ export default function SearchScreen({ navigation }) {
 }
 
 const SearchResults = ({ products, fetching }) => {
+  const {colors}= useTheme()
   if(products.length>0){
     return (
       <FlatList
@@ -141,7 +144,7 @@ const SearchResults = ({ products, fetching }) => {
     return (
       <View style={{flex:1, justifyContent:'flex-start', alignItems:'center', paddingTop:30}} >
         <Icon name="search-sharp" size={60} color="#ccc" />
-        <Text style={{fontFamily:'GoogleSans-Regular', fontSize:16, color:'#333'}} >Kitap veya yazar bulunamadı...</Text>
+        <Text style={{fontFamily:'GoogleSans-Regular', fontSize:16, color:colors.text}} >Kitap veya yazar bulunamadı...</Text>
       </View>
     )
    
@@ -150,15 +153,17 @@ const SearchResults = ({ products, fetching }) => {
 }
 
 const Categories = ({ categories, fetching }) => {
+  const {colors}=useTheme()
   if (fetching) {
     return <PleaseWait title={"Kategoriler yükleniyor..."}/>
   } else {
     return (
       <FlatList
+      style={{backgroundColor:colors.background}}
         keyboardDismissMode="on-drag"
         ListHeaderComponent={
           <View>
-            <Text style={styles.flatListHeaderTitle}>KATEGORİLER</Text>
+            <Text style={[styles.flatListHeaderTitle,{color:colors.text}]}>KATEGORİLER</Text>
           </View>
         }
         keyExtractor={(item, index) => "search-result-item-" + index}
@@ -174,10 +179,10 @@ const Categories = ({ categories, fetching }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFF",
     paddingHorizontal:0
   },
   flatListHeaderTitle: {
+    color:COLORS.textColor,
     padding: 12,
     letterSpacing: 0.3,
     fontFamily:'GoogleSans-Bold',
