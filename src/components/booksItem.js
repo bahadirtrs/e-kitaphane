@@ -32,7 +32,7 @@ export default function BooksItem({ item, sharedKey }) {
       </View>
       <View>
         <View >
-          <Text style={[styles.title,{color:colors.text}]} numberOfLines={2}>
+          <Text style={[styles.title,{color:colors.text}]} numberOfLines={1}>
             {item?.title}
           </Text>
         </View>
@@ -72,15 +72,17 @@ const styles = StyleSheet.create({
     fontFamily:'GoogleSans-Medium',
     fontSize: 15,
     lineHeight: 20,
-    height:45,
     color:COLORS.textColor,
     paddingTop: 5,
+    paddingHorizontal:3
   },
   author: {
     fontFamily:'GoogleSans-Regular',
     fontSize: 13,
     color:COLORS.textColor,
-    paddingTop:2
+    paddingTop:2,
+    paddingHorizontal:3
+
   },
   price: {
     paddingTop: 2,
@@ -88,6 +90,8 @@ const styles = StyleSheet.create({
     fontFamily:'GoogleSans-Bold',
     fontSize: 16,
     color:COLORS.textColor,
+    paddingHorizontal:3
+
   },
   bookImage: {
     shadowColor:COLORS.shadow,

@@ -1,4 +1,4 @@
-import { TouchableOpacity, StyleSheet, Text, View, Dimensions } from "react-native"
+import { TouchableOpacity, StyleSheet, Text, View, Dimensions,Alert } from "react-native"
 import FastImage from "react-native-fast-image"
 import React, {useState} from "react"
 import { useNavigation } from "@react-navigation/native"
@@ -40,12 +40,35 @@ export default function LibraryItem({ item, sharedKey }) {
       })
     }
 
+    const getSizeControl = () =>{
+      if(item?.barcode>50000){
+        Alert.alert(
+          "Yüksek veri uyarısı",`Bu kitabın boyutu ${(item?.barcode/1024).toFixed(2)} MB'dır.  Wİ-Fİ ağına bağlı değilseniz, bağlanmanızı tavsiye ederiz. Kitap cihazınıza yalnızca bir defa indirilecektir.`,
+          [
+            { text: "VAZGEÇ",style: "cancel"},
+            { text: "ŞİMDİ İNDİR", onPress: () => Redirect(), }
+          ]
+        );
+      }else{
+        Redirect()
+      }
+    }
+
+    const Redirect = ()=>{
+      push("Reader", {id: item?.id, type: "preview", preview: 'pdfUrl', title: item?.title })
+    }
+
+
     const { push } = useNavigation()
   return (
     // () => push("Reader", {id: item?.id, type: "preview", preview: 'pdfUrl', title: item?.title });
     // () => push("BookDetail", { sharedKey: sharedKey, item: item , image:item?.cover_image })
     <TouchableOpacity activeOpacity={0.9} style={[styles.container,{backgroundColor:colors.card}]} 
-      onPress={() => push("Reader", {id: item?.id, type: "preview", preview: 'pdfUrl', title: item?.title })}
+      onPress={() => {
+        allPageNumber<2
+          ? getSizeControl()
+          : Redirect()
+      }}
     >
       <View style={styles.bookImage}>
         <View style={styles.bookImageContainer} >
@@ -73,9 +96,11 @@ export default function LibraryItem({ item, sharedKey }) {
      
       <View style={{width:'95%'}} >
         <View style={{paddingVertical:10, paddingHorizontal:3}}>
-          <Text style={[styles.title, {color:colors.text}]} numberOfLines={3}>
+          <Text style={[styles.title, {color:colors.text}]} numberOfLines={1}>
             {item?.title} 
-            <Text style={[styles.pageSummary, {color:colors.text}]}>-{item?.summary}</Text>
+          </Text>
+          <Text numberOfLines={2} style={[styles.pageSummary, {color:colors.text}]}>
+            {item?.summary}
           </Text>
         </View>
         <View style={styles.pageProgramsBar} >

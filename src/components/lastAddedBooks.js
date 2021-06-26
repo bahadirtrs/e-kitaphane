@@ -22,10 +22,12 @@ function LastAddedBooks() {
       url: endpoints.products.path,
       params: {
         order: "id:desc",
+        limit: 5,
       },
       auth: endpoints.products.auth,
       headers: {
         Accept: "application/json",
+       
       },
     })
       .then(res => {

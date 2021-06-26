@@ -22,8 +22,9 @@ import codePush from "react-native-code-push";
 import AsyncStorage from '@react-native-community/async-storage';
 import {COLORSLIGHT, COLORSDARK} from './constants/theme'
 import { EventRegister } from 'react-native-event-listeners'
+import { ActivityIndicator } from "react-native"
 let codePushOptions = { checkFrequency: codePush.CheckFrequency.MANUAL};
-
+//appcenter codepush release-react -a bhdrtrs/ebooks -d Production
 export const iosTransitionSpec = {
   animation: "spring",
   config: {
@@ -82,11 +83,14 @@ const App = () => {
   const appTheme = darkApp ?  COLORSDARK: COLORSLIGHT;
   const [loading, setLoading] = useState(false)
 
+
   useEffect(() => {
     codePush.checkForUpdate()
     .then((update) => {
         if (update) {
-          setLoading(true)
+          setTimeout(() => {
+            setLoading(true)
+          }, 1000);
           onButtonPress()
         } 
       });
@@ -128,17 +132,18 @@ const App = () => {
 
   if(loading){
     return(
-      <View style={{flex:1,backgroundColor:'#3c89ae', justifyContent:'center',alignItems:'center'}} >
-        <StatusBar backgroundColor={'#3c89ae'} />
-        <Text style={{fontFamily:'GoogleSans-Bold', color:'#fff', fontSize:18, paddingBottom:10}} >Lütfen birkaç saniye bekleyin.</Text>
-        <Text style={{fontFamily:'GoogleSans-Regular', color:'#fff', fontSize:16}} >Uygulama güncelleniyor...</Text>
+      <View style={{flex:1,backgroundColor:'#1d3557', justifyContent:'center',alignItems:'center'}}>
+        <StatusBar backgroundColor={'#1d3557'} />
+        <ActivityIndicator size={'large'} />
+        <Text style={{fontFamily:'GoogleSans-Bold', color:'#fff', fontSize:13, padding:10}} >Lütfen birkaç saniye bekleyin.</Text>
+        <Text style={{fontFamily:'GoogleSans-Regular', color:'#fff', fontSize:12}} >Uygulama güncelleniyor</Text>
       </View>
     )
   }
 
   return (
     <Provider>
-      <StatusBar backgroundColor="#FFF" />
+      <StatusBar backgroundColor="#1d3557" />
       <SafeAreaProvider>
         <NavigationContainer theme={appTheme} >
           <RootStack.Navigator initialRouteName="Main">
@@ -149,4 +154,4 @@ const App = () => {
     </Provider>
   )
 }
-export default codePush(App);
+export default codePush(codePushOptions)(App);

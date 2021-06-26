@@ -27,7 +27,7 @@ function BooksList({ sharedKey, title = "", onPress, request, categoryID, column
 
   return (
     <View style={[styles.container,{backgroundColor:colors.background, borderBottomColor:colors.border}]}>
-      <View style={styles.cardTitleView}>
+      <View style={[styles.cardTitleView]}>
         <Text style={[styles.cardTitle, {color:colors.text}]}>{title}</Text>
         {onPress ? (
           <Text onPress={onPress} style={[styles.cardTitleButton,{color:colors.text}]}>
@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+  
   },
   cardTitle: {
     color:COLORS.textColor,

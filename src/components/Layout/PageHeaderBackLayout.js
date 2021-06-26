@@ -5,55 +5,36 @@ import { useFocusEffect } from "@react-navigation/native"
 import AsyncStorage from '@react-native-community/async-storage';
 import { EventRegister } from 'react-native-event-listeners'
 
-export default function PageHeaderBackLayout({butonPress,butonColor,title,backgrounColor,type, pageSave, deleteNumber,pageHorizontal, setPageHorizontalTrue}) {
-    const [darkMode, setDarkMode] = useState(false)
-    useFocusEffect(
-        React.useCallback(() => {
-          AsyncStorage.getItem("useTheme").then(item =>{
-            if(item==="true"){
-              setDarkMode(false)
-            }else{
-              setDarkMode(true)
-            }
-          })
-          return () => {
-            true
-          }
-        }, [])
-      );
-    const themeSelect = (val)=>{
-        setDarkMode(!darkMode)
-        AsyncStorage.setItem("useTheme",String(val)); 
-        EventRegister.emit('useThemeDeg', val)
-    }
+export default function PageHeaderBackLayout({butonPress,butonColor,title,backgrounColor,type, darkMode, pageSave, deleteNumber,pageHorizontal, setPageHorizontalTrue,themeSelect}) {
       
     return (
         <View style={[styles.container,{backgroundColor:backgrounColor}]} >
-            <TouchableOpacity activeOpacity={0.9} style={styles.buttonStyle} onPress={butonPress} >
-                <Icon name="chevron-back-outline" size={25} color={butonColor?butonColor:"#fff" }/> 
-            </TouchableOpacity>
-            <View  style={{maxWidth:'60%'}}>
-                <Text numberOfLines={1} style={[styles.buttonText, {color:butonColor}]}>{title}</Text>
+            <View style={{flexDirection:'row', alignItems:'center', maxWidth:'70%'}} >
+                <TouchableOpacity activeOpacity={0.9} style={styles.buttonStyle} onPress={butonPress} >
+                    <Icon name="chevron-back-outline" size={25} color={butonColor?butonColor:"#fff" }/> 
+                </TouchableOpacity>
+                <View>
+                    <Text numberOfLines={1} style={[styles.buttonText, {color:butonColor}]}>{title}</Text>
+                </View>
             </View>
         { type=='pdf'? 
             <View style={styles.buttonContainer}>
                 {darkMode
                 ?
-                <TouchableOpacity activeOpacity={0.9} style={styles.saveButton} onPress={()=>themeSelect(darkMode)} >
-                <Icon name="moon-outline" size={20} color={butonColor?butonColor:"#fff" }/> 
+                <TouchableOpacity activeOpacity={0.9} style={styles.saveButton} onPress={themeSelect} >
+                  <Icon name="moon-outline" size={22} color={butonColor?butonColor:"#fff" }/> 
                 </TouchableOpacity>
                 :
-                <TouchableOpacity activeOpacity={0.9} style={styles.saveButton} onPress={()=>themeSelect(darkMode)} >
-                <Icon name="moon" size={20} color={butonColor?butonColor:"#fff" }/> 
+                <TouchableOpacity activeOpacity={0.9} style={styles.saveButton} onPress={themeSelect} >
+                  <Icon name="moon" size={22} color={butonColor?butonColor:"#fff" }/> 
                 </TouchableOpacity>
                 }
-               
                {pageHorizontal 
                ?<TouchableOpacity activeOpacity={0.9} style={styles.saveButton} onPress={setPageHorizontalTrue} >
-                    <Icon name="tablet-landscape-outline" size={20} color={butonColor?butonColor:"#fff" }/> 
+                    <Icon name="tablet-landscape-outline" size={22} color={butonColor?butonColor:"#fff" }/> 
                 </TouchableOpacity>
                :<TouchableOpacity activeOpacity={0.9} style={styles.saveButton} onPress={setPageHorizontalTrue} >
-                    <Icon name="tablet-portrait-outline" size={20} color={butonColor?butonColor:"#fff" }/> 
+                    <Icon name="tablet-portrait-outline" size={22} color={butonColor?butonColor:"#fff" }/> 
                 </TouchableOpacity>
                }
                  <TouchableOpacity activeOpacity={0.9} style={styles.saveButton} onPress={deleteNumber} >

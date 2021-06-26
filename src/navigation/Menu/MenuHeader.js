@@ -13,8 +13,8 @@ export default function MenuHeader(props) {
         </TouchableOpacity>  
         <Image style={styles.image}  source={require('../../../assets/books-logo.png')} />
         <Text style={styles.title}>e-kitaphane</Text>
-        <Text style={styles.description} >en sevdiğiniz kitaplar cebinizde</Text>
-        <Text style={styles.description} >sürüm V2.2</Text>
+        <Text style={styles.description}>en sevdiğiniz kitaplar cebinizde</Text>
+        <Text style={styles.description}>sürüm V2.0 BETA</Text>
     </View>
     );
 }
@@ -47,13 +47,13 @@ export default function MenuHeader(props) {
         },
         title:{
             fontFamily:'GoogleSans-Bold', 
-            fontSize:32, 
+            fontSize:24, 
             color:'#fff', 
             paddingTop:5
         },
         description:{
             fontFamily:'GoogleSans-Regular', 
-            fontSize:13, 
+            fontSize:10, 
             color:'#fff', 
             paddingBottom:5
         },

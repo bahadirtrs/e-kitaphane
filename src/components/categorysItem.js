@@ -33,7 +33,7 @@ export default function CategorysItem({ item, sharedKey }) {
       </View>
       <View>
         <View>
-          <Text style={[styles.title,{color:colors.text}]} numberOfLines={2}>
+          <Text style={[styles.title,{color:colors.text}]} numberOfLines={1}>
             {item?.title}
           </Text>
         </View>
@@ -72,17 +72,18 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily:'GoogleSans-Medium',
-    fontSize: 14,
+    fontSize: 15,
     lineHeight: 20,
-    height:45,
     color:COLORS.textColor,
     paddingTop: 5,
+    paddingHorizontal:8
   },
   author: {
     fontFamily:'GoogleSans-Regular',
     fontSize: 13,
     color:COLORS.textColor,
-    paddingTop:2
+    paddingTop:2,
+    paddingHorizontal:8
   },
   price: {
     paddingTop: 2,
@@ -90,6 +91,7 @@ const styles = StyleSheet.create({
     fontFamily:'GoogleSans-Bold',
     fontSize: 18,
     color:COLORS.textColor,
+    paddingHorizontal:8
   },
   bookImage: {
     shadowColor: "#000",

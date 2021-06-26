@@ -101,7 +101,7 @@ const BookInfo = (product) => {
           <Pressable
            style={[styles.summaryButtonView, {borderTopColor:colors.border}]}>
             <Icon name="alert-circle-outline" color={colors.text} size={24} />
-            <Text style={styles.summaryButtonText}>Tanıtım kitabı bulunmamaktadır. </Text>
+            <Text style={[styles.summaryButtonText, {color:colors.text}]}>Tanıtım kitabı bulunmamaktadır. </Text>
           </Pressable>
        :  undefined}
     </View>

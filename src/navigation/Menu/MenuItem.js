@@ -30,7 +30,7 @@ export default function MenuItem(props) {
         },
         menuItem:{
             fontFamily:'GoogleSans-Regular',
-            fontSize:16,
+            fontSize:14,
             paddingHorizontal:0,
             textAlignVertical:'bottom',
             paddingLeft:5

@@ -1,5 +1,5 @@
 import React,{useEffect, useState,useMemo, useCallback} from "react"
-import { Dimensions, ScrollView, StyleSheet, View,StatusBar,Text,Image} from "react-native"
+import { Dimensions, ScrollView, StyleSheet, View,StatusBar,Text,Image,Alert} from "react-native"
 import { BookCover, BookInfo, BookDetails } from "../../../components/book"
 import { ReadButton } from "../../../components/buttons"
 import { numberFormat } from "../../../utils/utils"
@@ -33,12 +33,37 @@ export default function BookDetailScreen({ navigation, route }) {
   const [buyStatus, setBuyStatus] = useState(false)
   const [fetching, setFetching] = useState(false)
   const [closed, setClosed] = useState(false)
-  
-  let id='product'+route.params.item.id; 
+  const [id,setId]=useState('product'+String(route.params.item.id))
   let itemSkus = Platform.select({
     ios: [],
-    android:[id]
+    android:[
+      'product18',
+      'product19',
+      'product20',
+      'product21',
+      'product22',
+      'product23',
+      'product24',
+      'product25',
+      'product26',
+      'product27',
+      'product28',
+      'product29',
+      'product30',
+      'product31',
+      'product32',
+      'product33',
+      'product34',
+      'product35',
+      'product36',
+      'product37',
+      'product37',
+      'product38',
+      'product39',
+      'product40',
+    ]
   });
+
   const [products, setProducts] = useState([])
   const [user, setUser] = useState({name:'Jhon',subscription:undefined})
   const [showads, setShowads] = useState(true);
@@ -159,12 +184,7 @@ const setBookStore = async () =>{
         setBuyButtonText("Kitabı Oku")
         setBuyStatus(true)
         setClosed(false)
-        navigation.navigate("Reader",{
-          id: product?.id, 
-          type: "preview", 
-          preview: pdfUrl, 
-          title: product?.title 
-        });
+        getSizeControl()
       }
       }, 5000);
     }else{
@@ -176,6 +196,31 @@ const setBookStore = async () =>{
     setlogInVisible(false)
     navigation.push('Account')
   }
+
+
+  const getSizeControl = () =>{
+    if(product?.barcode>50000){
+      Alert.alert(
+        "Yüksek veri uyarısı",`Bu kitabın boyutu ${(product?.barcode/1024).toFixed(2)} MB'dır.  Wİ-Fİ ağına bağlı değilseniz, bağlanmanızı tavsiye ederiz. Kitap cihazınıza yalnızca bir defa indirilecektir.`,
+        [
+          { text: "VAZGEÇ",style: "cancel"},
+          { text: "ŞİMDİ İNDİR", onPress: () => Redirect(), }
+        ]
+      );
+    }else{
+      Redirect()
+    }
+  }
+
+  const Redirect = ()=>{
+    navigation.navigate("Reader", {
+      id: product?.id, 
+      type: "preview", 
+      preview: pdfUrl, 
+      title: product?.title 
+    })
+  }
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={colors.primary}/>
@@ -222,7 +267,7 @@ const setBookStore = async () =>{
             pdfData={product?.preview_pdf}
           />
         </View>
-       
+     
         <BottomLogInModal 
           visible={islogInModalVisible}  
           setVisible={()=> setlogInVisible(false)}
@@ -238,17 +283,15 @@ const setBookStore = async () =>{
           pageAll={allPageNumber}
           id={product?.id}
           loading={loading}
+          size={product?.barcode}
           onPress={() => setBookStore()} 
           text={isBuyButtonText}
           price={numberFormat(product?.price) + " TL"} 
-          bookViewPress={
-            () => navigation.navigate("Reader", {
-              id: product?.id, 
-              type: "preview", 
-              preview: pdfUrl, 
-              title: product?.title 
-            })
-          }
+          bookViewPress={()=>{
+            allPageNumber<1
+              ? getSizeControl()
+              : Redirect()
+          }}
         />
       </View>
     </View>

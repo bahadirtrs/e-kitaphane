@@ -36,7 +36,6 @@ export default function HomeScreen({ navigation }){
   const {colors}=useTheme()
   const [categories, setCategories] = useState([])
   const [fetching, setFetching] = useState(true)
-  const [token, setToken] = useState(" ")
   const [menuModal, setMenuModal]=useState(false)
   const [categoryWidth, setCategoryWidth] = useState(90)
   
@@ -48,8 +47,10 @@ export default function HomeScreen({ navigation }){
     }, [])
   );
 
-{  useEffect(() => {
-  //Kategori card boyutunu kategori itemine göre boyutlama
+{  
+  /*
+  useEffect(() => {
+  //Kategori card boyutunu kategori item length ine göre boyutlama
     let width=90;
     switch (categories.length) {
       case 1:
@@ -66,7 +67,9 @@ export default function HomeScreen({ navigation }){
     }
     setCategoryWidth(width)
     return ()=>{true};
-  }, [categories])  }
+  }, [categories]) 
+*/
+}
   
   const getCategories = useMemo(() =>
       RequestManager({
@@ -98,7 +101,8 @@ export default function HomeScreen({ navigation }){
     return <Activator title={'Uygulama başlatılıyor...'} />
   }else{
     return (
-      <><SafeAreaView backgroundColor={COLORS.primary} />
+      <>
+      <SafeAreaView backgroundColor={COLORS.primary} />
         <StatusBar backgroundColor={COLORS.primary}  barStyle="light-content" />
           <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingVertical:5, marginBottom:0, backgroundColor:COLORS.primary}} >
             <TouchableOpacity activeOpacity={0.9} style={{ paddingHorizontal: 12 }} onPress={()=>setMenuModal(!menuModal)}>
@@ -142,13 +146,14 @@ export default function HomeScreen({ navigation }){
                         onPress={() => navigation.push("BookCategories", { title:item.title, item: item })}               
                         style={[styles.categoriesView,{backgroundColor:colors.card, width:categoryWidth}]} >
                       <Icon name={categoriesIcon[index]} size={25} color={colors.text}/>
-                        <Text style={{textAlign:'center', fontSize:12, fontFamily:'GoogleSans-Regular', color:colors.text, padding:5}} >{item.title}</Text>
+                        <Text style={{textAlign:'center', fontSize:12, fontFamily:'GoogleSans-Regular', color:colors.text, padding:5}}>{item.title}</Text>
                       </TouchableOpacity>
                       </>
                     )
                 }}
             />
           </View>
+          
          <BooksList
             categoryID={'2'}
             sharedKey={'one-cikanlar'}
@@ -166,27 +171,23 @@ export default function HomeScreen({ navigation }){
               },
             }}
           />
-        
-         {/*
           <BooksList
             categoryID={'1'}
             sharedKey={'tum-kitaplar'}
             title={'Tüm Kitaplar'}
-            onPress={() => navigation.push("BookCategories",{sharedKey:'Edebiyat',item:categories[2], title:categories[2].title})}               
+            onPress={() => navigation.push("BookCategories",{sharedKey: 'Öne Çıkanlar',item:categories[1], title:categories[1].title})}               
             request={{
               method: endpoints.products.method,
               url: endpoints.productsByCategory.path + "/" + 1,
               auth: endpoints.products.auth,
               params: {
-                limit: 5,
+                limit: 8,
               },
               headers: {
                 Accept: "application/json",
               },
             }}
           />
-          */
-          }
           </ScrollView>
           <NetworkError/>
       </>

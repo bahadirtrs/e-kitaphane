@@ -6,13 +6,15 @@ import PageHeaderBackLayout from '../../../components/Layout/PageHeaderBackLayou
 import RequestManager from "../../../utils/requestManager"
 import RNSecureStorage from "rn-secure-storage";
 import Activator from '../../../components/Indicator/BeingIndicator'
+import { useFocusEffect } from "@react-navigation/native"
 import { StyleSheet,View,Text,FlatList,StatusBar,Alert,Animated } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { BASE_URL,endpoints } from "../../../utils/constants"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { Dimensions } from "react-native"
 import { COLORS } from "../../../constants/theme";
-import { useTheme } from "@react-navigation/native"
+import { useTheme } from "@react-navigation/native";
+import { EventRegister } from 'react-native-event-listeners'
 let pageNumber=0;
 
 function getData(number) {
@@ -25,6 +27,7 @@ function getData(number) {
 }
 export default function ReaderScreen({ navigation, route }) {
   const {colors, dark}=useTheme()
+  const asyncID =route.params.id;
   React.useLayoutEffect(() => {
     navigation.setOptions({headerShown: false})
   }, [navigation])
@@ -33,22 +36,46 @@ export default function ReaderScreen({ navigation, route }) {
     const [savePage, setSavePage] = useState(0)
     const [isEnabled, setIsEnabled] = useState(true);
     const [activity, setActivity] = useState(false)
-    const [isPageControllerHide, setPageControllerHide] = useState(true)
+    const [isPageControllerHide, setPageControllerHide] = useState(false)
     const [isZoomActive, setZoomActive] = useState(false)
     const [pdfUrl, setPdfUrl] = useState("")
     const [fetching, setFetching] = useState(false)
     const [previewBook, setPreviewBook] = useState(false)
     const [containuePage, setContainuePage] = useState(0)
-    const [statusBarColor, setStatusBarColor] = useState('#1d3557')
+    const [statusBarColor, setStatusBarColor] = useState(colors.background)
     const [pageHorizontal, setPageHorizontal] = useState(true)
     const [scale, setScale] = useState(1.5)
     const [res, setRes] = useState('full')
-    const SlideInLeft = useRef(new Animated.Value(0)).current;
+    const [info, setInfo]=useState("Kitap yükleniyor")
+    const SlideInLeft = useRef(new Animated.Value(1)).current;
     // const source = { uri: BASE_URL +"api/show-preview/" + route.params.id, cache: true }
     const source = {uri: dark
       ? (BASE_URL +'products/'+res+'/dark-' + pdfUrl)
       : (BASE_URL +'products/'+res+'/' + pdfUrl), 
       cache:true }
+
+      const [darkMode, setDarkMode] = useState(false)
+      useFocusEffect(
+          React.useCallback(() => {
+            AsyncStorage.getItem("useTheme").then(item =>{
+              if(item==="true"){
+                setDarkMode(false)
+              }else{
+                setDarkMode(true)
+              }
+            })
+            return () => {
+              true
+            }
+          }, [])
+        );
+      const themeSelect = ()=>{
+          setDarkMode(!darkMode)
+          setFetching(false)
+          setContainuePage(Number(numberCurrent));
+          AsyncStorage.setItem("useTheme",String(darkMode)); 
+          EventRegister.emit('useThemeDeg', darkMode)
+      }
    
   const getShowPDF = useMemo(async()=>
   //PDF izin kontrolü
@@ -65,23 +92,25 @@ export default function ReaderScreen({ navigation, route }) {
 
     useEffect(() => {
       if(numberofPages>0){
-        setFetching(false)
         setZoomActive(true)
       }
-      setTimeout(() => {
-        setPageControllerHide(false)
-        fadeIn()
-      }, 3000);
+
+    setTimeout(() => {
+      setInfo("Kitabın yüklenmesi biraz zaman alabilir. Lütfen bekleyiniz")
+    }, 4000); 
+        //fadeIn()
+      
     }, [numberofPages])
     
     useEffect(() => {
       getShowPDF
         .then(res => {
           setPdfUrl(res)
+          setFetching(true)
           setRes('full')
           setPreviewBook(true)
           setTimeout(() => {
-            setFetching(false)
+            //setFetching(false)
           }, 1000)
         })
         .catch(err => {
@@ -89,14 +118,14 @@ export default function ReaderScreen({ navigation, route }) {
           console.log(err)
           setPdfUrl(route.params.pdfData)
           setRes('preview')
-          setPreviewBook(false)
+          //setPreviewBook(false)
         })
     }, [getShowPDF])
 
 
     useEffect(() => {
       // Sayfaya girilince kalınan sayfa kontrolü
-      const pageNum =JSON.stringify(route.params.id)
+      const pageNum =JSON.stringify(asyncID)
       const number = JSON.stringify(numberCurrent)
       AsyncStorage.getItem(pageNum).then(item =>{
         if(item!==null){
@@ -104,7 +133,7 @@ export default function ReaderScreen({ navigation, route }) {
           AsyncStorage.getItem(`${pageNum}+autoSave`).then(item =>{
             if(item!==null){
               if(item==='false'){
-                Contiunie(pageNumber,route.params.id)
+                Contiunie(pageNumber,asyncID)
                 setIsEnabled(false)
               }else if(item==='true'){
                 setIsEnabled(true)
@@ -123,7 +152,7 @@ export default function ReaderScreen({ navigation, route }) {
     },[])
 
     useEffect(() => {
-      const pageNum =JSON.stringify(route.params.id)
+      const pageNum =JSON.stringify(asyncID)
       const allPageNumber = JSON.stringify(numberofPages)
       AsyncStorage.getItem(`${pageNum}+page`).then(item =>{
         if(item!==null){
@@ -137,7 +166,7 @@ export default function ReaderScreen({ navigation, route }) {
 
     useEffect(() => {
       // Otomatik kaydetme... Checkbox değeri değiştiğinde bulunulan sayfayı asyncstronge ye atama
-      const pageNum =JSON.stringify(route.params.id)
+      const pageNum =JSON.stringify(asyncID)
       const number = JSON.stringify(numberCurrent)
       AsyncStorage.setItem(pageNum, number);
         setSavePage(number)
@@ -183,21 +212,21 @@ export default function ReaderScreen({ navigation, route }) {
 
   const NumberOfDelete = async(params,item)=>{
     // Giriş kaldığı sayfadan devam etme
-    const pageNum =JSON.stringify(route.params.id)
+    const pageNum =JSON.stringify(asyncID)
     if(params=='true'){
       setSavePage(item)
       AsyncStorage.setItem(pageNum, item);
       setContainuePage(Number(item))
       setNumberCurrent(Number(item))
     }if(params=='false'){
-      let pageNum =JSON.stringify(route.params.id)
+      let pageNum =JSON.stringify(asyncID)
       await AsyncStorage.removeItem(pageNum);
     }
   }
 
   const StrongeNumberDelete = async()=>{
     // Kaldığı sayfayı AsyncStronge dan temizleme
-    let pageNum =JSON.stringify(route.params.id)
+    let pageNum =JSON.stringify(asyncID)
     Alert.alert(
       "Kaydedilen sayfa siliniyor...",'Kaydettiğiniz sayfa silinecek ve bu kitap 1.sayfadan başlatılacaktır. Bu işlemi geri alamazsınız. Onaylıyor musunuz?',
       [
@@ -240,7 +269,7 @@ export default function ReaderScreen({ navigation, route }) {
 
   const itemTrue = ()=>{
     // Otomatik kayıt etme statusu
-    const pageNum =JSON.stringify(route.params.id)
+    const pageNum =JSON.stringify(asyncID)
     if(isEnabled){
       AsyncStorage.setItem(`${pageNum}+autoSave`, 'false'); 
       setIsEnabled(false)
@@ -254,12 +283,11 @@ export default function ReaderScreen({ navigation, route }) {
 
   const Enable =()=>{
     // otomatik kayıt checkbox statusu
-   
   }
 
   const PageSave =()=>{
     // Kalınan sayfayı manuel kaydetme
-    let pageNum =JSON.stringify(route.params.id)
+    let pageNum =JSON.stringify(asyncID)
     let number = JSON.stringify(numberCurrent)
     if(isEnabled){
       //Otomatik kaydetme açıksa kullanıcıyı uyarma
@@ -301,13 +329,15 @@ export default function ReaderScreen({ navigation, route }) {
             deleteNumber={()=>StrongeNumberDelete()}
             setPageHorizontalTrue={()=>setPageHorizontal(!pageHorizontal)}
             pageHorizontal={pageHorizontal}
+            themeSelect={()=>themeSelect(darkMode)}
+            darkMode={()=>darkMode}
             />  
         </SafeAreaView>
     :null}
      <StatusBar barStyle={statusBarColor=='#f1f1f1'?"light-content" :"dark-content"} backgroundColor={statusBarColor}/>
-     {fetching==11? 
-     <View style={{position:'absolute', zIndex:1, height:Dimensions.get('screen').height, width:Dimensions.get('screen').width, justifyContent:'center',alignItems:'center' }} >
-      <Activator title='Kitap yükleniyor' />
+     {fetching? 
+     <View style={{position:'absolute', zIndex:1, height:Dimensions.get('screen').height, width:Dimensions.get('screen').width, justifyContent:'center',alignItems:'center', paddingBottom:220}} >
+      <Activator title={info} />
      </View>
      :null}
       
@@ -316,38 +346,40 @@ export default function ReaderScreen({ navigation, route }) {
       page={containuePage}
       horizontal={pageHorizontal}
       enablePaging={true}
-      fitWidth={true}
       cache={true}
-      scale={1.1}
+      fitWidth={true}
       onScaleChanged={(scale)=>ZoomActive(scale)}
       style={[
         styles.pdf,{
+          justifyContent:'center',
+          alignItems:'center',
         backgroundColor:colors.background,
-        
-        left:numberofPages>100
-          ?(-Dimensions.get('screen').width/5.8)
+        left:numberofPages>1
+          ?0
           :0,
-        width:numberofPages>0
-          ?Dimensions.get('screen').width*1.7
+        width:numberofPages>1
+          ?Dimensions.get('screen').width
           :Dimensions.get('screen').width,
+   
       }]}
       onPageSingleTap={()=>ScreenClick()}
       onLoadComplete={(numberOfPages, filePath) => {
         setNumberofPages(numberOfPages)
+        setFetching(false)
+
       }}
       onPageChanged={ (page) => {
           scrollToItem(page)
           setNumberCurrent(page)
         if(isEnabled){
-          let pageNum =JSON.stringify(route.params.id)
+          let pageNum =JSON.stringify(asyncID)
           let number = JSON.stringify(page)
           AsyncStorage.setItem(pageNum, number); 
           setSavePage(number)
         }
       }}
     />
-
-      
+    
       <Animated.View style={[styles.numberCurrent, {
         transform: [
           {
@@ -431,10 +463,6 @@ const styles = StyleSheet.create({
     zIndex:4,
   },
   pdf: {
-
-    justifyContent:'center',
-    alignItems:'center',
-   
    flex:9,
     padding: 0,
     margin: 0,

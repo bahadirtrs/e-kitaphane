@@ -44,7 +44,7 @@ export default function AccountScreen({navigation}) {
           //alert(JSON.stringify(userInfo))
           console.log(userInfo)
           UserInfoState(userInfo)
-          isLoginAccount(userInfo)
+           CreateAccount(userInfo)
         } catch (error) {
             
           if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -59,7 +59,7 @@ export default function AccountScreen({navigation}) {
           } else {
             //console.log(error)
           }
-         alert(JSON.stringify(error))
+         alert("Giriş yapılırken bir hata oluştu. Lüften tekrar deneyin.")
         }
       };
 
@@ -71,7 +71,6 @@ export default function AccountScreen({navigation}) {
 
       const CreateAccount = async(userInfo)=>{
       //  setActivity(true) 
-      //Hepböylekal
         try {
           let data = { 
             first_name:userInfo.user.givenName,
@@ -82,18 +81,12 @@ export default function AccountScreen({navigation}) {
           };
           await axios.post(`${BASE_URL+endpoints.register.path}`, data)
             .then(response => console.log(response.data.message));
-            // setActivity(false),
             setInfoColor('#43aa8b')
-            //setWarning('Kaydınız Başarıyla oluşturuldu.')
-            //setTimeout(() => {
-             // isLoginAccount()
-           // }, 400);
         } catch (error) {
-           // setActivity(false),
             if(error.message==='Request failed with status code 422'){
               setTimeout(() => {
                   isLoginAccount(userInfo)
-              }, 500);
+              }, 10);
             }else{
                 setInfoColor('#43aa8b')
                 setWarning(error.message)
@@ -102,8 +95,6 @@ export default function AccountScreen({navigation}) {
       }
 
       const isLoginAccount = async(userInfo)=>{
-       // setActivity(true)
-       //alert('selam')
         try {
           let data = { 
             grant_type: "password",
@@ -120,13 +111,12 @@ export default function AccountScreen({navigation}) {
               setTimeout(() => {
                 //setActivity(false)
                 saveToken(response.data);
-              }, 500); 
+              }, 10); 
             });
         } catch (error) {
           if(error){
-              alert("message"+error)
          // setActivity(false)
-         // setWarning("Giriş yapılamadı. Lütfen bilgilerinizi kontrol ediniz.")
+         setWarning("Giriş yapılamadı. Lütfen bilgilerinizi kontrol ediniz.")
         }
         }
       }
@@ -140,14 +130,14 @@ export default function AccountScreen({navigation}) {
             AsyncStorage.removeItem("token");
           }
             AsyncStorage.setItem('token', access_token);
-            //alert("token kaydedildi")
+            //alert("Token kaydedildi")
         });
-          setWarning('Başarıyla oturum açıldı...')
+          setWarning('Bilgiler kaydediliyor...')
           getUserInfo()
           setTimeout(() => {
            // storeUserInfo()
             setInfoColor('#43aa8b')
-          },500);
+          },10);
       }
 
       const getUserInfo = async () =>{
@@ -163,16 +153,13 @@ export default function AccountScreen({navigation}) {
         setWarning('Kullanıcı Bilgileri getiriliyor')
         setTimeout(() => {
         userListNow(user);
-        }, 500);
+        }, 10);
       }
 
       const userListNow = (user)=>{
         //setFetching(true)
         user
           .then(res => {
-          //  setUserInfo(res)
-          // setTimeout(() => {setFetching(false)}, 200)
-           // setWarning('Bilgiler sisteme ekleniyor')
             setTimeout(() => {  
               storeUserInfo(res.id,res.first_name,res.last_name,res.email)
             }, 500);
@@ -193,7 +180,7 @@ export default function AccountScreen({navigation}) {
             setWarning('Bilgiler sisteme kaydedildi')
             setTimeout(() => {
               navigation.navigate('Anasayfa')
-            }, 500);
+            }, 10);
         } catch (e) {
           throw new Error(e)
         }
@@ -251,14 +238,13 @@ export default function AccountScreen({navigation}) {
                     justifyContent:'space-between', 
                     alignItems:'center' 
                   }}>
-                    <View style={{width:Dimensions.get('screen').width*0.13,height:50, backgroundColor:'#D64836',  justifyContent:'center', alignItems:'center', borderRightWidth:0.5, borderColor:'#D64836',  borderTopLeftRadius:7, borderBottomLeftRadius:7 }} >
+                    <View style={{width:Dimensions.get('screen').width*0.13,height:44, backgroundColor:'#D64836',  justifyContent:'center', alignItems:'center', borderRightWidth:0.5, borderColor:'#D64836',  borderTopLeftRadius:7, borderBottomLeftRadius:7 }} >
                         <Icon name="logo-google" size={30} color={"#fff"}/> 
                     </View>
-                    <View style={{ width: Dimensions.get('screen').width*0.62, height:50,flexDirection:'row', justifyContent:'center', alignItems:'center', borderWidth:1, borderColor:'#D64836', borderTopRightRadius:7,borderBottomRightRadius:7, borderLeftWidth:0,   }} >
-                      <Text style={{fontFamily:'GoogleSans-Medium', color:'#fff'}} >Google ile oturum aç</Text>
+                    <View style={{ width: Dimensions.get('screen').width*0.62, height:44,flexDirection:'row', justifyContent:'center', alignItems:'center', borderWidth:1, borderColor:'#D64836', borderTopRightRadius:7,borderBottomRightRadius:7, borderLeftWidth:0,   }} >
+                      <Text style={{fontFamily:'GoogleSans-Medium', color:'#fff'}}>Google ile oturum aç</Text>
                     </View>
                 </TouchableOpacity>
-             
                 <TouchableOpacity onPress={()=>signInGoogle()} style={{ 
                     marginVertical:5,
                     backgroundColor:'#1B9DEF',
@@ -267,10 +253,10 @@ export default function AccountScreen({navigation}) {
                     width:Dimensions.get('screen').width*0.75,
                     flexDirection:'row', justifyContent:'space-between', alignItems:'center' }} >
                         
-                    <View style={{width:Dimensions.get('screen').width*0.13,height:50, backgroundColor:'#1B9DEF',  justifyContent:'center', alignItems:'center', borderRightWidth:0.5, borderColor:'#1B9DEF',  borderTopLeftRadius:7, borderBottomLeftRadius:7 }} >
+                    <View style={{width:Dimensions.get('screen').width*0.13,height:44, backgroundColor:'#1B9DEF',  justifyContent:'center', alignItems:'center', borderRightWidth:0.5, borderColor:'#1B9DEF',  borderTopLeftRadius:7, borderBottomLeftRadius:7 }} >
                     <Icon name="logo-apple-appstore" size={30} color={"#fff"}/> 
                     </View>
-                    <View style={{ width: Dimensions.get('screen').width*0.62, height:50,flexDirection:'row', justifyContent:'center', alignItems:'center', borderWidth:1, borderColor:'#1B9DEF', borderTopRightRadius:7,borderBottomRightRadius:7, borderLeftWidth:0,   }} >
+                    <View style={{ width: Dimensions.get('screen').width*0.62, height:44,flexDirection:'row', justifyContent:'center', alignItems:'center', borderWidth:1, borderColor:'#1B9DEF', borderTopRightRadius:7,borderBottomRightRadius:7, borderLeftWidth:0,   }} >
                     <Text style={{fontFamily:'GoogleSans-Medium', color:'#fff'}}>Apple ID ile oturum aç</Text>
                     </View>
                 </TouchableOpacity>

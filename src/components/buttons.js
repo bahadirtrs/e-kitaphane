@@ -38,6 +38,7 @@ const ReadButton = (data) => {
       .catch(err => {console.log(err),setUserInfo(false)})
   }, [getCategories])
   
+  
   if(userInfo){
     return (
       <TouchableOpacity activeOpacity={0.9} style={({ pressed }) => (pressed ? { opacity: 0.9 } : { opacity: 1 })} onPress={data?.bookViewPress}>
