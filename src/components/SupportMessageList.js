@@ -5,7 +5,6 @@ import { useTheme } from "@react-navigation/native"
 import { COLORS } from "../constants/theme"
 import moment from 'moment'
 import 'moment/locale/tr'
-import { color } from 'react-native-reanimated'
 moment.locale('tr')
 
 export default function SupportMessageList({item, onPress}) {

@@ -15,6 +15,8 @@ import { Dimensions } from "react-native"
 import { COLORS } from "../../../constants/theme";
 import { useTheme } from "@react-navigation/native";
 import { EventRegister } from 'react-native-event-listeners'
+import { BookCoverLoading } from "../../../components/book"
+import BookDownload from '../../../components/BookDownload'
 let pageNumber=0;
 
 function getData(number) {
@@ -28,6 +30,7 @@ function getData(number) {
 export default function ReaderScreen({ navigation, route }) {
   const {colors, dark}=useTheme()
   const asyncID =route.params.id;
+  const size= route.params.size
   React.useLayoutEffect(() => {
     navigation.setOptions({headerShown: false})
   }, [navigation])
@@ -46,15 +49,38 @@ export default function ReaderScreen({ navigation, route }) {
     const [pageHorizontal, setPageHorizontal] = useState(true)
     const [scale, setScale] = useState(1.5)
     const [res, setRes] = useState('full')
-    const [info, setInfo]=useState("Kitap yükleniyor")
+    const [info, setInfo]=useState("Kitap indiriliyor. Bu biraz zaman alabilir. Lütfen bekleyin.")
     const SlideInLeft = useRef(new Animated.Value(1)).current;
-    // const source = { uri: BASE_URL +"api/show-preview/" + route.params.id, cache: true }
-    const source = {uri: dark
-      ? (BASE_URL +'products/'+res+'/dark-' + pdfUrl)
-      : (BASE_URL +'products/'+res+'/' + pdfUrl), 
+    const [darkMode, setDarkMode] = useState(false)
+    const [yukleme, setYukleme] =useState(0)
+ // const source = { uri: BASE_URL +"api/show-preview/" + route.params.id, cache: true }
+    const source = {uri:dark && yukleme>0.1
+      ? (BASE_URL +'products/'+ res + '/dark-' + pdfUrl) // (BASE_URL +'products/'+res+'/dark-'+pdfUrl)
+      : (BASE_URL +'products/'+ res + '/' + pdfUrl), 
       cache:true }
 
-      const [darkMode, setDarkMode] = useState(false)
+
+      useEffect(() => {
+        getShowPDF
+          .then(res => {
+            setPdfUrl(res)
+            setFetching(true)
+            setRes('full')
+            setPreviewBook(true)
+            setTimeout(() => {
+              //setFetching(false)
+            }, 1000)
+          })
+          .catch(err => {
+            setFetching(true)
+            console.log(err)
+            setPdfUrl(route.params.pdfData)
+            setRes('preview')
+            //setPreviewBook(false)
+          })
+      }, [getShowPDF])
+
+
       useFocusEffect(
           React.useCallback(() => {
             AsyncStorage.getItem("useTheme").then(item =>{
@@ -64,21 +90,20 @@ export default function ReaderScreen({ navigation, route }) {
                 setDarkMode(true)
               }
             })
-            return () => {
-              true
-            }
-          }, [])
+            return () => {true}
+          },[])
         );
-      const themeSelect = ()=>{
-          setDarkMode(!darkMode)
-          setFetching(false)
-          setContainuePage(Number(numberCurrent));
-          AsyncStorage.setItem("useTheme",String(darkMode)); 
-          EventRegister.emit('useThemeDeg', darkMode)
-      }
+
+    const themeSelect = ()=>{
+      setDarkMode(!darkMode)
+      setFetching(false)
+      setContainuePage(Number(numberCurrent));
+      AsyncStorage.setItem("useTheme",String(darkMode)); 
+      EventRegister.emit('useThemeDeg', darkMode)
+    }
    
   const getShowPDF = useMemo(async()=>
-  //PDF izin kontrolü
+    //PDF izin kontrolü
     RequestManager({
       method: endpoints.showPDF.method,
       url: endpoints.showPDF.path +'/' +route.params.id,
@@ -90,38 +115,40 @@ export default function ReaderScreen({ navigation, route }) {
     }),
   [],)
 
-    useEffect(() => {
-      if(numberofPages>0){
-        setZoomActive(true)
-      }
+  useEffect(() => {
+    if(numberofPages>0){
+      setZoomActive(true)
+    }
+  }, [numberofPages])
 
-    setTimeout(() => {
-      setInfo("Kitabın yüklenmesi biraz zaman alabilir. Lütfen bekleyiniz")
-    }, 4000); 
-        //fadeIn()
-      
-    }, [numberofPages])
+  useEffect(() => {
+    if(yukleme>0.1){
+      setInfo("Ekranı sağa ve sola kaydırarak  sayfalar arasında kolaylıkla geçiş yapabilirsiniz.")
+    }
+    if(yukleme>0.30){
+      setInfo("İndirme işlemi devam ediyor. Lütfen sayfadan ayrılmayınız.")
+    }
+    if(yukleme>0.33){
+      setInfo("Kitap içerisinde iki parmağınızı kullanarak yakınlaşıp uzaklaşabilirsiniz.") 
+    }
+    if(yukleme>0.46){
+      setInfo("Kitap içerisinde kaldığınız sayfalar otomatik olarak kaydedilir.")
+    }
+    if(yukleme>0.57){
+      setInfo("İndirme işlemi devam ediyor. Lütfen sayfadan ayrılmayınız.")
+    }
+    if(yukleme>0.6){
+      setInfo("Kitabınızı ister dikey isterseniz yatay modda okuyabilirsiniz.")
+    }
+    if(yukleme>0.7){
+      setInfo("Uygulama hakkında öneri ve sorularınızı destek sayfasından bize iletebilirsiniz.")
+    }
+    if(yukleme>0.9){
+      setInfo("Kitap yükleme işlemi neredeyse bitti. Keyifli okumalar dileriz.")
+    }
+  }, [yukleme])
     
-    useEffect(() => {
-      getShowPDF
-        .then(res => {
-          setPdfUrl(res)
-          setFetching(true)
-          setRes('full')
-          setPreviewBook(true)
-          setTimeout(() => {
-            //setFetching(false)
-          }, 1000)
-        })
-        .catch(err => {
-          setFetching(true)
-          console.log(err)
-          setPdfUrl(route.params.pdfData)
-          setRes('preview')
-          //setPreviewBook(false)
-        })
-    }, [getShowPDF])
-
+ 
 
     useEffect(() => {
       // Sayfaya girilince kalınan sayfa kontrolü
@@ -148,7 +175,6 @@ export default function ReaderScreen({ navigation, route }) {
           setSavePage(number)
         }
       })  
-
     },[])
 
     useEffect(() => {
@@ -334,12 +360,19 @@ export default function ReaderScreen({ navigation, route }) {
             />  
         </SafeAreaView>
     :null}
-     <StatusBar barStyle={statusBarColor=='#f1f1f1'?"light-content" :"dark-content"} backgroundColor={statusBarColor}/>
-     {fetching? 
-     <View style={{position:'absolute', zIndex:1, height:Dimensions.get('screen').height, width:Dimensions.get('screen').width, justifyContent:'center',alignItems:'center', paddingBottom:220}} >
-      <Activator title={info} />
-     </View>
-     :null}
+    {fetching
+    ?<BookDownload
+      sharedKey={'sharedKey'} 
+      id={route.params.id} 
+      imageURI={route.params?.image} 
+      yukleme={yukleme}
+      title={route.params.title}
+      id={route.params.id}
+      author={route.params.author}
+      size={size}
+      info={info}
+      />
+    :null}
       
     <Pdf
       source={source}
@@ -348,7 +381,9 @@ export default function ReaderScreen({ navigation, route }) {
       enablePaging={true}
       cache={true}
       fitWidth={true}
+      onLoadProgress={(percent)=>setYukleme(percent)}
       onScaleChanged={(scale)=>ZoomActive(scale)}
+      activityIndicatorProps={{color:colors.backgroundColor, progressTintColor:colors.backgroundColor}}
       style={[
         styles.pdf,{
           justifyContent:'center',

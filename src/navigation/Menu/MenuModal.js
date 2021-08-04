@@ -1,5 +1,5 @@
 import React, {useState, useEffect,useCallback} from "react";
-import {Modal,StyleSheet,View,Text,TouchableOpacity, Dimensions, Switch} from "react-native";
+import {Modal,StyleSheet,View,Text,TouchableOpacity, Dimensions, Switch, Pressable} from "react-native";
 import MenuItem from './MenuItem';
 import SocialItem from './SocialItem';
 import MenuHeader from './MenuHeader';
@@ -8,13 +8,17 @@ import { useTheme } from "@react-navigation/native"
 import { EventRegister } from 'react-native-event-listeners'
 import AsyncStorage from '@react-native-community/async-storage';
 import { useFocusEffect } from "@react-navigation/native"
+import {useNavigation} from '@react-navigation/native'
+import Icon from "react-native-vector-icons/Ionicons"
 const { width, height } = Dimensions.get('window');
 const instagramUrl = "https://www.instagram.com/bir.hikayem/?hl=tr";
 
 const MenuModal = (props) => {
   const {colors}=useTheme()
   const [darkMode, setDarkMode] = useState(false)
-
+  const [modalVisible,setModalVisible]= useState(false)
+  const [click, setClick]=useState(false)
+  const navigation=useNavigation();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -31,44 +35,71 @@ const MenuModal = (props) => {
     }, [])
   );
 
+  const isMembership = () =>{
+    navigation.navigate('UyelikSozlesmesi'),
+    setModalVisible(false);
+  }
+
+  const isConfidentialty = () =>{
+    navigation.navigate('GizlilikSozlesmesi'),
+    setModalVisible(false);
+  }
+
+  const isContact= () =>{
+    navigation.navigate('İletisim'),
+    setModalVisible(false);
+  }
+
+  const isAppAbout = () =>{
+    navigation.navigate('UygulamaHakkında'),
+    setModalVisible(false);
+  }
+
   return (
     <>
-      <Modal animationType="fade" transparent={true} visible={props.menuModal}>
+      <Modal animationType="fade" transparent={true} visible={modalVisible}>
       <SafeAreaView/>
-        <TouchableOpacity activeOpacity={1} onPress={props.modalPress}  style={styles.centeredView}>
+        <TouchableOpacity activeOpacity={1} onPress={()=>setModalVisible(!modalVisible)}  style={styles.centeredView}>
          <TouchableOpacity activeOpacity={1} style={[styles.modalView, {backgroundColor:colors.background}]}>     
-            <View style={{flexDirection:'column', justifyContent:'space-between', height:Dimensions.get('screen').height-100}} >
+            <View style={styles.menuItemContainer} >
              <View>
-                <MenuHeader modalPress={props.modalPress} />
+                <MenuHeader modalPress={()=>setModalVisible(!modalVisible)} />
                 <View>
-                    <MenuItem text={'İletişim'} butonPress={props.menuThreePress} icon={'users-cog'}/>
-                    <MenuItem text={'Gizlilik sözleşmesi'} butonPress={props.menuOnePress} icon={'save'}/>
-                    <MenuItem text={'Kullanıcı Sözleşmesi'} butonPress={props.menuTwoPress} icon={'clock'}/>
-                    <MenuItem text={'Uygulama Hakkında'} butonPress={props.menuFourPress} icon={'eject'}/>
+                    <MenuItem text={'Uygulama Hakkında'} butonPress={()=>isAppAbout()} icon={'info-circle'}/>
+                    <MenuItem text={'Kullanıcı Sözleşmesi'} butonPress={()=>isMembership()} icon={'file'}/>
+                    <MenuItem text={'Kişisel Verilerin Korunumu'} butonPress={()=>isConfidentialty()} icon={'user-shield'}/>
+                    <MenuItem text={'İletişim'} butonPress={()=>isContact()} icon={'address-book'}/>
+
                 </View>
                 <View style={styles.SocialContainer} >
                    <SocialItem url={null} icon={'facebook'}/>
                    <SocialItem url={null} icon={'twitter'}/>
-                   <SocialItem url={instagramUrl} icon={'instagram'} />
+                   <SocialItem url={null} icon={'instagram'} />
                    <SocialItem url={null}  icon={'whatsapp'}/>
                 </View>  
             </View>    
             <View>
-            <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingHorizontal:30, paddingVertical:10}} >
-              <Text style={{fontFamily:'GoogleSans-Regular', fontSize:16, color:colors.text}} >Karanlık Mod {darkMode?'(Açık)': '(Kapalı)'} </Text> 
+            <View style={styles.themeSelectContainer} >
+              <Text style={[styles.themeText, {color:colors.text}]}>Karanlık Mod {darkMode?'(Açık)': '(Kapalı)'} </Text> 
               <Switch 
                 trackColor={{ false:colors.primary, true:'#40916c'}}
                 value={darkMode} onValueChange={(val)=>{
                     setDarkMode(!darkMode)
                     AsyncStorage.setItem("useTheme",String(val)); 
                     EventRegister.emit('useThemeDeg', val)
-                  }}  />
+                  }}  
+              />
               </View>
             </View>
             </View>
          </TouchableOpacity>
        </TouchableOpacity>      
       </Modal>
+
+      <Pressable style={styles.button}onPress={() => setModalVisible(true)}>
+        <Icon name="menu-outline" size={32} color={'#fff'} />
+      </Pressable>
+
       </>
   );
 };
@@ -95,7 +126,28 @@ const styles = StyleSheet.create({
       justifyContent:'center', 
       alignItems:'center', 
       paddingVertical:20
-  }
+  },
+  button:{
+    paddingHorizontal:10
+  },
+  menuItemContainer:{
+    flexDirection:'column', 
+    justifyContent:'space-between', 
+    height:Dimensions.get('screen').height-100
+  },
+  themeSelectContainer:{
+    flexDirection:'row', 
+    justifyContent:'space-between', 
+    alignItems:'center', 
+    paddingHorizontal:30, 
+    paddingVertical:10
+  },
+  themeText:{
+    fontFamily:'GoogleSans-Regular', 
+    fontSize:16, 
+   
+  },
 });
+
 
 export default MenuModal;

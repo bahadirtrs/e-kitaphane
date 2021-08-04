@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import { View, StyleSheet, Text,TouchableOpacity ,Dimensions,StatusBar,SafeAreaView } from 'react-native'
+import { View, StyleSheet, Text,TouchableOpacity ,Dimensions,StatusBar,SafeAreaView,Alert} from 'react-native'
 import TextButton from '../../components/Button/TextButton'
 import AccountLayout from '../../components/Layout/AccountLayout'
 import HeaderBackLayout from '../../components/Layout/HeaderBackLayout'
@@ -15,6 +15,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {BASE_URL,endpoints, CLIENT_ID, CLIENT_SECRET} from "../../utils/constants"
 import {GoogleSignin, statusCodes} from '@react-native-google-signin/google-signin';
 import {COLORS} from '../../constants/theme'
+import { useTheme } from "@react-navigation/native"
 
 GoogleSignin.configure({
   webClientId: '327239986721-1cmas50va13i5oj031jpfcvcne5fi50i.apps.googleusercontent.com',
@@ -23,11 +24,13 @@ GoogleSignin.configure({
 });
 
 export default function AccountScreen({navigation}) {
+    const {colors}=useTheme()
     const [token, setToken] = useState(" ")
     const [helpVisible, setHelpVisible] = useState(false)
     const [googleUserInfo, setGoogleUserInfo] = useState([])
     const [warning, setWarning] = useState("")
     const [infoColor, setInfoColor] = useState('#43aa8b')
+    const [click, setclick] = useState(false)
 
     React.useLayoutEffect(() => {
         Token()
@@ -37,6 +40,8 @@ export default function AccountScreen({navigation}) {
     }, [navigation])
 
     const signInGoogle = async () => {
+      if(click){
+        
         try {
           await GoogleSignin.hasPlayServices();
           const userInfo = await GoogleSignin.signIn();
@@ -61,6 +66,12 @@ export default function AccountScreen({navigation}) {
           }
          alert("Giriş yapılırken bir hata oluştu. Lüften tekrar deneyin.")
         }
+
+      }else{
+        Alert.alert("Uyarı!","Lütfen sözleşmeleri okuyun ve kabul edin.")
+      }
+
+        
       };
 
       const UserInfoState =async(userInfo)=>{
@@ -228,33 +239,28 @@ export default function AccountScreen({navigation}) {
                   <WelcomeLogoLayout/>               
                 </View>
                 <View style={styles.buttonContainer} >
-                <TouchableOpacity onPress={()=>signInGoogle()} style={{ 
-                    marginVertical:5,
-                    backgroundColor:'#D64836', 
-                    borderRadius:7,
-                    borderColor:COLORS.borderColor,
-                    width:Dimensions.get('screen').width*0.75,
-                    flexDirection:'row', 
-                    justifyContent:'space-between', 
-                    alignItems:'center' 
-                  }}>
-                    <View style={{width:Dimensions.get('screen').width*0.13,height:44, backgroundColor:'#D64836',  justifyContent:'center', alignItems:'center', borderRightWidth:0.5, borderColor:'#D64836',  borderTopLeftRadius:7, borderBottomLeftRadius:7 }} >
-                        <Icon name="logo-google" size={30} color={"#fff"}/> 
-                    </View>
-                    <View style={{ width: Dimensions.get('screen').width*0.62, height:44,flexDirection:'row', justifyContent:'center', alignItems:'center', borderWidth:1, borderColor:'#D64836', borderTopRightRadius:7,borderBottomRightRadius:7, borderLeftWidth:0,   }} >
-                      <Text style={{fontFamily:'GoogleSans-Medium', color:'#fff'}}>Google ile oturum aç</Text>
-                    </View>
-                </TouchableOpacity>
+                <View style={{width:Dimensions.get('screen').width*0.75, paddingVertical:20, flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
+                    <TouchableOpacity onPress={()=>setclick(!click)} >
+                      <Icon name={click?"checkbox-outline":"square-outline"} size={28} color={colors.text}/> 
+                    </TouchableOpacity>
+                      <Text numberOfLines={2} style={{fontSize:12, color:colors.text, fontFamily:'GoogleSans-Regular', paddingLeft:1, width:(Dimensions.get('screen').width*0.75)-28, }}>
+                        <Text onPress={()=>navigation.push("UyelikSozlesmesi")} style={{fontFamily:'GoogleSans-Medium'}} >Kullanıcı Sözleşmesini </Text>
+                        ve 
+                        <Text onPress={()=>navigation.push("GizlilikSozlesmesi")} style={{fontFamily:'GoogleSans-Medium'}} > Gizlilik Sözleşmesini </Text>
+                        okudum ve şartları kabul ediyorum.
+                      </Text>
+                  </View>
+
+             
                 <TouchableOpacity onPress={()=>signInGoogle()} style={{ 
                     marginVertical:5,
                     backgroundColor:'#1B9DEF',
                     borderRadius:7,
                     borderColor:'#ccc',
                     width:Dimensions.get('screen').width*0.75,
-                    flexDirection:'row', justifyContent:'space-between', alignItems:'center' }} >
-                        
+                    flexDirection:'row', justifyContent:'space-between', alignItems:'center' }} >  
                     <View style={{width:Dimensions.get('screen').width*0.13,height:44, backgroundColor:'#1B9DEF',  justifyContent:'center', alignItems:'center', borderRightWidth:0.5, borderColor:'#1B9DEF',  borderTopLeftRadius:7, borderBottomLeftRadius:7 }} >
-                    <Icon name="logo-apple-appstore" size={30} color={"#fff"}/> 
+                       <Icon name="logo-apple-appstore" size={30} color={"#fff"}/> 
                     </View>
                     <View style={{ width: Dimensions.get('screen').width*0.62, height:44,flexDirection:'row', justifyContent:'center', alignItems:'center', borderWidth:1, borderColor:'#1B9DEF', borderTopRightRadius:7,borderBottomRightRadius:7, borderLeftWidth:0,   }} >
                     <Text style={{fontFamily:'GoogleSans-Medium', color:'#fff'}}>Apple ID ile oturum aç</Text>
@@ -308,7 +314,7 @@ const styles = StyleSheet.create({
         flex:2, 
         marginBottom:50, 
         justifyContent:'center', 
-        alignItems:'center'
+        alignItems:'center',
     },
     activityContainer:{
       zIndex:1, 

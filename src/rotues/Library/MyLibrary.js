@@ -29,7 +29,6 @@ export default function UserInfo({navigation}) {
     }, [])
   );
 
-
   const Token = async() =>{
     try {
       await RNSecureStorage.get("access_token").then((value) => {
@@ -72,7 +71,6 @@ export default function UserInfo({navigation}) {
     setUserInfo(ownedBooks) 
   }
 
-
   const SearchFilter = (text)=>{
     const newData = userInfo.filter( item =>{
     const ListItem = `${item.title.toLowerCase()}`;
@@ -94,8 +92,6 @@ export default function UserInfo({navigation}) {
     }
   },[term])
 
-
-
   const HeaderComponent = ()=>{
     return(
       <View style={{paddingHorizontal:13, paddingTop:15}} >
@@ -103,9 +99,8 @@ export default function UserInfo({navigation}) {
       </View>
     )
   }
-
-    return (
-    <ScrollView style={{ flex:1,padding:0, backgroundColor:colors.background}} >
+  return (
+    <ScrollView style={{flex:1,backgroundColor:colors.background}} >
       {fetching
         ? <View style={{ zIndex:1, height:Dimensions.get('screen').height, width:Dimensions.get('screen').width, justifyContent:'center',alignItems:'center', position:'absolute'}} >
             <BeingIndicator title={'Yenileniyor'} />
@@ -121,7 +116,7 @@ export default function UserInfo({navigation}) {
           value={term}
           setTermClick={()=>setTerm("")}
           onChangeText={term => {setTerm(term)}}
-          title={'Yazarlar veya kitaplar arasında ara'}
+          title={'Kütüphanede ara'}
         />
        </View>
       {term?.length  > 2 && token ? <SearchResults fetching={false} products={filterData} /> : undefined}
@@ -182,7 +177,7 @@ const SearchResults = ({ products, fetching }) => {
   const HeaderComponent = ()=>{
     return(
      <View style={{paddingHorizontal:13, paddingTop:15}} >
-       <Text style={{fontFamily:'GoogleSans-Medium', fontSize:22, color:colors.text}} >Arama Sonuçları</Text>
+       <Text style={{fontFamily:'GoogleSans-Medium', fontSize:22, color:colors.text}}>Arama Sonuçları</Text>
      </View>
     )
   }

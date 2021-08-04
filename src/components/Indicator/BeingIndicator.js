@@ -17,8 +17,8 @@ const styles = StyleSheet.create({
         backgroundColor:'#00000090', 
         justifyContent:'center',
         alignItems:'center', 
-        width:140, 
-        height:120,
+        width:180, 
+        height:130,
         borderRadius:8,
         shadowColor: "#000",
       shadowOffset: {
@@ -28,10 +28,11 @@ const styles = StyleSheet.create({
       shadowOpacity: 0.1,
       shadowRadius: 2,
       elevation: 0,
+      marginBottom:20
     },
     title:{
         textAlign:'center',
-        paddingTop:10,
+        paddingTop:5,
         fontSize:12,
         fontFamily:'GoogleSans-Regular',
         color:'#fff'

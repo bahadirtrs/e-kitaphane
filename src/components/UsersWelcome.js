@@ -2,14 +2,16 @@ import React from 'react'
 import { View, Text,Image,TouchableOpacity,Dimensions,StyleSheet } from 'react-native'
 import Icon from "react-native-vector-icons/Ionicons"
 import { COLORS } from '../constants/theme'
+import { useTheme } from "@react-navigation/native"
 
 export default function UsersWelcome({warning, infoColor, setWarning, text}) {
+  const {colors}=useTheme()
     return (
         <View style={styles.container} >
           { text
             ? <View style={{justifyContent:'center', alignItems:'center'}} >
             <Image  style={styles.imageStyle} source={require('../../assets/logom-sm.png')} />
-            <Text style={[styles.welcomeTextDescription]}>
+            <Text style={[styles.welcomeTextDescription, {color:colors.text}]}>
               {text}
             </Text>  
           </View>

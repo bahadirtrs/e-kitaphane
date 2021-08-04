@@ -2,14 +2,16 @@ import React from 'react'
 import { View, TextInput,StyleSheet,Dimensions,TouchableOpacity } from 'react-native'
 import Icon from "react-native-vector-icons/Ionicons"
 import { COLORS } from '../constants/theme'
+import { useTheme } from "@react-navigation/native"
 
 export default function TwoInputText({value,onChangeText,placeholder,valueTwo,onChangeTextTwo,placeholderTwo}) {
+  const {colors}=useTheme()
     return (
         <View style={{width:'90%', flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
           <TextInput
-            style={[styles.textInput, {fontSize:13, width:'46%', borderTopLeftRadius:8}]}
+            style={[styles.textInput, {fontSize:13, width:'46%', borderTopLeftRadius:8,color:colors.text, borderColor:colors.border, backgroundColor:colors.background}]}
             placeholder={placeholder}
-            placeholderTextColor={COLORS.textColor}
+            placeholderTextColor={colors.text}
             value={value}
             onChangeText={onChangeText}
             textAlignVertical='auto'
@@ -17,9 +19,9 @@ export default function TwoInputText({value,onChangeText,placeholder,valueTwo,on
             autoCapitalize={'words'}
           />
           <TextInput
-            style={[styles.textInput, {fontSize:13,width:'47%', borderTopRightRadius:8}]}
+            style={[styles.textInput, {fontSize:13,width:'47%', borderTopRightRadius:8,borderColor:colors.border, color:colors.text, backgroundColor:colors.background}]}
             placeholder={placeholderTwo}
-            placeholderTextColor={COLORS.textColor}
+            placeholderTextColor={colors.text}
             value={valueTwo}
             onChangeText={onChangeTextTwo}
             textAlignVertical='auto'

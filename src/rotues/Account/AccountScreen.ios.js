@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import { View, StyleSheet, Text,TouchableOpacity ,Dimensions,StatusBar,SafeAreaView } from 'react-native'
+import { View, StyleSheet, Text,TouchableOpacity ,Dimensions,StatusBar,SafeAreaView,Alert } from 'react-native'
 import TextButton from '../../components/Button/TextButton'
 import AccountLayout from '../../components/Layout/AccountLayout'
 import HeaderBackLayout from '../../components/Layout/HeaderBackLayout'
@@ -23,6 +23,7 @@ export default function AccountScreen({navigation}) {
     const [googleUserInfo, setGoogleUserInfo] = useState([])
     const [warning, setWarning] = useState("")
     const [infoColor, setInfoColor] = useState('#43aa8b')
+    const [click, setclick] = useState(false)
 
     React.useLayoutEffect(() => {
         Token()
@@ -32,7 +33,11 @@ export default function AccountScreen({navigation}) {
     }, [navigation])
 
     const signInGoogle = async () => {
-       
+       if(true){
+        Alert.alert("Merhaba!","Giriş başarıyla yapılacak")
+       }else{
+        Alert.alert("Uyarı!","Lütfen sözleşmeleri okuyun ve kabul edin.")
+       }
       };
 
       const UserInfoState =async(userInfo)=>{
@@ -212,24 +217,19 @@ export default function AccountScreen({navigation}) {
                 <View style={styles.welcomeContainer} >
                   <WelcomeLogoLayout/>               
                 </View>
+                
                 <View style={styles.buttonContainer} >
-                <TouchableOpacity onPress={()=>signInGoogle()} style={{ 
-                    marginVertical:5,
-                    backgroundColor:'#D64836', 
-                    borderRadius:7,
-                    borderColor:COLORS.borderColor,
-                    width:Dimensions.get('screen').width*0.75,
-                    flexDirection:'row', 
-                    justifyContent:'space-between', 
-                    alignItems:'center' 
-                  }}>
-                    <View style={{width:Dimensions.get('screen').width*0.13,height:44, backgroundColor:'#D64836',  justifyContent:'center', alignItems:'center', borderRightWidth:0.5, borderColor:'#D64836',  borderTopLeftRadius:7, borderBottomLeftRadius:7 }} >
-                        <Icon name="logo-google" size={30} color={"#fff"}/> 
-                    </View>
-                    <View style={{ width: Dimensions.get('screen').width*0.62, height:44,flexDirection:'row', justifyContent:'center', alignItems:'center', borderWidth:1, borderColor:'#D64836', borderTopRightRadius:7,borderBottomRightRadius:7, borderLeftWidth:0,   }} >
-                      <Text style={{fontFamily:'GoogleSans-Medium', color:'#fff'}} >Google ile oturum aç</Text>
-                    </View>
-                </TouchableOpacity>
+                <View style={{width:Dimensions.get('screen').width*0.9, paddingVertical:20, flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
+                 
+                      <Text numberOfLines={3} style={{fontSize:12, color:colors.text, fontFamily:'GoogleSans-Regular', paddingLeft:1, width:(Dimensions.get('screen').width*0.8), textAlign:'center' }}>
+                        {"Uygulamada oturum açarak "}
+                        <Text onPress={()=>navigation.push("UyelikSozlesmesi")} style={{fontFamily:'GoogleSans-Medium'}}>Kullanıcı Sözleşmesini </Text>
+                        ve 
+                        <Text onPress={()=>navigation.push("GizlilikSozlesmesi")} style={{fontFamily:'GoogleSans-Medium'}} > Kişisel Verilerin Korunumu Kurallarını </Text>
+                         kabul etmiş sayılırsınız.
+                      </Text>
+                  </View>
+
              
                 <TouchableOpacity onPress={()=>signInGoogle()} style={{ 
                     marginVertical:5,

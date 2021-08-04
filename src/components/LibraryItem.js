@@ -41,12 +41,12 @@ export default function LibraryItem({ item, sharedKey }) {
     }
 
     const getSizeControl = () =>{
-      if(item?.barcode>50000){
+      if(item?.barcode>2000){
         Alert.alert(
-          "Yüksek veri uyarısı",`Bu kitabın boyutu ${(item?.barcode/1024).toFixed(2)} MB'dır.  Wİ-Fİ ağına bağlı değilseniz, bağlanmanızı tavsiye ederiz. Kitap cihazınıza yalnızca bir defa indirilecektir.`,
+          "Yüksek veri uyarısı",`Bu kitabın boyutu ${(item?.barcode/1024).toFixed(2)} MB'dır. WI-FI ağına bağlı değilseniz, bağlanmanızı tavsiye ederiz. Kitap cihazınıza yalnızca bir defa indirilecektir.`,
           [
-            { text: "VAZGEÇ",style: "cancel"},
-            { text: "ŞİMDİ İNDİR", onPress: () => Redirect(), }
+            { text: "Vazgeç",style: "cancel"},
+            { text: "Şimdi İndir", onPress: () => Redirect(), }
           ]
         );
       }else{
@@ -55,7 +55,16 @@ export default function LibraryItem({ item, sharedKey }) {
     }
 
     const Redirect = ()=>{
-      push("Reader", {id: item?.id, type: "preview", preview: 'pdfUrl', title: item?.title })
+      push("Reader", {
+        id: item?.id, 
+        type: "preview", 
+        preview: 'pdfUrl', 
+        title: item?.title ,
+        author:item?.author,
+        totalPages:item?.page_count,
+        size: item?.barcode,
+        image:item?.cover_image
+      })
     }
 
 
@@ -75,7 +84,7 @@ export default function LibraryItem({ item, sharedKey }) {
           <TouchableOpacity style={styles.bookDetailButton} 
             onPress={() => push("BookDetail", {sharedKey: sharedKey, item: item , image:item?.cover_image})} 
           >
-              <Icon name="book-outline" size={14} color={colors.color} />
+              <Icon name="book-outline" size={20} color={colors.color} />
           </TouchableOpacity>
         </View>
         <View style={styles.pageNumberContainer}>
@@ -122,7 +131,7 @@ export default function LibraryItem({ item, sharedKey }) {
                       )
                     : pageNumber==1 && allPageNumber==1 
                       ? 1
-                      : 1
+                      : 0
                   ) 
               )*100 +'%'}} />
           </View>

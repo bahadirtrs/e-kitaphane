@@ -35,6 +35,29 @@ const BookCover = (product) => {
   )
 }
 
+const BookCoverLoading = (product) => {
+  // sharedKey, id, imageURI 
+   return (
+     <View style={styles.bookCover}>
+       <View>
+         <FastImage
+           style={[styles.bookCoverImage,{borderRadius:4}]}
+           source={{
+             uri: BASE_URL + "products/cover/" + product?.imageURI,
+             priority: FastImage.priority.normal,
+             cache: FastImage.cacheControl.immutable,
+           }}
+           resizeMode={FastImage.resizeMode.cover}
+         />
+       </View>
+       <View style={[styles.loadingContainer,{height:140 * product.yukleme * bookCoverRatio, }]} >
+         <Text style={{fontFamily:'GoogleSans-Medium', fontSize:16, color:'#fff'}}>{(product.yukleme*100).toFixed(1)>8 ? (`%${(product.yukleme*100).toFixed(1)}`): null} </Text>
+       </View>
+     </View>
+   )
+ }
+
+
 const BookDetails = (product)=>{
   const {colors}=useTheme()
  return(
@@ -90,8 +113,9 @@ const BookInfo = (product) => {
               id: product?.id, 
               type: "preview", 
               pdfData: product?.pdfData,
-              title: product?.title 
-
+              title: product?.title,
+              author:product?.author,
+              totalPages:product?.page_count
             })}
             style={[styles.summaryButtonView, {borderTopColor:colors.border}]}>
             <IconPack name="open-book" color={colors.text} size={20} />
@@ -113,8 +137,8 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
   },
   bookCoverImage: {
-    width: 170,
-    height: 170 * bookCoverRatio,
+    width: 140,
+    height: 140 * bookCoverRatio,
     shadowColor:COLORS.shadow,
     shadowOffset: {
       width: 2,
@@ -136,6 +160,19 @@ const styles = StyleSheet.create({
     justifyContent:'center', 
     alignItems:'center', 
     paddingVertical:5
+  },
+
+  loadingContainer:{ 
+    position:'absolute', 
+    justifyContent:'center', 
+    alignItems:'center', 
+    backgroundColor:'rgba(67, 148, 41, 0.8)', 
+    height:140 * bookCoverRatio, 
+    width:140, 
+    marginTop:24, 
+    bottom:24, 
+    borderBottomLeftRadius:4,
+    borderBottomRightRadius:4
   },
   detailsTitle:{
     fontFamily:'GoogleSans-Bold', 
@@ -238,4 +275,4 @@ const styles = StyleSheet.create({
     paddingLeft: 6,
   },
 })
-module.exports = { BookCover: BookCover, BookInfo: BookInfo, BookDetails:BookDetails }
+module.exports = { BookCover: BookCover, BookInfo: BookInfo, BookDetails:BookDetails, BookCoverLoading:BookCoverLoading }

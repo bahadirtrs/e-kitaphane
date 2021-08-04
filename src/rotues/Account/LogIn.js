@@ -16,7 +16,7 @@ import RequestManager from "../../utils/requestManager"
 import RNSecureStorage, { ACCESSIBLE } from "rn-secure-storage"
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Dimensions } from 'react-native';
-
+import { useTheme } from "@react-navigation/native"
 export default function LogIn({navigation}) {
 
   React.useLayoutEffect(() => {
@@ -24,7 +24,8 @@ export default function LogIn({navigation}) {
       headerShown: false,
     })
   }, [navigation])
-
+  const {colors}=useTheme()
+  const {dark}=useTheme()
   const [email, setemail] = useState("")
   const [password, setpassword] = useState("")
   const [buttonClick, setButtonClick] = useState(false)
@@ -158,10 +159,10 @@ export default function LogIn({navigation}) {
   return (
     <>
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
-     <SafeAreaView backgroundColor={'#f1f1f1'} />
-      <StatusBar barStyle={'dark-content'}  backgroundColor={'#f1f1f1'} />
+      <SafeAreaView backgroundColor={colors.background} />
+      <StatusBar backgroundColor={colors.backgroundColor}  barStyle= {dark?"light-content":"dark-content"}/>
       <HeaderBackLayout 
-        butonColor={'#1d3557'} 
+        butonColor={colors.text} 
         butonPress={()=>navigation.goBack()}
         butonPressRight={()=>setHelpVisible(true)}
         pageName={''}

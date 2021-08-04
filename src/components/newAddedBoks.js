@@ -31,7 +31,7 @@ export default function NewAddedBooks({ item, sharedKey }) {
           />
         </View>
       </View>
-      <View style={{width:'75%', paddingHorizontal:10, justifyContent:'space-between', height:height}}>
+      <View style={{width:'75%', paddingHorizontal:10, justifyContent:'space-between', height:height, justifyContent:'center'}}>
         <View>
         <View>
           <Text style={[styles.title,{color:colors.text}]} numberOfLines={1}>

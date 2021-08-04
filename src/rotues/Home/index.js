@@ -1,6 +1,5 @@
-import React, { useCallback,useEffect, useState, useMemo } from "react"
+import React, {useEffect, useState, useMemo } from "react"
 import { TouchableOpacity, FlatList, View,Text,StyleSheet } from "react-native"
-import { COLORS } from "../../constants/theme";
 import { useFocusEffect } from "@react-navigation/native"
 import { StatusBar } from "react-native"
 import { ScrollView } from "react-native"
@@ -14,14 +13,14 @@ import Logom from '../../components/logo'
 import RequestManager from "../../utils/requestManager"
 import NetworkError from '../../components/NetworkError'
 import Activator from '../../components/Indicator/Activator'
-import getStyles from './styles'
 import { useTheme } from "@react-navigation/native"
 import MenuModal from '../../navigation/Menu/MenuModal'
-import { Dimensions } from "react-native";
-
+import RNSecureStorage from "rn-secure-storage"
+import ProfilePhotoButton from '../../components/Button/ProfilePhotoButton'
+let user_image=null;
 // appcenter codepush release-react -a bhdrtrs/ebooks -d Production
 const categoriesIcon = {
-  0:'earth-outline',
+  0:'home-outline',
   1:'bookmark-outline',
   2:'book-outline',
   3:'fitness-outline',
@@ -36,7 +35,6 @@ export default function HomeScreen({ navigation }){
   const {colors}=useTheme()
   const [categories, setCategories] = useState([])
   const [fetching, setFetching] = useState(true)
-  const [menuModal, setMenuModal]=useState(false)
   const [categoryWidth, setCategoryWidth] = useState(90)
   
   useFocusEffect(
@@ -44,32 +42,13 @@ export default function HomeScreen({ navigation }){
       setTimeout(() => {
         SplashScreen.hide()   
       }, 2800);
+      getImage()
     }, [])
   );
-
-{  
-  /*
-  useEffect(() => {
-  //Kategori card boyutunu kategori item length ine göre boyutlama
-    let width=90;
-    switch (categories.length) {
-      case 1:
-        width=(Dimensions.get('screen').width-20)
-        break;
-      case 2:
-        width=(Dimensions.get('screen').width-35)/2
-        break
-      case 3:
-        width=(Dimensions.get('screen').width-45)/3
-        break
-      default:
-        width=90
-    }
-    setCategoryWidth(width)
-    return ()=>{true};
-  }, [categories]) 
-*/
-}
+  
+  const getImage =async () =>{
+    user_image = await RNSecureStorage.get("photo")
+  }
   
   const getCategories = useMemo(() =>
       RequestManager({
@@ -82,7 +61,7 @@ export default function HomeScreen({ navigation }){
       }),
     [],
   )
-  
+
   useEffect(() => {
     setFetching(true)
     getCategories
@@ -102,20 +81,12 @@ export default function HomeScreen({ navigation }){
   }else{
     return (
       <>
-      <SafeAreaView backgroundColor={COLORS.primary} />
-        <StatusBar backgroundColor={COLORS.primary}  barStyle="light-content" />
-          <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingVertical:5, marginBottom:0, backgroundColor:COLORS.primary}} >
-            <TouchableOpacity activeOpacity={0.9} style={{ paddingHorizontal: 12 }} onPress={()=>setMenuModal(!menuModal)}>
-              <Icon name="menu-outline" size={32} color={COLORS.white} />
-            </TouchableOpacity>
-            <MenuModal 
-            menuModal={menuModal}  
-            modalPress={() => {setMenuModal(!menuModal)}} 
-            />
+      <SafeAreaView backgroundColor={colors.primary} />
+        <StatusBar backgroundColor={colors.primary}  barStyle="light-content" />
+          <View style={[styles.headerConatiner,{backgroundColor:colors.primary}]} >
+            <MenuModal/>
             <Logom/>
-            <TouchableOpacity activeOpacity={0.9}  style={{ paddingHorizontal: 12 }} onPress={() => navigation.push("Account")}>
-              <Icon name="person-circle-outline" size={32} color={COLORS.white} />
-            </TouchableOpacity>
+            <ProfilePhotoButton/>
           </View>
         <ScrollView>
         <HomeSlider
@@ -129,7 +100,7 @@ export default function HomeScreen({ navigation }){
               },
             }}
           />
-          <View style={{flexDirection:'row', marginLeft:0, backgroundColor:colors.background}}>
+          <View style={[styles.categories,{backgroundColor:colors.background}]}>
             <FlatList
               keyboardDismissMode="on-drag"
               keyExtractor={(item, index) => "search-result-item-" + index}
@@ -138,18 +109,19 @@ export default function HomeScreen({ navigation }){
               showsHorizontalScrollIndicator={false}
               showsVerticalScrollIndicator={false}
               data={categories}
-                renderItem={({ item,index }) => {
-                    return (
-                      <>
-                      {index===0?<View style={{width:8}}/>:null}
-                      <TouchableOpacity  
-                        onPress={() => navigation.push("BookCategories", { title:item.title, item: item })}               
-                        style={[styles.categoriesView,{backgroundColor:colors.card, width:categoryWidth}]} >
-                      <Icon name={categoriesIcon[index]} size={25} color={colors.text}/>
-                        <Text style={{textAlign:'center', fontSize:12, fontFamily:'GoogleSans-Regular', color:colors.text, padding:5}}>{item.title}</Text>
-                      </TouchableOpacity>
-                      </>
-                    )
+              renderItem={({ item,index }) => {
+                return (
+                  <>
+                    {index===0?
+                    <View style={{width:8}}/>:null}
+                    <TouchableOpacity  
+                      onPress={() => navigation.push("BookCategories", { title:item.title, item: item })}               
+                      style={[styles.categoriesView,{backgroundColor:colors.card, width:categoryWidth}]} >
+                        <Icon name={categoriesIcon[index]} size={25} color={colors.text}/>
+                        <Text style={[styles.categoriesText,{color:colors.text}]}>{item.title}</Text>
+                    </TouchableOpacity>
+                  </>
+                )
                 }}
             />
           </View>
@@ -158,13 +130,19 @@ export default function HomeScreen({ navigation }){
             categoryID={'2'}
             sharedKey={'one-cikanlar'}
             title={'Öne Çıkanlar'}
-            onPress={() => navigation.push("BookCategories",{sharedKey: 'Öne Çıkanlar',item:categories[1], title:categories[1].title})}               
+            onPress={() => {
+              navigation.push("BookCategories",{
+                sharedKey: 'Öne Çıkanlar',
+                item:categories[1], 
+                title:categories[1].title}
+              )}}               
             request={{
               method: endpoints.products.method,
               url: endpoints.productsByCategory.path + "/" + 2,
               auth: endpoints.products.auth,
               params: {
-                limit: 8,
+                limit: 20,
+                order: "id:asc",
               },
               headers: {
                 Accept: "application/json",
@@ -175,13 +153,19 @@ export default function HomeScreen({ navigation }){
             categoryID={'1'}
             sharedKey={'tum-kitaplar'}
             title={'Tüm Kitaplar'}
-            onPress={() => navigation.push("BookCategories",{sharedKey: 'Öne Çıkanlar',item:categories[1], title:categories[1].title})}               
+            onPress={() => {
+              navigation.push("BookCategories",{
+                sharedKey: 'Öne Çıkanlar',
+                item:categories[0], 
+                title:categories[0].title}
+              )}}               
             request={{
               method: endpoints.products.method,
               url: endpoints.productsByCategory.path + "/" + 1,
               auth: endpoints.products.auth,
               params: {
-                limit: 8,
+                limit: 20,
+                order: "id:desc",
               },
               headers: {
                 Accept: "application/json",
@@ -195,15 +179,30 @@ export default function HomeScreen({ navigation }){
   }
 }
 const styles = StyleSheet.create({
+  headerConatiner:{
+    flexDirection:'row', 
+    justifyContent:'space-between', 
+    alignItems:'center', 
+    paddingVertical:5, 
+    marginBottom:0,
+  },
+  categories:{
+    flexDirection:'row', 
+    marginLeft:0, 
+  },
+  categoriesText:{
+    textAlign:'center', 
+    fontSize:12, 
+    fontFamily:'GoogleSans-Regular', 
+    padding:5,
+  },
   categoriesView:{
     height:90, 
-    backgroundColor:COLORS.white, 
     margin:5,
     marginLeft:5, 
     justifyContent:'center', 
     alignItems:'center', 
     borderRadius:8,
-    shadowColor:COLORS.shadow,
     shadowOffset: {
       width: 2,
       height: 2,

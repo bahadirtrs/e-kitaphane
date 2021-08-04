@@ -1,28 +1,26 @@
-import React,{useEffect, useState,useMemo, useCallback} from "react"
-import { Dimensions, ScrollView, StyleSheet, View,StatusBar,Text,Image,Alert} from "react-native"
+import React,{useEffect, useState,useMemo} from "react"
+import { Dimensions, ScrollView, StyleSheet, View,StatusBar,Text,Image,Alert,SafeAreaView} from "react-native"
 import { BookCover, BookInfo, BookDetails } from "../../../components/book"
 import { ReadButton } from "../../../components/buttons"
 import { numberFormat } from "../../../utils/utils"
-import PageHeaderBackLayout from '../../../components/Layout/PageHeaderBackLayout'
-import { SafeAreaView } from "react-native"
-import RNSecureStorage from "rn-secure-storage"
-import AsyncStorage from '@react-native-community/async-storage';
+import { endpoints,BASE_URL } from "../../../utils/constants"
+import { useFocusEffect } from '@react-navigation/native';
+import { TouchableOpacity } from "react-native"
+import { useTheme } from "@react-navigation/native"
 import {getToken} from '../../../utils/requestManager'
+import * as RNIap from 'react-native-iap';
+import RNSecureStorage from "rn-secure-storage"
+import Icon from "react-native-vector-icons/Ionicons"
+import AsyncStorage from '@react-native-community/async-storage';
 import BuyProduct from '../../../utils/buyProduct'
 import BottomLogInModal from '../../../components/Modals/BottomLogInModal'
 import RequestManager from "../../../utils/requestManager"
-import { endpoints,BASE_URL } from "../../../utils/constants"
-import { useFocusEffect } from '@react-navigation/native';
-import Icon from "react-native-vector-icons/Ionicons"
-import { TouchableOpacity } from "react-native"
-import * as RNIap from 'react-native-iap';
-import { COLORS } from "../../../constants/theme";
-import { useTheme } from "@react-navigation/native"
 
-export default function BookDetailScreen({ navigation, route }) {
+export default function BookDetailScreen({navigation,route}) {
   const {colors}=useTheme()
   const product = route.params.item
   const sharedKey = route.params.sharedKey
+
   const [token, setToken] = useState(null)
   const [islogInModalVisible, setlogInVisible] = useState(false)
   const [isPageNumber, setPageNumber] = useState(0)
@@ -34,6 +32,10 @@ export default function BookDetailScreen({ navigation, route }) {
   const [fetching, setFetching] = useState(false)
   const [closed, setClosed] = useState(false)
   const [id,setId]=useState('product'+String(route.params.item.id))
+
+  const [products, setProducts] = useState([])
+  const [user, setUser] = useState({name:'Jhon',subscription:undefined})
+
   let itemSkus = Platform.select({
     ios: [],
     android:[
@@ -63,10 +65,6 @@ export default function BookDetailScreen({ navigation, route }) {
       'product40',
     ]
   });
-
-  const [products, setProducts] = useState([])
-  const [user, setUser] = useState({name:'Jhon',subscription:undefined})
-  const [showads, setShowads] = useState(true);
   
   useFocusEffect(
     React.useCallback(() => {
@@ -76,23 +74,25 @@ export default function BookDetailScreen({ navigation, route }) {
   );
  
   const getCategories = useMemo(async() =>
-  RequestManager({
-    method: endpoints.showPDF.method,
-    url: endpoints.showPDF.path +'/' +product?.id,
-    auth: false,
-    headers: {
-      Accept: "application/jsonsss",
-      Authorization:'Bearer ' +  await RNSecureStorage.get("access_token"),
-    },
-  }),
-[],)
+    RequestManager({
+      method: endpoints.showPDF.method,
+      url: endpoints.showPDF.path +'/' +product?.id,
+      auth: false,
+      headers: {
+        Accept: "application/jsonsss",
+        Authorization:'Bearer ' +  await RNSecureStorage.get("access_token"),
+      },
+    }),
+  [],)
 
   useEffect(() => {
     setFetching(true)
     getCategories
       .then(res => {
         setPdfUrl(res)
-        setTimeout(() => {setFetching(false)}, 1000)
+        setTimeout(() => {
+          setFetching(false)
+        }, 1000)
       })
       .catch(err => {
         console.log(err)
@@ -126,13 +126,13 @@ export default function BookDetailScreen({ navigation, route }) {
 
   useEffect(() => {
     initIAp()
-  }, [])
+  },[])
 
   const initIAp = async () => {
     try {
         const products = await RNIap.getProducts(itemSkus);
         console.log(JSON.stringify(products))
-       // alert(JSON.stringify(products))
+        //alert(JSON.stringify(products))
         setProducts(products)
         console.log(JSON.stringify(products))
     } catch (err) {
@@ -159,13 +159,13 @@ const setBookStore = async () =>{
       if(sonuc){
         tokenControlRedirect()
       }else{
-        alert("Ürün satın alınırken bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.")
+        Alert.alert("Hata","Ürün satın alınırken bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.")
       }
     }else{
       setlogInVisible(true)
     }
   }catch (error) {
-    alert(error)
+    console.log(error)
   }
 }
 
@@ -175,21 +175,25 @@ const setBookStore = async () =>{
       const resultMessage= await BuyProduct(1,product.id,'PURCHASED', 'GOOGLE_PAY')
       setLoading(true)
       setBuyButtonText("Kitap satın alınıyor...")
+      
       setTimeout(() => {
         setBuyButtonText(resultMessage.message)
         setLoading(false)
       }, 3000);
+
       setTimeout(() => {
         if(resultMessage.statusMsg){
-        setBuyButtonText("Kitabı Oku")
-        setBuyStatus(true)
-        setClosed(false)
-        getSizeControl()
-      }
+          setBuyButtonText("Kitabı Oku")
+          setBuyStatus(true)
+          setClosed(false)
+          getSizeControl()
+        }
       }, 5000);
+
     }else{
       setlogInVisible(true)
       setClosed(false)
+      Alert.alert("Kritik hata", "Ödemeniz alındı ve kitabınız kütüphanenizde görünmüyorsa lütfen bizimle iletişime geçiniz.")
     }
   }
   const closeLogInModal = ()=>{
@@ -197,14 +201,13 @@ const setBookStore = async () =>{
     navigation.push('Account')
   }
 
-
   const getSizeControl = () =>{
-    if(product?.barcode>50000){
+    if(product?.barcode>3000){
       Alert.alert(
         "Yüksek veri uyarısı",`Bu kitabın boyutu ${(product?.barcode/1024).toFixed(2)} MB'dır.  Wİ-Fİ ağına bağlı değilseniz, bağlanmanızı tavsiye ederiz. Kitap cihazınıza yalnızca bir defa indirilecektir.`,
         [
-          { text: "VAZGEÇ",style: "cancel"},
-          { text: "ŞİMDİ İNDİR", onPress: () => Redirect(), }
+          { text: "Vazgeç",style: "cancel"},
+          { text: "Şimdi İndir", onPress: () => Redirect(), }
         ]
       );
     }else{
@@ -217,12 +220,16 @@ const setBookStore = async () =>{
       id: product?.id, 
       type: "preview", 
       preview: pdfUrl, 
-      title: product?.title 
+      title: product?.title,
+      author:product?.author,
+      totalPages:product?.page_count,
+      size: product?.barcode,
+      image:product?.cover_image
     })
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {backgroundColor:colors.primary}]}>
       <StatusBar barStyle="light-content" backgroundColor={colors.primary}/>
       <SafeAreaView backgroundColor={colors.primary} />
       <View style={styles.headerBackButtonContainer} >
@@ -267,7 +274,6 @@ const setBookStore = async () =>{
             pdfData={product?.preview_pdf}
           />
         </View>
-     
         <BottomLogInModal 
           visible={islogInModalVisible}  
           setVisible={()=> setlogInVisible(false)}
@@ -284,9 +290,9 @@ const setBookStore = async () =>{
           id={product?.id}
           loading={loading}
           size={product?.barcode}
-          onPress={() => setBookStore()} 
-          text={isBuyButtonText}
-          price={numberFormat(product?.price) + " TL"} 
+          onPress={() => setBookStore()}  //setBookStore()
+          text={isBuyButtonText} //
+          price={numberFormat(product?.price) + " TL"}  //numberFormat(product?.price) + " TL"
           bookViewPress={()=>{
             allPageNumber<1
               ? getSizeControl()
@@ -300,7 +306,6 @@ const setBookStore = async () =>{
 const styles = StyleSheet.create({
   container:{
     flex: 1,  
-    backgroundColor:COLORS.backgroundDark,
   },
   headerBackButtonContainer:{
     flexDirection:'row',
@@ -319,11 +324,9 @@ const styles = StyleSheet.create({
   },
   bookCoverArea: {
     paddingTop:0,
-    backgroundColor:COLORS.backgroundDark,
     opacity:0.85
   },
   bookDetails: {
-    backgroundColor:COLORS.backgroundColor,
     paddingBottom: 100,
     flex: 1,
   },
@@ -334,11 +337,10 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   imageStyle:{ 
-    opacity:0.3, 
-    position:'absolute', 
-    top:0, 
     width:Dimensions.get('screen').width, 
     height:'55%', 
-    backgroundColor:COLORS.backgroundColor,
+    position:'absolute', 
+    opacity:0.3, 
+    top:0, 
   },
 })

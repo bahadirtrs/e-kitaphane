@@ -7,7 +7,7 @@ import { TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native";
 import { COLORS } from "../constants/theme"
 
-const PrivacyPolicy = ({visible, setVisible}) => {
+const PrivacyPolicy = () => {
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
@@ -29,11 +29,11 @@ const PrivacyPolicy = ({visible, setVisible}) => {
       >
         <TouchableOpacity onPress={()=>setModalVisible('false')} style={styles.centeredView}>
           <View style={styles.modalView}>
-                <Icon name="information-circle-outline" size={40} color={COLORS.textColor} />
-                <View style={{padding:5}} >
-                    <Text style={styles.modalText}>İnternet Bağlantısı yok</Text>
-                    <Text style={styles.modalTextTwo}>Lütfen bir ağa bağlanın ve tekrar deneyin</Text>
-                </View>
+            <Icon name="information-circle-outline" size={40} color={COLORS.textColor} />
+            <View style={{padding:5}} >
+                <Text style={styles.modalText}>İnternet Bağlantısı yok</Text>
+                <Text style={styles.modalTextTwo}>Lütfen bir ağa bağlanın ve tekrar deneyin</Text>
+            </View>
           </View>
         </TouchableOpacity>
       </Modal>

@@ -1,9 +1,7 @@
 import React,{useState} from 'react'
 import {View, Dimensions, TouchableOpacity,Text,StyleSheet } from 'react-native'
 import Icon from "react-native-vector-icons/Ionicons"
-import { useFocusEffect } from "@react-navigation/native"
-import AsyncStorage from '@react-native-community/async-storage';
-import { EventRegister } from 'react-native-event-listeners'
+
 
 export default function PageHeaderBackLayout({butonPress,butonColor,title,backgrounColor,type, darkMode, pageSave, deleteNumber,pageHorizontal, setPageHorizontalTrue,themeSelect}) {
       

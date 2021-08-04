@@ -20,6 +20,8 @@ import TextInputCom from '../../components/textInputCom'
 import TwoInputText from '../../components/TwoInputText'
 import HelpModal from '../../components/HelpModal'
 import { StatusBar } from "react-native";
+import { useTheme } from "@react-navigation/native"
+
 
 export default function SingIn({navigation}) {
   React.useLayoutEffect(() => {
@@ -27,6 +29,8 @@ export default function SingIn({navigation}) {
       headerShown: false,
     })
   }, [navigation])
+  const {colors}=useTheme()
+  const {dark}=useTheme()
   const [name, setName] = useState("")
   const [lastName, setLastName] = useState("")
   const [email, setemail] = useState("")
@@ -192,13 +196,13 @@ useEffect(() => {
   return (
     <>
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
-      <SafeAreaView backgroundColor={'#f1f1f1'} style={{zIndex:1}} />
-      <StatusBar barStyle={'dark-content'}  backgroundColor={'#f1f1f1'} />
+       <SafeAreaView backgroundColor={colors.background} />
+         <StatusBar backgroundColor={'red'}  barStyle= {dark?"light-content":"dark-content"}/>
       <HeaderBackLayout 
-            butonColor={'#1d3557'} 
+            butonColor={colors.text} 
             butonPress={()=>navigation.goBack()}
             butonPressRight={()=>setHelpVisible(true)}
-            pageName={''}
+            pageName={'Giriş Yap'}
         />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.inner}>

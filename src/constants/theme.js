@@ -1,7 +1,6 @@
 import { Dimensions } from "react-native";
 const { width, height } = Dimensions.get("window");
 
-
 export const COLORS ={
     primary:             "#1d3557",
     textColor:           '#fff',
@@ -31,7 +30,6 @@ export const COLORSLIGHT = {
     text: '#333',
     border: '#ddd',
     notification: 'rgb(255, 69, 58)',
-
     textColor:           '#333333',
     textColorLight:      '#ffffff',
     white:               '#ffffff',
@@ -60,7 +58,6 @@ export const COLORSDARK = {
     text: '#ccc',
     border: '#222',
     notification: 'rgb(255, 69, 58)',
-
     textColor:           '#333333',
     textColorLight:      '#ffffff',
     white:               '#ffffff',
@@ -108,5 +105,4 @@ export const FONTS = {
 };
 
 const appTheme = { COLORS, COLORSDARK, COLORSLIGHT, SIZES, FONTS };
-
 export default appTheme;

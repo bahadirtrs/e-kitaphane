@@ -20,6 +20,7 @@ const SupportCreateModal = ({visible, setVisible, permisson}) => {
   const [response, setResponse] = useState(true)
   const [userInfo, setUserInfo] = useState([])
   const [fetching, setFetching] = useState(false)
+  const [warning, setWarning] =useState("Destek almak istediğiniz konuyu yazınız.")
   const getUserInfo = useMemo(async() =>
     RequestManager({
       method: endpoints.user.method,
@@ -53,28 +54,33 @@ const SupportCreateModal = ({visible, setVisible, permisson}) => {
 
     const CreateSupport = async()=>{
       try {
-        let config = {
-          headers: {
-            Accept: "application/jsonsss",
+        if(subject.length>5 && message.length>10){
+          let config = {
+            headers: {
+              Accept: "application/jsonsss",
+            }
           }
+          let data = { 
+            subject:subject,
+            customer_id:String(userInfo.id),
+            customer_first_name:userInfo.first_name,
+            customer_last_name:userInfo.last_name,
+            customer_email:userInfo.email,
+            message:message,
+          };
+          await axios.post(`${BASE_URL+'api/support-record'}`, data, config)
+          .then(response =>{
+            let record_number=response.data.recordNumber
+            stateManegement()
+            push("DestekDetay", {'record_number':record_number, 'subject':subject}) 
+            }
+          );
+        }else{
+          setWarning("Lütfen konu ve mesaj alanını biraz detaylandırınız.")
         }
-        let data = { 
-          subject:subject,
-          customer_id:String(userInfo.id),
-          customer_first_name:userInfo.first_name,
-          customer_last_name:userInfo.last_name,
-          customer_email:userInfo.email,
-          message:message,
-        };
-        await axios.post(`${BASE_URL+'api/support-record'}`, data, config)
-        .then(response =>{
-          let record_number=response.data.recordNumber
-          stateManegement()
-          push("DestekDetay", {'record_number':record_number, 'subject':subject}) 
-          }
-        );
       } catch (error) {
         console.log(error)
+        setWarning("Bir sorun oluştu. Lütfen giriş yaptığınızdan emin olunuz.")
       }
     }
 
@@ -83,6 +89,10 @@ const SupportCreateModal = ({visible, setVisible, permisson}) => {
       setMessage("")
       setSubject("")
     }
+
+    useEffect(() => {
+      setWarning("Destek almak istediğiniz konuyu yazınız.")
+    }, [subject, message])
 
   return (
       <Modal animationType="slide" transparent={true} visible={visible}>
@@ -96,7 +106,14 @@ const SupportCreateModal = ({visible, setVisible, permisson}) => {
             {permisson 
               ? <View style={styles.headerContainer}>
                   <Text style={[styles.title,{color:colors.text}]}>Destek Mesajı Oluştur</Text>
-                  <Text style={[styles.description,{color:colors.text}]}>Lütfen destek almak istediğiniz konuyu açıkla yazınız.</Text>
+                  <Text style={[styles.description,{
+                      color:warning.length<42
+                        ?colors.text
+                        :'#fff', 
+                      backgroundColor:warning.length<44
+                        ?colors.background
+                        :'#e5383b'
+                      }]}>{warning}</Text>
                 </View>
               : null
              }
@@ -237,16 +254,16 @@ const styles = StyleSheet.create({
     fontSize:20,
     paddingTop:10,
     paddingBottom:3,
-    paddingHorizontal:0,
+    paddingHorizontal:8,
   },
   description:{
+    width:Dimensions.get('screen').width*0.8,
     fontFamily:'GoogleSans-Regular',
-    fontSize:12,
     paddingBottom:5,
-    paddingHorizontal:0,
-    textAlign:'center', 
-    fontSize:14, 
-    paddingTop:10
+    paddingHorizontal:8,
+    textAlign:'left', 
+    fontSize:12, 
+    paddingTop:5,
   },
   userInfo:{
     fontFamily:'GoogleSans-Regular',
