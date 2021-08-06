@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily:'GoogleSans-Medium',
-    fontSize: 15,
+    fontSize: 13,
     lineHeight: 20,
     color:COLORS.textColor,
     paddingTop: 5,
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   },
   author: {
     fontFamily:'GoogleSans-Regular',
-    fontSize: 13,
+    fontSize: 11,
     color:COLORS.textColor,
     paddingTop:2,
     paddingHorizontal:8

@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useMemo } from "react"
-import { TouchableOpacity, FlatList, View,Text,StyleSheet } from "react-native"
+import { TouchableOpacity, FlatList, View,Text,StyleSheet, Dimensions } from "react-native"
 import { useFocusEffect } from "@react-navigation/native"
 import { StatusBar } from "react-native"
 import { ScrollView } from "react-native"
@@ -12,11 +12,12 @@ import Icon from "react-native-vector-icons/Ionicons"
 import Logom from '../../components/logo'
 import RequestManager from "../../utils/requestManager"
 import NetworkError from '../../components/NetworkError'
-import Activator from '../../components/Indicator/Activator'
+import Activator from '../../components/Indicator/BeingIndicator'
 import { useTheme } from "@react-navigation/native"
 import MenuModal from '../../navigation/Menu/MenuModal'
 import RNSecureStorage from "rn-secure-storage"
 import ProfilePhotoButton from '../../components/Button/ProfilePhotoButton'
+import { ActivityIndicator } from "react-native"
 let user_image=null;
 // appcenter codepush release-react -a bhdrtrs/ebooks -d Production
 const categoriesIcon = {
@@ -50,6 +51,20 @@ export default function HomeScreen({ navigation }){
     user_image = await RNSecureStorage.get("photo")
   }
   
+  const getOwnedProducts = useMemo(
+    async() =>
+      RequestManager({
+        method: endpoints.ownedProducts.method,
+        url: endpoints.ownedProducts.path,
+        auth: false,
+        headers: {
+          Accept: "application/jsonsss",
+          Authorization:'Bearer ' +  await RNSecureStorage.get("access_token"),
+        },
+      }),
+    [],
+  )
+
   const getCategories = useMemo(() =>
       RequestManager({
         method: endpoints.categories.method,
@@ -76,11 +91,17 @@ export default function HomeScreen({ navigation }){
   }, [getCategories])
 
 
-  if (fetching) {
-    return <Activator title={'Uygulama başlatılıyor...'} />
+  if (false) {
+    return 
   }else{
     return (
       <>
+      {fetching
+      ?<View style={{ zIndex:1, height:Dimensions.get('screen').height, width:Dimensions.get('screen').width, justifyContent:'center',alignItems:'center', position:'absolute', backgroundColor:'#88888810'}} >
+       <ActivityIndicator size={'large'} color={colors.text} />
+      </View>
+      :null
+      }
       <SafeAreaView backgroundColor={colors.primary} />
         <StatusBar backgroundColor={colors.primary}  barStyle="light-content" />
           <View style={[styles.headerConatiner,{backgroundColor:colors.primary}]} >
@@ -128,13 +149,14 @@ export default function HomeScreen({ navigation }){
           
          <BooksList
             categoryID={'2'}
+            getOwnedProducts={getOwnedProducts}
             sharedKey={'one-cikanlar'}
             title={'Öne Çıkanlar'}
             onPress={() => {
               navigation.push("BookCategories",{
                 sharedKey: 'Öne Çıkanlar',
-                item:categories[1], 
-                title:categories[1].title}
+                item:categories?categories[1]:'', 
+                title:categories?categories[1]?.title:''}
               )}}               
             request={{
               method: endpoints.products.method,
@@ -151,13 +173,14 @@ export default function HomeScreen({ navigation }){
           />
           <BooksList
             categoryID={'1'}
+            getOwnedProducts={getOwnedProducts}
             sharedKey={'tum-kitaplar'}
             title={'Tüm Kitaplar'}
             onPress={() => {
               navigation.push("BookCategories",{
                 sharedKey: 'Öne Çıkanlar',
-                item:categories[0], 
-                title:categories[0].title}
+                item:categories?categories[0]:'', 
+                title:categories?categories[0]?.title:''}
               )}}               
             request={{
               method: endpoints.products.method,

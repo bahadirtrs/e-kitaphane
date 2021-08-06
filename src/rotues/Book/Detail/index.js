@@ -218,7 +218,7 @@ const setBookStore = async () =>{
   const Redirect = ()=>{
     navigation.navigate("Reader", {
       id: product?.id, 
-      type: "preview", 
+      type: "full", 
       preview: pdfUrl, 
       title: product?.title,
       author:product?.author,
@@ -272,6 +272,8 @@ const setBookStore = async () =>{
             releaseDate={product?.release_date}
             preview={"api/show-preview/" + product?.id}
             pdfData={product?.preview_pdf}
+            size={product?.barcode}
+            imageURI={product?.cover_image} 
           />
         </View>
         <BottomLogInModal 

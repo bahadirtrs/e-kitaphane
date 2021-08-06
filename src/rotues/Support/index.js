@@ -145,8 +145,8 @@ export default function SupportScreen({navigation,route}) {
           <View style={{ backgroundColor:colors.background, width:Dimensions.get('screen').width, height:Dimensions.get('screen').height*0.7,justifyContent:'center',alignItems:'center'}} >
             <View style={{width:Dimensions.get('screen').width-100, alignItems:'center', paddingBottom:50}} >
               <FontAwesome name="headset" size={60} color={"#118ab2"}/> 
-              <Text style={{fontFamily:'GoogleSans-Medium', textAlign:'center', fontSize:20, paddingVertical:10, color:'#333'}} >Destek Oluştur</Text>
-              <Text style={{fontFamily:'GoogleSans-Regular', textAlign:'center', color:'#555', fontSize:12}}>Uygulama veya satın alma ile ilgili herhangi bir problem yaşamanız durumunda bizimle iletişime geçebilirsiniz.</Text>
+              <Text style={{fontFamily:'GoogleSans-Medium', textAlign:'center', fontSize:20, paddingVertical:10, color:colors.text}} >Destek Oluştur</Text>
+              <Text style={{fontFamily:'GoogleSans-Regular', textAlign:'center', color:colors.text, fontSize:12}}>Uygulama veya satın alma ile ilgili herhangi bir problem yaşamanız durumunda bizimle iletişime geçebilirsiniz.</Text>
             </View>
           
           </View>

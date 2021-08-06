@@ -1,14 +1,16 @@
-import React from "react"
-import { StatusBar, StyleSheet, View} from "react-native"
+import React,{useState} from "react"
+import { StatusBar, StyleSheet, View,Text} from "react-native"
 import { endpoints } from "../../../utils/constants";
 import CategoryList from '../../../components/categoryList'
 import PageHeaderBackLayout from '../../../components/Layout/PageHeaderBackLayout'
 import { SafeAreaView } from "react-native";
 import { useTheme } from "@react-navigation/native"
+import ListTypeCategorys from '../../../components/ListTypeCategorys'
 
 export default function BookCategories({ navigation, route }) {
   const {colors}=useTheme()
   const product = route.params.item
+  const [listType, setListType] = useState(true)
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -32,12 +34,17 @@ export default function BookCategories({ navigation, route }) {
         butonPressRight={null}
         title={route.params?.title}
         backgrounColor={colors.primary}
+        listTypePress={()=>setListType(!listType)}
+        listType={listType}
         />
         <View style={[styles.bookDetails,{backgroundColor:colors.background}]}>
-          <CategoryList
+          {listType
+
+            ? <CategoryList
             columnType='categorys'
             sharedKey="featured"
             title={product?.title}
+            listType={listType}
             //onPress={() => {}}
             request={{
             method: endpoints.products.method,
@@ -49,6 +56,26 @@ export default function BookCategories({ navigation, route }) {
             },
             }}
           />
+          :
+          <ListTypeCategorys
+              columnType='categorys'
+              sharedKey="featured"
+              title={product?.title}
+              listType={listType}
+              //onPress={() => {}}
+              request={{
+              method: endpoints.products.method,
+              url: endpoints.productsByCategory.path + "/" + product?.id,
+              auth: endpoints.products.auth,
+              params: {},
+              headers: {
+                  Accept: "application/json",
+              },
+              }}
+          />
+
+          }
+         
         </View>
     </View>
   )

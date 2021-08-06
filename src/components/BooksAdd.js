@@ -1,18 +1,8 @@
-/*  
-|------*--------*-------------*------------*-------*------|
-| developer:Bahadır Tıraş                                 |
-| email:bahadirtiras@gmail.com                            |
-| github:wwww.github.com/bahadirtrs                       |
-| webSite:www.bahadirtiras.com.tr                         |
-|------*----------*----------*-------------*--------*-----|
-*/
 import React, { useState } from "react";
 import {Modal, StyleSheet, Text, Pressable, View } from "react-native";
-import { COLORS } from "../../constants/theme";
 
 //devredisi
 const BooksAdd = ({visible, setVisible}) => {
-  const [modalVisible, setModalVisible] = useState(false);
   return (
     <View style={styles.centeredView}>
       <Modal animationType="slide" transparent={true} visible={visible}>

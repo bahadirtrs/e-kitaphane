@@ -77,8 +77,8 @@ const HomeSlider = ({ request }) => {
   } else {
     return (
       <View style={{ height: "auto", margin: 12 }}>
-        <SkeletonPlaceholder>
-          <View style={{ width: "100%", height: 200 }} />
+      <SkeletonPlaceholder backgroundColor={colors.scale} highlightColor={colors.card} >
+          <View style={{ width: "100%", height: 200, backgroundColor:'red' }} />
         </SkeletonPlaceholder>
       </View>
     )

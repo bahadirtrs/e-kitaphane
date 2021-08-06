@@ -1,12 +1,3 @@
-/*  
-|------*--------*-------------*------------*-------*------|
-| developer:Bahadır Tıraş                                 |
-| email:bahadirtiras@gmail.com                            |
-| github:wwww.github.com/bahadirtrs                       |
-| website:www.bahadirtiras.com.tr                         |
-|------*----------*----------*-------------*--------*-----|
-*/
-
 import React from "react";
 import {Pressable, StyleSheet, Text, View,Dimensions } from "react-native"
 import FastImage from "react-native-fast-image"
@@ -51,7 +42,9 @@ const BookCoverLoading = (product) => {
          />
        </View>
        <View style={[styles.loadingContainer,{height:140 * product.yukleme * bookCoverRatio, }]} >
-         <Text style={{fontFamily:'GoogleSans-Medium', fontSize:16, color:'#fff'}}>{(product.yukleme*100).toFixed(1)>8 ? (`%${(product.yukleme*100).toFixed(1)}`): null} </Text>
+        <Text style={styles.loadingText}>
+           {(product.yukleme*100).toFixed(1)>8 ? (`%${(product.yukleme*100).toFixed(1)}`): null} 
+        </Text>
        </View>
      </View>
    )
@@ -115,7 +108,9 @@ const BookInfo = (product) => {
               pdfData: product?.pdfData,
               title: product?.title,
               author:product?.author,
-              totalPages:product?.page_count
+              totalPages:product?.page_count,
+              size:product?.size,
+              image:product?.imageURI
             })}
             style={[styles.summaryButtonView, {borderTopColor:colors.border}]}>
             <IconPack name="open-book" color={colors.text} size={20} />
@@ -274,5 +269,9 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingLeft: 6,
   },
+  loadingText:{
+    fontFamily:'GoogleSans-Medium', 
+    fontSize:16, color:'#fff'
+  }
 })
 module.exports = { BookCover: BookCover, BookInfo: BookInfo, BookDetails:BookDetails, BookCoverLoading:BookCoverLoading }

@@ -10,10 +10,14 @@ export default function CategoryListItem({ item }) {
   const {colors}=useTheme()
   const { push } = useNavigation()
   const childrenCategories = item?.children_categories
+ 
   return (
     <TouchableOpacity 
       style={[styles.container, {borderColor:colors.border}]} 
-      onPress={()=>push("BookCategories",{item: item, title:item.title })}  
+      onPress={()=>push("BookCategories",{
+        item: item, 
+        title:item.title 
+      })}  
       activeOpacity={0.9}
     >
       <View style={styles.categoryTitleView}>

@@ -3,7 +3,7 @@ import {View, Dimensions, TouchableOpacity,Text,StyleSheet } from 'react-native'
 import Icon from "react-native-vector-icons/Ionicons"
 
 
-export default function PageHeaderBackLayout({butonPress,butonColor,title,backgrounColor,type, darkMode, pageSave, deleteNumber,pageHorizontal, setPageHorizontalTrue,themeSelect}) {
+export default function PageHeaderBackLayout({butonPress,butonColor,title,backgrounColor,type, darkMode, pageSave, deleteNumber,pageHorizontal, setPageHorizontalTrue,themeSelect, listType, listTypePress}) {
       
     return (
         <View style={[styles.container,{backgroundColor:backgrounColor}]} >
@@ -43,6 +43,16 @@ export default function PageHeaderBackLayout({butonPress,butonColor,title,backgr
                 </TouchableOpacity>
             </View>
             :<Text>{' '}</Text>
+        }
+        { listTypePress
+        ? listType
+            ? <TouchableOpacity activeOpacity={0.9} style={styles.saveButton} onPress={listTypePress} >
+                <Icon name="list-outline" size={20} color={butonColor?butonColor:"#fff" }/> 
+              </TouchableOpacity>
+            :<TouchableOpacity activeOpacity={0.9} style={styles.saveButton} onPress={listTypePress} >
+                <Icon name="apps-outline" size={18} color={butonColor?butonColor:"#fff" }/> 
+             </TouchableOpacity>
+        :null
         }
     </View>
     )

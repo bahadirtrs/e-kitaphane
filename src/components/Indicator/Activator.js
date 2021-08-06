@@ -13,7 +13,6 @@ export default class ActivatorActivator extends Component {
     rotateValue: new Animated.Value(0)
   };
 
-
   componentDidMount() {
     this._start();
   }
@@ -21,7 +20,7 @@ export default class ActivatorActivator extends Component {
     Animated.loop(
       Animated.timing(this.state.rotateValue, {
         toValue: 1,
-        duration: 1500,
+        duration: 1300,
         Infinite: true,
         useNativeDriver:false
       })
@@ -43,21 +42,24 @@ export default class ActivatorActivator extends Component {
                 })
               }
             ],
-            height: 100,
-            width: 100,
+            height: 120,
+            width: 120,
             margin: 5,
-            borderWidth: 2,
+            borderWidth: 1.5,
             borderColor: "#bbb",
             borderColor: "#fff",
-            borderRadius: 35,
+            borderBottomColor:'#118ab2',
+            borderRadius: 60,
             justifyContent: "center",
             position:'absolute',
           }}
         />
-          <Image style={{width:35, height:35}}  source={require('../../../assets/books-logo.png')} />
+        <Image style={{width:40, height:40}}  source={require('../../../assets/books-logo.png')} />
         <Animated.View />
+        <Text style={{color:'#fff', fontSize:8, fontFamily:'GoogleSans-Medium', paddingTop:10}} >E-Kitaphane</Text>
       </View>
-      
+
+     
       </>
     );
   }
@@ -69,7 +71,7 @@ const styles = StyleSheet.create({
     flex:1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor:'#1d3557'
+    backgroundColor:'#1d3557',
   },
   item: {},
   btn: {

@@ -7,15 +7,14 @@ import { numberFormat } from "../utils/utils"
 import SkeletonPlaceholder from "react-native-skeleton-placeholder"
 import { COLORS } from "../constants/theme";
 import { useTheme } from "@react-navigation/native"
-import { color } from "react-native-reanimated"
-const width=(Dimensions.get('screen').width-20)/3.8;
-const height=(Dimensions.get('screen').width-20)/3.8 * bookCoverRatio;
+const width=(Dimensions.get('screen').width-20)/4;
+const height=(Dimensions.get('screen').width-20)/4 * bookCoverRatio;
 
 export default function NewAddedBooks({ item, sharedKey }) {
   const {colors}=useTheme()
   const { push } = useNavigation()
   return (
-    <TouchableOpacity activeOpacity={0.9} style={styles.container} 
+    <TouchableOpacity activeOpacity={0.9} style={[styles.container,{borderBottomColor:colors.border}]} 
       onPress={() => push("BookDetail", { sharedKey: sharedKey, item: item , image:item?.cover_image })}
     >
       <View style={styles.bookImage}>
@@ -71,29 +70,31 @@ export const NewAddedBooksPlaceHolder = () => {
 
 const styles = StyleSheet.create({
   container: {
-    width:(Dimensions.get('screen').width),
+    width:(Dimensions.get('screen').width)-20,
     flexDirection:'row',
     justifyContent:'flex-start',
     alignItems:'flex-start',
-    padding:10
+    padding:10,
+    borderBottomWidth:1,
+    
   
   },
   title: {
     fontFamily:'GoogleSans-Bold',
-    fontSize: 18,
+    fontSize: 16,
     lineHeight: 20,
     color:COLORS.textColor,
     paddingTop: 5,
   },
   author: {
     fontFamily:'GoogleSans-Regular',
-    fontSize: 16,
+    fontSize: 14,
     color:COLORS.textColor,
     paddingTop:2
   },
   summary: {
     fontFamily:'GoogleSans-Regular',
-    fontSize: 13,
+    fontSize: 11,
     color:COLORS.textColor,
     paddingTop:2
   },
@@ -101,7 +102,7 @@ const styles = StyleSheet.create({
     paddingTop: 2,
     textAlign: "left",
     fontFamily:'GoogleSans-Bold',
-    fontSize: 22,
+    fontSize: 20,
     color:COLORS.textColor,
   },
   bookImage: {

@@ -7,7 +7,7 @@ import { TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native";
 import { COLORS } from "../constants/theme"
 
-const PrivacyPolicy = () => {
+const NetworkError = () => {
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
@@ -95,4 +95,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default PrivacyPolicy;
+export default NetworkError;

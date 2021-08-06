@@ -40,16 +40,15 @@ export default function AccountScreen({navigation}) {
     }, [navigation])
 
     const signInGoogle = async () => {
-      if(click){
-        
+      if(true){
+
         try {
           await GoogleSignin.hasPlayServices();
           const userInfo = await GoogleSignin.signIn();
           setGoogleUserInfo(userInfo)
-          //alert(JSON.stringify(userInfo))
-          console.log(userInfo)
+          console.log(JSON.stringify(userInfo))
           UserInfoState(userInfo)
-           CreateAccount(userInfo)
+          CreateAccount(userInfo)
         } catch (error) {
             
           if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -64,14 +63,9 @@ export default function AccountScreen({navigation}) {
           } else {
             //console.log(error)
           }
-         alert("Giriş yapılırken bir hata oluştu. Lüften tekrar deneyin.")
+         Alert.alert("Uyarı!","Giriş yapılırken bir hata oluştu. Lüften tekrar deneyin.")
         }
-
-      }else{
-        Alert.alert("Uyarı!","Lütfen sözleşmeleri okuyun ve kabul edin.")
-      }
-
-        
+      } 
       };
 
       const UserInfoState =async(userInfo)=>{
@@ -96,7 +90,7 @@ export default function AccountScreen({navigation}) {
         } catch (error) {
             if(error.message==='Request failed with status code 422'){
               setTimeout(() => {
-                  isLoginAccount(userInfo)
+                isLoginAccount(userInfo)
               }, 10);
             }else{
                 setInfoColor('#43aa8b')
@@ -131,8 +125,7 @@ export default function AccountScreen({navigation}) {
         }
         }
       }
-
-
+      
       const saveToken = async(data) => {
         const { access_token, refresh_token } = data
         await storeTokens(access_token, refresh_token);
@@ -239,31 +232,30 @@ export default function AccountScreen({navigation}) {
                   <WelcomeLogoLayout/>               
                 </View>
                 <View style={styles.buttonContainer} >
-                <View style={{width:Dimensions.get('screen').width*0.75, paddingVertical:20, flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
-                    <TouchableOpacity onPress={()=>setclick(!click)} >
-                      <Icon name={click?"checkbox-outline":"square-outline"} size={28} color={colors.text}/> 
-                    </TouchableOpacity>
-                      <Text numberOfLines={2} style={{fontSize:12, color:colors.text, fontFamily:'GoogleSans-Regular', paddingLeft:1, width:(Dimensions.get('screen').width*0.75)-28, }}>
-                        <Text onPress={()=>navigation.push("UyelikSozlesmesi")} style={{fontFamily:'GoogleSans-Medium'}} >Kullanıcı Sözleşmesini </Text>
-                        ve 
-                        <Text onPress={()=>navigation.push("GizlilikSozlesmesi")} style={{fontFamily:'GoogleSans-Medium'}} > Gizlilik Sözleşmesini </Text>
-                        okudum ve şartları kabul ediyorum.
-                      </Text>
-                  </View>
+                <View style={{width:Dimensions.get('screen').width*0.9, paddingVertical:20, flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
+                 
+                 <Text numberOfLines={3} style={{fontSize:12, color:colors.text, fontFamily:'GoogleSans-Regular', paddingLeft:1, width:(Dimensions.get('screen').width*0.8), textAlign:'center' }}>
+                   {"Uygulamada oturum açarak "}
+                   <Text onPress={()=>navigation.push("UyelikSozlesmesi")} style={{fontFamily:'GoogleSans-Medium'}}>Kullanıcı Sözleşmesini </Text>
+                   ve 
+                   <Text onPress={()=>navigation.push("GizlilikSozlesmesi")} style={{fontFamily:'GoogleSans-Medium'}} > Kişisel Verilerin Korunumu Kurallarını </Text>
+                    kabul etmiş olursunuz.
+                 </Text>
+             </View>
 
              
                 <TouchableOpacity onPress={()=>signInGoogle()} style={{ 
                     marginVertical:5,
-                    backgroundColor:'#1B9DEF',
+                    backgroundColor:'#D64836',
                     borderRadius:7,
                     borderColor:'#ccc',
                     width:Dimensions.get('screen').width*0.75,
                     flexDirection:'row', justifyContent:'space-between', alignItems:'center' }} >  
-                    <View style={{width:Dimensions.get('screen').width*0.13,height:44, backgroundColor:'#1B9DEF',  justifyContent:'center', alignItems:'center', borderRightWidth:0.5, borderColor:'#1B9DEF',  borderTopLeftRadius:7, borderBottomLeftRadius:7 }} >
-                       <Icon name="logo-apple-appstore" size={30} color={"#fff"}/> 
+                    <View style={{width:Dimensions.get('screen').width*0.13,height:44, backgroundColor:'#D64836',  justifyContent:'center', alignItems:'center', borderRightWidth:0.5, borderColor:'#D64836',  borderTopLeftRadius:7, borderBottomLeftRadius:7 }} >
+                       <Icon name="logo-google" size={30} color={"#fff"}/> 
                     </View>
-                    <View style={{ width: Dimensions.get('screen').width*0.62, height:44,flexDirection:'row', justifyContent:'center', alignItems:'center', borderWidth:1, borderColor:'#1B9DEF', borderTopRightRadius:7,borderBottomRightRadius:7, borderLeftWidth:0,   }} >
-                    <Text style={{fontFamily:'GoogleSans-Medium', color:'#fff'}}>Apple ID ile oturum aç</Text>
+                    <View style={{ width: Dimensions.get('screen').width*0.62, height:44,flexDirection:'row', justifyContent:'center', alignItems:'center', borderWidth:1, borderColor:'#D64836', borderTopRightRadius:7,borderBottomRightRadius:7, borderLeftWidth:0,   }} >
+                    <Text style={{fontFamily:'GoogleSans-Medium', color:'#fff'}}>Google ile oturum aç</Text>
                     </View>
                 </TouchableOpacity>
                 <TextButton

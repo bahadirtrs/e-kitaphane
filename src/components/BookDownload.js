@@ -11,7 +11,9 @@ export default function BookDownload(props) {
         <View style={styles.container} >
         <View style={[styles.header, {backgroundColor:colors.primary}]} >
         <StatusBar barStyle={'light-content'} backgroundColor={colors.primary}/>
-            <Text style={styles.headerText}>{'Kitap cihazınıza indiriliyor'} </Text>
+            <Text style={styles.headerText}>
+                {props.type==='full'? 'Kitap cihazınıza indiriliyor': 'Kitap önizlemesi yükleniyor'} 
+            </Text>
             <BookCoverLoading 
               sharedKey={props.sharedKey} 
               id={props.id} 
@@ -23,14 +25,23 @@ export default function BookDownload(props) {
         </View>
           <View style={{flex:6, paddingTop:20}} >
             <View style={styles.downloadContainer} >
-                <Text style={[styles.sizeStyle, {color:colors.text}]}>
-                    {((props.size*props.yukleme)/1024).toFixed(2)} MB 
+                {props.type==='full'
+                ?<>
+                    <Text style={[styles.sizeStyle, {color:colors.text}]}>
+                        {((props.size*props.yukleme)/1024).toFixed(2)} MB 
                         / 
-                    {(props.size/1024).toFixed(2)} MB 
-                </Text>
-                <Text style={[styles.infoStyle, {color:colors.text}]}>{props.info}</Text>
+                        {(props.size/1024).toFixed(2)} MB 
+                    </Text>
+                    <Text style={[styles.infoStyle, {color:colors.text}]}>{props.info}</Text>
+                 </>
+                : <Text style={[styles.infoStyle, {color:colors.text}]}>
+                    {'Kitap önizlemesi yükleniyor. Lütfen birkaç saniye bekleyiniz.'}
+                  </Text>
+                }
                 <TouchableOpacity style={[styles.cancelButton,{backgroundColor:colors.primary}]} onPress={()=>navigation.goBack()} >
-                  <Text style={styles.cancelButtonText}> İndirmeyi İptal Et</Text>
+                    <Text style={styles.cancelButtonText}>
+                      {'İndirmeyi İptal Et'}
+                    </Text>
               </TouchableOpacity>
             </View>
           </View> 

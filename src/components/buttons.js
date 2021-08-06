@@ -74,7 +74,10 @@ const ReadButton = (data) => {
     )
   }else{
     return (
-      <TouchableOpacity activeOpacity={0.9} style={({ pressed }) => (pressed ? { opacity: 0.9 } : { opacity: 1 })} onPress={  data?.closed?null : data?.buyStatus? data?.bookViewPress :data?.onPress}>
+      <TouchableOpacity 
+        activeOpacity={0.9} style={({ pressed }) => (pressed ? { opacity: 0.9 } : { opacity: 1 })} 
+        onPress={ data?.closed ? null : data?.buyStatus ? data?.bookViewPress :data?.onPress}
+      >
         <View style={[styles.buttonContainer, { backgroundColor:COLORS.primary }]}>
           <View style={styles.buttonContent}>
             <View style={styles.buttonTextAndIcon}>

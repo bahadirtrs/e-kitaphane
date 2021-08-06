@@ -1,6 +1,6 @@
 import {StyleSheet, Text, View, Dimensions } from "react-native"
 import FastImage from "react-native-fast-image"
-import React from "react"
+import React, {useState, useEffect, useMemo} from "react"
 import { useNavigation } from "@react-navigation/native"
 import { BASE_URL, bookCoverRatio } from "../utils/constants"
 import { numberFormat } from "../utils/utils"
@@ -8,11 +8,40 @@ import SkeletonPlaceholder from "react-native-skeleton-placeholder"
 import { TouchableOpacity } from "react-native"
 import { COLORS } from "../constants/theme";
 import { useTheme } from "@react-navigation/native"
+import Icon from "react-native-vector-icons/Ionicons"
 
+import RequestManager from "../utils/requestManager"
+import RNSecureStorage from "rn-secure-storage"
+import {endpoints} from "../utils/constants"
+import { Alert } from "react-native"
 
-export default function BooksItem({ item, sharedKey }) {
+export default function BooksItem({ item, sharedKey, getOwnedProducts }) {
   const {colors}=useTheme()
   const { push } = useNavigation()
+  const [fetching, setFetching] = useState(false)
+  const [userInfo, setUserInfo] = useState(false)
+
+  useEffect(() => {
+    setFetching(true)
+    getOwnedProducts
+      .then(res => { 
+        console.log(res)
+        let count=0;
+        for(let index = 0; index < res.length; index++) {
+          if(res[index].id===item.id){count++;}
+        }
+        if(count>0){
+          setUserInfo(true)}
+        setTimeout(() => {
+          setFetching(false)
+        },1000)
+      })
+      .catch(err => {
+        console.log(err),
+        setUserInfo(false)
+      })
+  }, [getOwnedProducts])
+
   return (
     <TouchableOpacity activeOpacity={0.9} style={styles.container} 
       onPress={() => push("BookDetail", {sharedKey: sharedKey, item: item , image:item?.cover_image })}
@@ -28,6 +57,12 @@ export default function BooksItem({ item, sharedKey }) {
           }}
           resizeMode={FastImage.resizeMode.cover}
         />
+        {userInfo
+        ? <TouchableOpacity style={styles.infoContainer} onPress={()=>Alert.alert('Ürün kütüphanede mevcut','Bu kitabı daha önceden satın aldınız.')} >
+            <Icon name={'checkmark-done-outline'} size={12} color={colors.primary}/>
+          </TouchableOpacity>
+      :null
+        }
         </View>
       </View>
       <View>
@@ -49,14 +84,17 @@ export default function BooksItem({ item, sharedKey }) {
   )
 }
 export const BooksItemPlaceholder = () => {
+  const {colors}=useTheme()
   return (
     <View style={{ height: "auto", margin: 12 }}>
-      <SkeletonPlaceholder>
-        <View style={{ width: 150, height: 150 * bookCoverRatio }} />
-        <View style={{ marginTop: 6, width: 120, height: 28, borderRadius: 4 }} />
-        <View style={{ marginTop: 6, width: 80, height: 14, borderRadius: 4 }} />
-        <View style={{ marginTop: 6, width: 30, height: 14, borderRadius: 4 }} />
-      </SkeletonPlaceholder>
+      <View>     
+      { //<SkeletonPlaceholder backgroundColor={colors.scale} highlightColor={colors.card} ></SkeletonPlaceholder>
+      }
+        <View style={{ backgroundColor:colors.scale,   width: 130, height: 130 * bookCoverRatio,borderRadius: 8  }} />
+        <View style={{ backgroundColor:colors.scale, marginTop: 6, width: 120, height: 24, borderRadius: 4 }} />
+        <View style={{ backgroundColor:colors.scale,  marginTop: 6, width: 80, height: 12, borderRadius: 4 }} />
+        <View style={{ backgroundColor:colors.scale,  marginTop: 6, width: 30, height: 12, borderRadius: 4 }} />
+      </View>   
     </View>
   )
 }
@@ -70,7 +108,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily:'GoogleSans-Medium',
-    fontSize: 15,
+    fontSize: 13,
     lineHeight: 20,
     color:COLORS.textColor,
     paddingTop: 5,
@@ -78,7 +116,7 @@ const styles = StyleSheet.create({
   },
   author: {
     fontFamily:'GoogleSans-Regular',
-    fontSize: 13,
+    fontSize: 12,
     color:COLORS.textColor,
     paddingTop:2,
     paddingHorizontal:3
@@ -110,4 +148,15 @@ const styles = StyleSheet.create({
       borderRadius: 6,
     
   },
+  infoContainer:{
+    justifyContent:'center', 
+    alignItems:'center', 
+    height:18, 
+    width:18, 
+    bottom:5, 
+    right:5,
+    backgroundColor:'#fff', 
+    position:'absolute', 
+    borderRadius:15
+  }
 })

@@ -4,10 +4,12 @@ import { ActivityIndicator } from "react-native"
 import { FlatList, StyleSheet, Text, View } from "react-native"
 import RequestManager from "../utils/requestManager"
 import BooksItem from "./booksItem"
+import {BooksItemPlaceholder} from "./booksItem"
 import { COLORS } from "../constants/theme";
 import { useTheme } from "@react-navigation/native"
+import SkeletonPlaceholder from "react-native-skeleton-placeholder"
 
-function BooksList({ sharedKey, title = "", onPress, request, categoryID, columnType }) {
+function BooksList({ sharedKey, title = "", onPress, request, categoryID, columnType,getOwnedProducts }) {
   const {colors}=useTheme()
   const [fetching, setFetching] = useState(false)
   const [products, setProducts] = useState([])
@@ -44,9 +46,11 @@ function BooksList({ sharedKey, title = "", onPress, request, categoryID, column
         keyExtractor={(item, index) => "featured-item-" + index}
         renderItem={({ item }) => {
           if (fetching) {
-            return <ActivityIndicator />
+           return(
+            <BooksItemPlaceholder/>
+           )
           }{
-            return <BooksItem categoryID={categoryID} sharedKey={sharedKey} item={item} />
+            return <BooksItem getOwnedProducts={getOwnedProducts} categoryID={categoryID} sharedKey={sharedKey} item={item} />
           }
         }}
       />

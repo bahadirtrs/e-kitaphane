@@ -7,6 +7,7 @@ import SearchBar from '../components/searchBar'
 import Icon from "react-native-vector-icons/Ionicons"
 import { ActivityIndicator } from "react-native"
 import { useTheme } from "@react-navigation/native"
+import NewAddedBooks from '../components/newAddedBoks'
 
 function CategoryList({ sharedKey, title, onPress, request, categoryID, columnType }) {
   const {colors}=useTheme()
@@ -80,7 +81,7 @@ const CategoryItems = ({ products, fetching,categoryID,sharedKey})=>{
     <View style={styles.itemContainer} >
         <FlatList
           horizontal={false}
-          numColumns={3}
+          numColumns={0}
           style={{paddingBottom:300}}
           pagingEnabled={false}
           showsHorizontalScrollIndicator={false}
@@ -89,7 +90,7 @@ const CategoryItems = ({ products, fetching,categoryID,sharedKey})=>{
           keyExtractor={(item, index) => "featured-item-" + index}
           renderItem={({item})=> {
             if(fetching){return<CategorysItemPlaceholder />}
-            return <CategorysItem categoryID={categoryID} sharedKey={sharedKey} item={item} />
+            return <NewAddedBooks categoryID={categoryID} sharedKey={sharedKey} item={item} />
           }}
         />
       </View>

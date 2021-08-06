@@ -1,11 +1,3 @@
-/*  
-|------*--------*-------------*------------*-------*------|
-| developer:Bahadır Tıraş                                 |
-| email:bahadirtiras@gmail.com                            |
-| github:wwww.github.com/bahadirtrs                       |
-| webSite:www.bahadirtiras.com.tr                         |
-|------*----------*----------*-------------*--------*-----|
-*/
 import React, { Component } from 'react';
 import { Text, View, FlatList, Dimensions, Button, StyleSheet } from 'react-native';
 const { width } = Dimensions.get('window');

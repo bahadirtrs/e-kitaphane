@@ -1,15 +1,13 @@
-import { Pressable, StyleSheet, Text, View } from "react-native"
+import { StyleSheet, Text, View } from "react-native"
 import FastImage from "react-native-fast-image"
 import React from "react"
 import { useNavigation } from "@react-navigation/native"
 import { numberFormat } from "../utils/utils"
 import SkeletonPlaceholder from "react-native-skeleton-placeholder"
-import { SharedElement } from "react-navigation-shared-element"
 import { bookCoverRatio, BASE_URL } from "../utils/constants"
 import { TouchableOpacity } from "react-native"
 import { COLORS } from "../constants/theme";
 import { useTheme } from "@react-navigation/native"
-import { color } from "react-native-reanimated"
 export default function BooksListItem({ item, sharedKey }) {
   const {colors}= useTheme()
   const { push } = useNavigation()

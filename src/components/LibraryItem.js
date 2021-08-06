@@ -43,7 +43,8 @@ export default function LibraryItem({ item, sharedKey }) {
     const getSizeControl = () =>{
       if(item?.barcode>2000){
         Alert.alert(
-          "Yüksek veri uyarısı",`Bu kitabın boyutu ${(item?.barcode/1024).toFixed(2)} MB'dır. WI-FI ağına bağlı değilseniz, bağlanmanızı tavsiye ederiz. Kitap cihazınıza yalnızca bir defa indirilecektir.`,
+          "Yüksek veri uyarısı",`
+          Bu kitabın boyutu ${(item?.barcode/1024).toFixed(2)} MB'dır. WI-FI ağına bağlı değilseniz, bağlanmanızı tavsiye ederiz. Kitap cihazınıza yalnızca bir defa indirilecektir.`,
           [
             { text: "Vazgeç",style: "cancel"},
             { text: "Şimdi İndir", onPress: () => Redirect(), }
@@ -68,7 +69,7 @@ export default function LibraryItem({ item, sharedKey }) {
     }
 
 
-    const { push } = useNavigation()
+  const { push } = useNavigation()
   return (
     // () => push("Reader", {id: item?.id, type: "preview", preview: 'pdfUrl', title: item?.title });
     // () => push("BookDetail", { sharedKey: sharedKey, item: item , image:item?.cover_image })

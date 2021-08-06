@@ -226,7 +226,7 @@ export default function AccountScreen({navigation}) {
                         <Text onPress={()=>navigation.push("UyelikSozlesmesi")} style={{fontFamily:'GoogleSans-Medium'}}>Kullanıcı Sözleşmesini </Text>
                         ve 
                         <Text onPress={()=>navigation.push("GizlilikSozlesmesi")} style={{fontFamily:'GoogleSans-Medium'}} > Kişisel Verilerin Korunumu Kurallarını </Text>
-                         kabul etmiş sayılırsınız.
+                         kabul etmiş olursunuz.
                       </Text>
                   </View>
 

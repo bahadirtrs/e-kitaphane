@@ -10,10 +10,7 @@ const PrivacyPolicy = ({visible, setVisible}) => {
         animationType="slide"
         transparent={true}
         visible={visible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          setModalVisible(!modalVisible);
-        }}
+        onRequestClose={() => {setModalVisible(!modalVisible);}}
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>

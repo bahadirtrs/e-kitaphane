@@ -29,43 +29,46 @@ function getData(number) {
 }
 export default function ReaderScreen({ navigation, route }) {
   const {colors, dark}=useTheme()
+  const [update, setUpdate] = useState(false)
   const asyncID =route.params.id;
   const size= route.params.size
+  const type=route.params.type
+  const [numberCurrent, setNumberCurrent] = useState(1)
+  const [numberofPages, setNumberofPages] = useState(0)
+  const [savePage, setSavePage] = useState(0)
+  const [isEnabled, setIsEnabled] = useState(true);
+  const [activity, setActivity] = useState(false)
+  const [isPageControllerHide, setPageControllerHide] = useState(false)
+  const [isZoomActive, setZoomActive] = useState(false)
+  const [pdfUrl, setPdfUrl] = useState("")
+  const [fetching, setFetching] = useState(false)
+  const [previewBook, setPreviewBook] = useState(false)
+  const [containuePage, setContainuePage] = useState(0)
+  const [statusBarColor, setStatusBarColor] = useState(colors.background)
+  const [pageHorizontal, setPageHorizontal] = useState(true)
+  const [scale, setScale] = useState(1.5)
+  const [res, setRes] = useState('full')
+  const [info, setInfo]=useState("Kitap indiriliyor. Bu biraz zaman alabilir. Lütfen bekleyin.")
+  const SlideInLeft = useRef(new Animated.Value(1)).current;
+  const [darkMode, setDarkMode] = useState(false)
+  const [yukleme, setYukleme] =useState(0)
+// const source = { uri: BASE_URL +"api/show-preview/" + route.params.id, cache: true }
+  const source = {uri:dark
+    ? (BASE_URL +'products/'+ res + '/' + pdfUrl) // (BASE_URL +'products/'+res+'/dark-'+pdfUrl)
+    : (BASE_URL +'products/'+ res + '/' + pdfUrl), 
+    cache:true }
+
   React.useLayoutEffect(() => {
     navigation.setOptions({headerShown: false})
   }, [navigation])
-    const [numberCurrent, setNumberCurrent] = useState(1)
-    const [numberofPages, setNumberofPages] = useState(0)
-    const [savePage, setSavePage] = useState(0)
-    const [isEnabled, setIsEnabled] = useState(true);
-    const [activity, setActivity] = useState(false)
-    const [isPageControllerHide, setPageControllerHide] = useState(false)
-    const [isZoomActive, setZoomActive] = useState(false)
-    const [pdfUrl, setPdfUrl] = useState("")
-    const [fetching, setFetching] = useState(false)
-    const [previewBook, setPreviewBook] = useState(false)
-    const [containuePage, setContainuePage] = useState(0)
-    const [statusBarColor, setStatusBarColor] = useState(colors.background)
-    const [pageHorizontal, setPageHorizontal] = useState(true)
-    const [scale, setScale] = useState(1.5)
-    const [res, setRes] = useState('full')
-    const [info, setInfo]=useState("Kitap indiriliyor. Bu biraz zaman alabilir. Lütfen bekleyin.")
-    const SlideInLeft = useRef(new Animated.Value(1)).current;
-    const [darkMode, setDarkMode] = useState(false)
-    const [yukleme, setYukleme] =useState(0)
- // const source = { uri: BASE_URL +"api/show-preview/" + route.params.id, cache: true }
-    const source = {uri:dark && yukleme>0.1
-      ? (BASE_URL +'products/'+ res + '/dark-' + pdfUrl) // (BASE_URL +'products/'+res+'/dark-'+pdfUrl)
-      : (BASE_URL +'products/'+ res + '/' + pdfUrl), 
-      cache:true }
-
-
+  
       useEffect(() => {
         getShowPDF
           .then(res => {
             setPdfUrl(res)
             setFetching(true)
             setRes('full')
+            
             setPreviewBook(true)
             setTimeout(() => {
               //setFetching(false)
@@ -96,7 +99,8 @@ export default function ReaderScreen({ navigation, route }) {
 
     const themeSelect = ()=>{
       setDarkMode(!darkMode)
-      setFetching(false)
+      setFetching(true)
+      fadeIn()
       setContainuePage(Number(numberCurrent));
       AsyncStorage.setItem("useTheme",String(darkMode)); 
       EventRegister.emit('useThemeDeg', darkMode)
@@ -148,7 +152,6 @@ export default function ReaderScreen({ navigation, route }) {
     }
   }, [yukleme])
     
- 
 
     useEffect(() => {
       // Sayfaya girilince kalınan sayfa kontrolü
@@ -254,7 +257,8 @@ export default function ReaderScreen({ navigation, route }) {
     // Kaldığı sayfayı AsyncStronge dan temizleme
     let pageNum =JSON.stringify(asyncID)
     Alert.alert(
-      "Kaydedilen sayfa siliniyor...",'Kaydettiğiniz sayfa silinecek ve bu kitap 1.sayfadan başlatılacaktır. Bu işlemi geri alamazsınız. Onaylıyor musunuz?',
+      "Kaydedilen sayfa siliniyor...",
+      'Kaydettiğiniz sayfa silinecek ve bu kitap 1.sayfadan başlatılacaktır. Bu işlemi geri alamazsınız. Onaylıyor musunuz?',
       [
         { text: "Evet",style: "cancel", onPress: () => {
           AsyncStorage.removeItem(pageNum);
@@ -274,7 +278,8 @@ export default function ReaderScreen({ navigation, route }) {
       setContainuePage(Number(item));
     }else if(item!=='1'){
       Alert.alert(
-        "Kaldığınız sayfayı unutmadık!",`Bu kitabın ${item} sayfasında kaldınız. Okumaya bu sayfadan devam etmek istermisiniz?`,
+        "Kaldığınız sayfayı unutmadık!",
+        `Bu kitabın ${item} sayfasında kaldınız. Okumaya bu sayfadan devam etmek istermisiniz?`,
         [
           { text: "Devam Et",style: "cancel", onPress: () => NumberOfDelete('true',item)  },
           { text: "Baştan Başla", onPress: () => NumberOfDelete('false',item), }
@@ -317,13 +322,17 @@ export default function ReaderScreen({ navigation, route }) {
     let number = JSON.stringify(numberCurrent)
     if(isEnabled){
       //Otomatik kaydetme açıksa kullanıcıyı uyarma
-      Alert.alert('Otomatik kaydeme açık', `Kaldığınız sayfa otomatik olarak kaydediliyor.`,
+      Alert.alert(
+        'Otomatik kaydeme açık', 
+        `Kaldığınız sayfa otomatik olarak kaydediliyor.`,
         [{ text: "Tamam",style: "cancel", onPress: () => null  },])
     }else{
       //Otomatik kayıt kapalı ise kalınan sayfayı kaydetme
       AsyncStorage.setItem(pageNum, number); 
       setSavePage(number)
-      Alert.alert('Sayfa kaydedildi. ', `Bir sonraki ziyaretinizde ${numberCurrent}.sayfadan devam edebileceksiniz.`,
+      Alert.alert(
+        'Sayfa kaydedildi. ', 
+        `Bir sonraki ziyaretinizde ${numberCurrent}.sayfadan devam edebileceksiniz.`,
         [{ text: "Tamam",style: "cancel", onPress: () => null  },]
       )
     }
@@ -360,7 +369,8 @@ export default function ReaderScreen({ navigation, route }) {
             />  
         </SafeAreaView>
     :null}
-    {fetching
+    
+    {fetching && !update
     ?<BookDownload
       sharedKey={'sharedKey'} 
       id={route.params.id} 
@@ -371,6 +381,7 @@ export default function ReaderScreen({ navigation, route }) {
       author={route.params.author}
       size={size}
       info={info}
+      type={type}
       />
     :null}
       
@@ -381,9 +392,7 @@ export default function ReaderScreen({ navigation, route }) {
       enablePaging={true}
       cache={true}
       fitWidth={true}
-      onLoadProgress={(percent)=>setYukleme(percent)}
-      onScaleChanged={(scale)=>ZoomActive(scale)}
-      activityIndicatorProps={{color:colors.backgroundColor, progressTintColor:colors.backgroundColor}}
+      activityIndicatorProps={{color:colors.backgroundColor, progressTintColor:colors.text}}
       style={[
         styles.pdf,{
           justifyContent:'center',
@@ -397,11 +406,16 @@ export default function ReaderScreen({ navigation, route }) {
           :Dimensions.get('screen').width,
    
       }]}
+      onLoadProgress={(percent)=>{
+        setYukleme(percent)
+        setUpdate(false)
+        }}
+      onScaleChanged={(scale)=>ZoomActive(scale)}
       onPageSingleTap={()=>ScreenClick()}
       onLoadComplete={(numberOfPages, filePath) => {
         setNumberofPages(numberOfPages)
         setFetching(false)
-
+        setUpdate(true)
       }}
       onPageChanged={ (page) => {
           scrollToItem(page)

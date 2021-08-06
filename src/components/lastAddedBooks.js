@@ -43,9 +43,9 @@ function LastAddedBooks() {
 
   const HeaderListComponent = ()=>{
     return(
-      <View style={{ width:Dimensions.get('screen').width, justifyContent:'center', alignItems:'center', paddingVertical:20,marginBottom:10, backgroundColor:colors.primary,}} >
+      <View style={[styles.headerList,{backgroundColor:colors.primary,}]} >
         <Icon name="newspaper-outline" size={60} color={colors.textColorLight}/> 
-        <Text style={{fontSize:24, color:colors.textColorLight, fontFamily:'GoogleSans-Medium'}} >Son Eklenen Kitaplar</Text>
+        <Text style={[styles.headerListText,{color:colors.textColorLight}]}>Son Eklenen Kitaplar</Text>
       </View>
     )
   }
@@ -62,7 +62,7 @@ function LastAddedBooks() {
           keyExtractor={(item, index) => "featured-item-" + index}
           renderItem={({ item }) => {
             return (
-              <View style={{ width:Dimensions.get('screen').width, justifyContent:'center', alignItems:'center', borderBottomWidth:1, borderBottomColor:colors.border, paddingVertical:5}} >
+              <View style={[styles.bookList, {borderBottomColor:colors.border}]} >
                 <NewAddedBooks categoryID={"1"} sharedKey={"sharedKey"} item={item} />
               </View>
             )
@@ -86,5 +86,22 @@ const styles = StyleSheet.create({
     elevation: 4,
     borderRadius: 12,
   },
+  bookList:{ 
+    width:Dimensions.get('screen').width, 
+    justifyContent:'center', 
+    alignItems:'center', 
+    paddingVertical:5
+  },
+  headerList:{
+    width:Dimensions.get('screen').width, 
+    justifyContent:'center', 
+    alignItems:'center', 
+    paddingVertical:20,
+    marginBottom:10
+  },
+  headerListText:{
+    fontSize:24,
+    fontFamily:'GoogleSans-Medium'
+  }
 })
 export default LastAddedBooks
