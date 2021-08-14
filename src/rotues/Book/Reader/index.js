@@ -5,7 +5,6 @@ import Icon from "react-native-vector-icons/Ionicons"
 import PageHeaderBackLayout from '../../../components/Layout/PageHeaderBackLayout'
 import RequestManager from "../../../utils/requestManager"
 import RNSecureStorage from "rn-secure-storage";
-import Activator from '../../../components/Indicator/BeingIndicator'
 import { useFocusEffect } from "@react-navigation/native"
 import { StyleSheet,View,Text,FlatList,StatusBar,Alert,Animated } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
@@ -46,7 +45,6 @@ export default function ReaderScreen({ navigation, route }) {
   const [containuePage, setContainuePage] = useState(0)
   const [statusBarColor, setStatusBarColor] = useState(colors.background)
   const [pageHorizontal, setPageHorizontal] = useState(true)
-  const [scale, setScale] = useState(1.5)
   const [res, setRes] = useState('full')
   const [info, setInfo]=useState("Kitap indiriliyor. Bu biraz zaman alabilir. Lütfen bekleyin.")
   const SlideInLeft = useRef(new Animated.Value(1)).current;
@@ -66,7 +64,9 @@ export default function ReaderScreen({ navigation, route }) {
         getShowPDF
           .then(res => {
             setPdfUrl(res)
-            setFetching(true)
+            setTimeout(() => {
+              setFetching(true)
+            }, 500);
             setRes('full')
             
             setPreviewBook(true)

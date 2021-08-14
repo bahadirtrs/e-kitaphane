@@ -1,6 +1,6 @@
 import { TouchableOpacity, StyleSheet, Text, View, Dimensions,Alert } from "react-native"
 import FastImage from "react-native-fast-image"
-import React, {useState} from "react"
+import React, {useState, useEffect} from "react"
 import { useNavigation } from "@react-navigation/native"
 import { BASE_URL, bookCoverRatio } from "../utils/constants"
 import SkeletonPlaceholder from "react-native-skeleton-placeholder"
@@ -19,7 +19,7 @@ export default function LibraryItem({ item, sharedKey }) {
   const {colors}=useTheme()
   const [pageNumber, setPageNumber] = useState(0)
   const [allPageNumber, setAllPageNumber] = useState(0)
-  
+  const [complate, setComplate] = useState(0) 
     useFocusEffect(
       React.useCallback(() => {
         PageNumber()
@@ -58,7 +58,7 @@ export default function LibraryItem({ item, sharedKey }) {
     const Redirect = ()=>{
       push("Reader", {
         id: item?.id, 
-        type: "preview", 
+        type: "full",
         preview: 'pdfUrl', 
         title: item?.title ,
         author:item?.author,
@@ -68,6 +68,23 @@ export default function LibraryItem({ item, sharedKey }) {
       })
     }
 
+    useEffect(() => {
+      let sayi=(allPageNumber>1
+        ? (pageNumber>1
+            ? pageNumber
+            : 1
+          )/(
+            allPageNumber>1
+              ? allPageNumber
+              : 0
+          )
+        : pageNumber==1 && allPageNumber==1 
+          ? 1
+          : 0
+      ) 
+      console.log(sayi)
+      setComplate(sayi)
+    }, [])
 
   const { push } = useNavigation()
   return (
@@ -82,14 +99,12 @@ export default function LibraryItem({ item, sharedKey }) {
     >
       <View style={styles.bookImage}>
         <View style={styles.bookImageContainer} >
-          <TouchableOpacity style={styles.bookDetailButton} 
-            onPress={() => push("BookDetail", {sharedKey: sharedKey, item: item , image:item?.cover_image})} 
-          >
+          <TouchableOpacity style={styles.bookDetailButton} onPress={() => push("BookDetail", {sharedKey: sharedKey, item: item , image:item?.cover_image})} >
               <Icon name="book-outline" size={20} color={colors.color} />
           </TouchableOpacity>
         </View>
         <View style={styles.pageNumberContainer}>
-           <Text style={styles.pageNumberText}>{pageNumber}/{allPageNumber}</Text>
+           <Text style={styles.pageNumberText}>{pageNumber}/{item.page_count}</Text>
         </View>
         <View style={{zIndex:0}} >
           <FastImage
@@ -120,27 +135,13 @@ export default function LibraryItem({ item, sharedKey }) {
               maxWidth:'100%',
               backgroundColor:COLORS.programsBar, 
               height:3,
-              width:(
-                  (allPageNumber>1
-                    ? (pageNumber>1
-                        ? pageNumber
-                        : 1
-                      )/(
-                        allPageNumber>1
-                          ? allPageNumber
-                          : 0
-                      )
-                    : pageNumber==1 && allPageNumber==1 
-                      ? 1
-                      : 0
-                  ) 
-              )*100 +'%'}} />
+              width:complate*100 +'%'}} />
           </View>
           <View style={{width:'30%'}} >
              <Text style={[styles.pageOran,{color:colors.text}]} >
                %{Math.ceil(
                  ((allPageNumber>1
-                  ? (pageNumber>1?pageNumber:1)/(allPageNumber>1?allPageNumber:0)
+                  ? (pageNumber>1?pageNumber:0)/(allPageNumber>1?allPageNumber:0)
                   : pageNumber==1 && allPageNumber==1 
                     ? 1
                     : 0
@@ -294,4 +295,5 @@ const styles = StyleSheet.create({
       borderBottomRightRadius: 0
   },
 })
+
 

@@ -4,16 +4,10 @@ import React, {useState, useEffect, useMemo} from "react"
 import { useNavigation } from "@react-navigation/native"
 import { BASE_URL, bookCoverRatio } from "../utils/constants"
 import { numberFormat } from "../utils/utils"
-import SkeletonPlaceholder from "react-native-skeleton-placeholder"
 import { TouchableOpacity } from "react-native"
-import { COLORS } from "../constants/theme";
 import { useTheme } from "@react-navigation/native"
 import Icon from "react-native-vector-icons/Ionicons"
-
-import RequestManager from "../utils/requestManager"
-import RNSecureStorage from "rn-secure-storage"
-import {endpoints} from "../utils/constants"
-import { Alert } from "react-native"
+import Toast from 'react-native-simple-toast';
 
 export default function BooksItem({ item, sharedKey, getOwnedProducts }) {
   const {colors}=useTheme()
@@ -46,7 +40,7 @@ export default function BooksItem({ item, sharedKey, getOwnedProducts }) {
     <TouchableOpacity activeOpacity={0.9} style={styles.container} 
       onPress={() => push("BookDetail", {sharedKey: sharedKey, item: item , image:item?.cover_image })}
     >
-      <View style={styles.bookImage}>
+      <View style={[styles.bookImage, { shadowColor:colors.shadow}]}>
         <View>
         <FastImage
           style={[styles.bookCoverImage,{borderColor:colors.border}]}
@@ -58,11 +52,11 @@ export default function BooksItem({ item, sharedKey, getOwnedProducts }) {
           resizeMode={FastImage.resizeMode.cover}
         />
         {userInfo
-        ? <TouchableOpacity style={styles.infoContainer} onPress={()=>Alert.alert('Ürün kütüphanede mevcut','Bu kitabı daha önceden satın aldınız.')} >
+        ? <TouchableOpacity style={styles.infoContainer} onPress={()=>Toast.show('Ürün kütüphanenizde mevcut. Bu kitabı daha önceden satın aldınız.', Toast.LONG)} >
             <Icon name={'checkmark-done-outline'} size={12} color={colors.primary}/>
           </TouchableOpacity>
       :null
-        }
+        } 
         </View>
       </View>
       <View>
@@ -110,14 +104,12 @@ const styles = StyleSheet.create({
     fontFamily:'GoogleSans-Medium',
     fontSize: 13,
     lineHeight: 20,
-    color:COLORS.textColor,
     paddingTop: 5,
     paddingHorizontal:3
   },
   author: {
     fontFamily:'GoogleSans-Regular',
     fontSize: 12,
-    color:COLORS.textColor,
     paddingTop:2,
     paddingHorizontal:3
 
@@ -127,12 +119,10 @@ const styles = StyleSheet.create({
     textAlign: "left",
     fontFamily:'GoogleSans-Bold',
     fontSize: 16,
-    color:COLORS.textColor,
     paddingHorizontal:3
 
   },
   bookImage: {
-    shadowColor:COLORS.shadow,
     shadowOffset: {
       width: 4,
       height: 4,
@@ -155,7 +145,7 @@ const styles = StyleSheet.create({
     width:18, 
     bottom:5, 
     right:5,
-    backgroundColor:'#fff', 
+    backgroundColor:'#eee', 
     position:'absolute', 
     borderRadius:15
   }

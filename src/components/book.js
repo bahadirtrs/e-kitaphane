@@ -5,8 +5,8 @@ import {bookCoverRatio, BASE_URL} from "../utils/constants"
 import IconPack from "react-native-vector-icons/Entypo"
 import Icon from "react-native-vector-icons/Ionicons"
 import {useNavigation} from "@react-navigation/native"
-import {COLORS} from "../constants/theme";
 import {useTheme} from "@react-navigation/native"
+
 const BookCover = (product) => {
  // sharedKey, id, imageURI 
   return (
@@ -28,11 +28,12 @@ const BookCover = (product) => {
 
 const BookCoverLoading = (product) => {
   // sharedKey, id, imageURI 
+  const {colors}=useTheme()
    return (
      <View style={styles.bookCover}>
        <View>
          <FastImage
-           style={[styles.bookCoverImage,{borderRadius:4}]}
+           style={[styles.bookCoverImage,{shadowColor:colors.shadow, borderColor:colors.border}]}
            source={{
              uri: BASE_URL + "products/cover/" + product?.imageURI,
              priority: FastImage.priority.normal,
@@ -56,8 +57,8 @@ const BookDetails = (product)=>{
  return(
   <View>
     <View style={styles.detailsContainer} >
-      <Text style={styles.detailsTitle}>{product?.title} </Text>
-      <Text style={styles.detailsAuthor}>{product?.author} </Text>
+      <Text style={[styles.detailsTitle,{color:colors.textColorLight}]}>{product?.title} </Text>
+      <Text style={[styles.detailsAuthor,{color:colors.textColorLight}]}>{product?.author} </Text>
     </View>
     <View style={styles.detailsBox} >
       <View style={styles.boxContainer} >
@@ -66,7 +67,7 @@ const BookDetails = (product)=>{
             <Text style={[styles.boxItemAns,{color:colors.textColorLight}]}>{product?.page_count}</Text>
           </View>
           <View style={styles.boxItemContainer} >            
-            <Text style={[styles.boxItemTitle,{color:colors.textColorLight}]}>Yayın tarihi</Text>
+            <Text style={[styles.boxItemTitle,{color:colors.textColorLight}]}>Yayın Tarihi</Text>
             <Text style={[styles.boxItemAns,{color:colors.textColorLight}]}>{product?.release_date}</Text>
           </View>
           <View style={[styles.boxItemContainer, {borderRightWidth:0}]} >            
@@ -134,7 +135,6 @@ const styles = StyleSheet.create({
   bookCoverImage: {
     width: 140,
     height: 140 * bookCoverRatio,
-    shadowColor:COLORS.shadow,
     shadowOffset: {
       width: 2,
       height: 2,
@@ -144,7 +144,8 @@ const styles = StyleSheet.create({
     elevation: 0,
     borderRadius: 8,
     borderWidth:0.3,
-    borderColor:COLORS.border
+    borderRadius:4,
+  
   },
   bookInfo: {
     padding: 12,
@@ -173,14 +174,12 @@ const styles = StyleSheet.create({
     fontFamily:'GoogleSans-Bold', 
     fontSize:24, 
     textAlign:'center', 
-    color:COLORS.textColorLight, 
     paddingHorizontal:10
   },
   detailsAuthor:{
     fontFamily:'GoogleSans-Regular', 
     fontSize:16,
     textAlign:'center', 
-    color:COLORS.textColorLight
   },
   detailsBox:{
     width:Dimensions.get('screen').width,  
@@ -264,7 +263,6 @@ const styles = StyleSheet.create({
   summaryButtonText: {
     fontFamily:'GoogleSans-Medium',
     fontSize: 15,
-    color:COLORS.textColor,
     lineHeight: 20,
     paddingVertical: 8,
     paddingLeft: 6,

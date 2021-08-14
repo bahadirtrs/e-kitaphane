@@ -15,12 +15,14 @@ import AsyncStorage from '@react-native-community/async-storage';
 import BuyProduct from '../../../utils/buyProduct'
 import BottomLogInModal from '../../../components/Modals/BottomLogInModal'
 import RequestManager from "../../../utils/requestManager"
+import Info from '../../../components/Info'
 
 export default function BookDetailScreen({navigation,route}) {
   const {colors}=useTheme()
   const product = route.params.item
   const sharedKey = route.params.sharedKey
-
+  const [infoText, setInfoText] = useState("")
+  const [infoModal, setInfoModal] = useState(false)
   const [token, setToken] = useState(null)
   const [islogInModalVisible, setlogInVisible] = useState(false)
   const [isPageNumber, setPageNumber] = useState(0)
@@ -203,19 +205,15 @@ const setBookStore = async () =>{
 
   const getSizeControl = () =>{
     if(product?.barcode>3000){
-      Alert.alert(
-        "Yüksek veri uyarısı",`Bu kitabın boyutu ${(product?.barcode/1024).toFixed(2)} MB'dır.  Wİ-Fİ ağına bağlı değilseniz, bağlanmanızı tavsiye ederiz. Kitap cihazınıza yalnızca bir defa indirilecektir.`,
-        [
-          { text: "Vazgeç",style: "cancel"},
-          { text: "Şimdi İndir", onPress: () => Redirect(), }
-        ]
-      );
+      setInfoText(`Bu kitabın boyutu ${(product?.barcode/1024).toFixed(2)} MB'dır.  Wİ-Fİ ağına bağlı değilseniz, bağlanmanızı tavsiye ederiz. Kitap cihazınıza yalnızca bir defa indirilecektir.`)
+      setInfoModal(!infoModal)
     }else{
       Redirect()
     }
   }
 
   const Redirect = ()=>{
+    setInfoModal(false)
     navigation.navigate("Reader", {
       id: product?.id, 
       type: "full", 
@@ -258,6 +256,13 @@ const setBookStore = async () =>{
             title={product?.title}
             page_count={product?.page_count}
           />
+        <Info
+          title={'Yüksek Veri Uyarısı'}
+          text={infoText}
+          okPress={() => Redirect()}
+          setInfoModal={()=>setInfoModal(!infoModal)}
+          infoModal={infoModal}
+        />
         </View>
         <View style={[styles.bookDetails,{backgroundColor:colors.background}]}>
           <BookInfo

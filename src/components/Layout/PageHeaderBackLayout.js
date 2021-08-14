@@ -7,7 +7,7 @@ export default function PageHeaderBackLayout({butonPress,butonColor,title,backgr
       
     return (
         <View style={[styles.container,{backgroundColor:backgrounColor}]} >
-            <View style={{flexDirection:'row', alignItems:'center', maxWidth:'70%'}} >
+            <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center', maxWidth:'70%'}} >
                 <TouchableOpacity activeOpacity={0.9} style={styles.buttonStyle} onPress={butonPress} >
                     <Icon name="chevron-back-outline" size={25} color={butonColor?butonColor:"#fff" }/> 
                 </TouchableOpacity>
@@ -47,10 +47,10 @@ export default function PageHeaderBackLayout({butonPress,butonColor,title,backgr
         { listTypePress
         ? listType
             ? <TouchableOpacity activeOpacity={0.9} style={styles.saveButton} onPress={listTypePress} >
-                <Icon name="list-outline" size={20} color={butonColor?butonColor:"#fff" }/> 
+                <Icon name="list-outline" size={22} color={butonColor?butonColor:"#fff" }/> 
               </TouchableOpacity>
             :<TouchableOpacity activeOpacity={0.9} style={styles.saveButton} onPress={listTypePress} >
-                <Icon name="apps-outline" size={18} color={butonColor?butonColor:"#fff" }/> 
+                <Icon name="apps-outline" size={20} color={butonColor?butonColor:"#fff" }/> 
              </TouchableOpacity>
         :null
         }
@@ -81,9 +81,8 @@ const styles = StyleSheet.create({
     },
     buttonText:{
         fontFamily:'GoogleSans-Medium', 
-        height:20,
         lineHeight:20,
-        fontSize:13, 
+        fontSize:14, 
         paddingLeft:0,
         textAlign:'center',
         width:'100%',

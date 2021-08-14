@@ -12,12 +12,12 @@ import Icon from "react-native-vector-icons/Ionicons"
 import Logom from '../../components/logo'
 import RequestManager from "../../utils/requestManager"
 import NetworkError from '../../components/NetworkError'
-import Activator from '../../components/Indicator/BeingIndicator'
 import { useTheme } from "@react-navigation/native"
 import MenuModal from '../../navigation/Menu/MenuModal'
 import RNSecureStorage from "rn-secure-storage"
 import ProfilePhotoButton from '../../components/Button/ProfilePhotoButton'
 import { ActivityIndicator } from "react-native"
+
 let user_image=null;
 // appcenter codepush release-react -a bhdrtrs/ebooks -d Production
 const categoriesIcon = {
@@ -37,20 +37,22 @@ export default function HomeScreen({ navigation }){
   const [categories, setCategories] = useState([])
   const [fetching, setFetching] = useState(true)
   const [categoryWidth, setCategoryWidth] = useState(90)
-  
+
   useFocusEffect(
+    
     React.useCallback(() => {
-      setTimeout(() => {
-        SplashScreen.hide()   
-      }, 2800);
       getImage()
+      setTimeout(() => {
+        SplashScreen.hide()
+      }, 2800);
+     
     }, [])
   );
-  
+
   const getImage =async () =>{
     user_image = await RNSecureStorage.get("photo")
   }
-  
+
   const getOwnedProducts = useMemo(
     async() =>
       RequestManager({
@@ -92,7 +94,7 @@ export default function HomeScreen({ navigation }){
 
 
   if (false) {
-    return 
+    return 0
   }else{
     return (
       <>
@@ -135,8 +137,8 @@ export default function HomeScreen({ navigation }){
                   <>
                     {index===0?
                     <View style={{width:8}}/>:null}
-                    <TouchableOpacity  
-                      onPress={() => navigation.push("BookCategories", { title:item.title, item: item })}               
+                    <TouchableOpacity
+                      onPress={() => navigation.push("BookCategories", { title:item.title, item: item })}
                       style={[styles.categoriesView,{backgroundColor:colors.card, width:categoryWidth}]} >
                         <Icon name={categoriesIcon[index]} size={25} color={colors.text}/>
                         <Text style={[styles.categoriesText,{color:colors.text}]}>{item.title}</Text>
@@ -146,7 +148,7 @@ export default function HomeScreen({ navigation }){
                 }}
             />
           </View>
-          
+
          <BooksList
             categoryID={'2'}
             getOwnedProducts={getOwnedProducts}
@@ -155,9 +157,9 @@ export default function HomeScreen({ navigation }){
             onPress={() => {
               navigation.push("BookCategories",{
                 sharedKey: 'Öne Çıkanlar',
-                item:categories?categories[1]:'', 
+                item:categories?categories[1]:'',
                 title:categories?categories[1]?.title:''}
-              )}}               
+              )}}
             request={{
               method: endpoints.products.method,
               url: endpoints.productsByCategory.path + "/" + 2,
@@ -179,9 +181,9 @@ export default function HomeScreen({ navigation }){
             onPress={() => {
               navigation.push("BookCategories",{
                 sharedKey: 'Öne Çıkanlar',
-                item:categories?categories[0]:'', 
+                item:categories?categories[0]:'',
                 title:categories?categories[0]?.title:''}
-              )}}               
+              )}}
             request={{
               method: endpoints.products.method,
               url: endpoints.productsByCategory.path + "/" + 1,
@@ -198,33 +200,33 @@ export default function HomeScreen({ navigation }){
           </ScrollView>
           <NetworkError/>
       </>
-    ) 
+    )
   }
 }
 const styles = StyleSheet.create({
   headerConatiner:{
-    flexDirection:'row', 
-    justifyContent:'space-between', 
-    alignItems:'center', 
-    paddingVertical:5, 
+    flexDirection:'row',
+    justifyContent:'space-between',
+    alignItems:'center',
+    paddingVertical:5,
     marginBottom:0,
   },
   categories:{
-    flexDirection:'row', 
-    marginLeft:0, 
+    flexDirection:'row',
+    marginLeft:0,
   },
   categoriesText:{
-    textAlign:'center', 
-    fontSize:12, 
-    fontFamily:'GoogleSans-Regular', 
+    textAlign:'center',
+    fontSize:12,
+    fontFamily:'GoogleSans-Regular',
     padding:5,
   },
   categoriesView:{
-    height:90, 
+    height:90,
     margin:5,
-    marginLeft:5, 
-    justifyContent:'center', 
-    alignItems:'center', 
+    marginLeft:5,
+    justifyContent:'center',
+    alignItems:'center',
     borderRadius:8,
     shadowOffset: {
       width: 2,

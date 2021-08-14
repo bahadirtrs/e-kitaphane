@@ -1,13 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react"
 import { Dimensions } from "react-native"
-import { ActivityIndicator } from "react-native"
 import { FlatList, StyleSheet, Text, View } from "react-native"
 import RequestManager from "../utils/requestManager"
 import BooksItem from "./booksItem"
 import {BooksItemPlaceholder} from "./booksItem"
 import { COLORS } from "../constants/theme";
 import { useTheme } from "@react-navigation/native"
-import SkeletonPlaceholder from "react-native-skeleton-placeholder"
 
 function BooksList({ sharedKey, title = "", onPress, request, categoryID, columnType,getOwnedProducts }) {
   const {colors}=useTheme()

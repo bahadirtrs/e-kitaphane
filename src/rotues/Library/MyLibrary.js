@@ -41,6 +41,7 @@ export default function UserInfo({navigation}) {
       console.log(error)
     }
   }
+  
   const getProduct = async()=>{
     setFetching(true)
     RequestManager({
@@ -95,7 +96,7 @@ export default function UserInfo({navigation}) {
   const HeaderComponent = ()=>{
     return(
       <View style={{paddingHorizontal:13, paddingTop:15}} >
-        <Text style={{fontFamily:'GoogleSans-Medium', fontSize:20, color:colors.text}}>Satın aldıklarınız</Text>
+        <Text style={{fontFamily:'GoogleSans-Medium', fontSize:20, color:colors.text}}>Satın Aldığınız Kitaplar</Text>
       </View>
     )
   }

@@ -116,7 +116,6 @@ const App = () => {
     
 }
 
-
   useEffect(() => {
     letlistener = EventRegister.addEventListener('useThemeDeg', (data) => {
       if(data===true){
