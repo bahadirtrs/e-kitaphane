@@ -67,7 +67,7 @@ const BookDetails = (product)=>{
             <Text style={[styles.boxItemAns,{color:colors.textColorLight}]}>{product?.page_count}</Text>
           </View>
           <View style={styles.boxItemContainer} >            
-            <Text style={[styles.boxItemTitle,{color:colors.textColorLight}]}>Yayın Tarihi nedir?</Text>
+            <Text style={[styles.boxItemTitle,{color:colors.textColorLight}]}>Yayın Tarihi</Text>
             <Text style={[styles.boxItemAns,{color:colors.textColorLight}]}>{product?.release_date}</Text>
           </View>
           <View style={[styles.boxItemContainer, {borderRightWidth:0}]} >            
